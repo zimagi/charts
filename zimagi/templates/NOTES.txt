@@ -1,0 +1,30 @@
+
+{{- if eq .Values.entrypoint "zimagi-command" }}
+** Please be patient while command-api is being deployed **
+{{- end }}
+{{- if eq .Values.entrypoint "zimagi-data" }}
+** Please be patient while data-api is being deployed **
+{{- end }}
+{{- if eq .Values.entrypoint "zimagi-scheduler" }}
+** Please be patient while scheduler is being deployed **
+{{- end }}
+{{- if eq .Values.entrypoint "zimagi-worker" }}
+** Please be patient while worker is being deployed **
+{{- end }}
+
+{{- if eq .Values.entrypoint "zimagi-command" }}
+
+Command-api can be accessed via port {{ .Values.service.command.port }} on the following DNS name from within your cluster:
+{{ .Values.entrypoint }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
+
+You can access via port forward:
+kubectl port-forward svc/{{ .Values.entrypoint }} {{ .Values.service.command.targetPort }}:80
+{{- end }}
+{{- if eq .Values.entrypoint "zimagi-data" }}
+Data-api can be accessed via port {{ .Values.service.data.port }} on the following DNS name from within your cluster:
+{{ .Values.entrypoint }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
+
+You can access via port forward:
+kubectl port-forward svc/{{ .Values.entrypoint }} {{ .Values.service.data.targetPort }}:80
+{{- end }}
+

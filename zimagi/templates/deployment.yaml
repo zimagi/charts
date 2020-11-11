@@ -41,12 +41,12 @@ spec:
           ports:
             {{- if eq .Values.entrypoint "zimagi-command" }}
             - name: comand
-              containerPort: 5123
+              containerPort: {{ .Values.service.command.targetPort }}
               protocol: TCP
             {{- end }}
             {{- if eq .Values.entrypoint "zimagi-data" }}
             - name: data
-              containerPort: 5323
+              containerPort: {{ .Values.service.data.targetPort }}
               protocol: TCP
             {{- end }}
           {{- end }}
@@ -62,9 +62,9 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
           - name: ZIMAGI_COMMAND_PORT
-            value: {{ .Values.service.command.port | quote }}
+            value: {{ .Values.service.command.targetPort | quote }}
           - name: ZIMAGI_DATA_PORT
-            value: {{ .Values.service.data.port | quote }}
+            value: {{ .Values.service.data.targetPort | quote }}
           - name: ZIMAGI_POSTGRES_HOST
             value: {{ .Values.postgres.host | quote }}
           - name: ZIMAGI_POSTGRES_PORT
@@ -93,6 +93,42 @@ spec:
           volumeMounts:
             - name: dockersock
               mountPath: "/var/run/docker.sock"
+          {{- if eq .Values.entrypoint "zimagi-command" }}
+          readinessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /status
+              port: {{ .Values.service.command.targetPort }}
+            initialDelaySeconds: 30
+            periodSeconds: 5
+          {{- end }}
+          {{- if eq .Values.entrypoint "zimagi-data" }}
+          readinessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /status
+              port: {{ .Values.service.command.targetPort }}
+            initialDelaySeconds: 30
+            periodSeconds: 5
+          {{- end }}
+          {{- if eq .Values.entrypoint "zimagi-command" }}
+          livenessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /status
+              port: {{ .Values.service.command.targetPort }}
+            initialDelaySeconds: 90
+            periodSeconds: 10
+          {{- end }}
+          {{- if eq .Values.entrypoint "zimagi-data" }}
+          livenessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /status
+              port: {{ .Values.service.data.targetPort }}
+            initialDelaySeconds: 90
+            periodSeconds: 10
+          {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
