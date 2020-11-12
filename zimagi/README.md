@@ -94,7 +94,7 @@ helm install command-api \
   ./
 ```
 
-### Teardwon command-api
+### Teardown command-api
 ```bash
 helm del -n zimagi command-api
 ```
@@ -115,7 +115,7 @@ helm install data-api \
   ./
 ```
 
-### Teardwon data-api
+### Teardown data-api
 ```bash
 helm del -n zimagi data-api
 ```
@@ -136,7 +136,7 @@ helm install scheduler \
   ./
 ```
 
-### Teardwon scheduler
+### Teardown scheduler
 ```bash
 helm del -n zimagi scheduler
 ```
@@ -157,7 +157,7 @@ helm install worker \
   ./
 ```
 
-### Teardwon worker
+### Teardown worker
 ```bash
 helm del -n zimagi scheduler
 ```
