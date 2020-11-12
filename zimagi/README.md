@@ -84,7 +84,7 @@ kubectl create namespace zimagi
 helm install command-api \
   --set entrypoint=zimagi-command \
   --set logLevel=warning \
-  --set database.host=data-postgresql \
+  --set database.host=data-postgresql.data \
   --set database.port=5432 \
   --set database.user=zimagi \
   --set database.pass=zimagi \
