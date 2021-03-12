@@ -82,9 +82,10 @@ kubectl create namespace zimagi
 ### Deploy command-api
 ```bash
 helm install command-api \
+  --namespace zimagi \
   --set entrypoint=zimagi-command \
   --set logLevel=warning \
-  --set database.host=data-postgresql.data \
+  --set database.host=data-postgresql \
   --set database.port=5432 \
   --set database.user=zimagi \
   --set database.pass=zimagi \
@@ -94,7 +95,7 @@ helm install command-api \
   ./
 ```
 
-### Teardown command-api
+### Teardwon command-api
 ```bash
 helm del -n zimagi command-api
 ```
@@ -115,7 +116,7 @@ helm install data-api \
   ./
 ```
 
-### Teardown data-api
+### Teardwon data-api
 ```bash
 helm del -n zimagi data-api
 ```
@@ -136,7 +137,7 @@ helm install scheduler \
   ./
 ```
 
-### Teardown scheduler
+### Teardwon scheduler
 ```bash
 helm del -n zimagi scheduler
 ```
@@ -157,7 +158,7 @@ helm install worker \
   ./
 ```
 
-### Teardown worker
+### Teardwon worker
 ```bash
 helm del -n zimagi scheduler
 ```

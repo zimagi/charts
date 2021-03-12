@@ -11,7 +11,7 @@ spec:
   ports:  
     - port: {{ .Values.service.command.port }}
       {{- if .Values.service.command.targetPort }}
-      targetPort: http
+      targetPort: {{ .Values.service.command.targetPort }}
       {{- end }}
       protocol: TCP
       name: {{ .Values.service.command.name }}
@@ -29,7 +29,7 @@ spec:
   ports:  
     - port: {{ .Values.service.data.port }}
       {{- if .Values.service.data.targetPort }}
-      targetPort: http
+      targetPort: {{ .Values.service.data.targetPort }}
       {{- end }}
       protocol: TCP
       name: {{ .Values.service.data.name }}

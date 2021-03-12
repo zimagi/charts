@@ -93,7 +93,7 @@ spec:
           volumeMounts:
             - name: dockersock
               mountPath: "/var/run/docker.sock"
-          {{- if eq .Values.entrypoint "zimagi-command" }}
+          {{- if eq (default .Values.entrypoint "zimagi-command") "zimagi-command" }}
           readinessProbe:
             httpGet:
               scheme: HTTPS
@@ -102,16 +102,16 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 5
           {{- end }}
-          {{- if eq .Values.entrypoint "zimagi-data" }}
+          {{- if eq (default .Values.entrypoint "zimagi-command") "zimagi-data" }}
           readinessProbe:
             httpGet:
               scheme: HTTPS
               path: /status
-              port: {{ .Values.service.command.targetPort }}
+              port: {{ .Values.service.data.targetPort }}
             initialDelaySeconds: 30
             periodSeconds: 5
           {{- end }}
-          {{- if eq .Values.entrypoint "zimagi-command" }}
+          {{- if eq (default .Values.entrypoint "zimagi-command") "zimagi-command" }}
           livenessProbe:
             httpGet:
               scheme: HTTPS
@@ -120,7 +120,7 @@ spec:
             initialDelaySeconds: 90
             periodSeconds: 10
           {{- end }}
-          {{- if eq .Values.entrypoint "zimagi-data" }}
+          {{- if eq (default .Values.entrypoint "zimagi-command") "zimagi-data" }}
           livenessProbe:
             httpGet:
               scheme: HTTPS
