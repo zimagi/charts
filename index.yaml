@@ -11,7 +11,7 @@ entries:
     name: zimagi
     type: application
     urls:
-    - https://zimagi.github.io/charts/index.yaml/zimagi-1.0.1.tgz
+    - https://zimagi.github.io/charts/zimagi-1.0.1.tgz
     version: 1.0.1
   - apiVersion: v2
     appVersion: 0.5.0
