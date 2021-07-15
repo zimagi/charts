@@ -19,7 +19,7 @@ workflows:
   release:
     jobs:
       - shellcheck/check:
-          dir: ./circleci
+          dir: .circleci
       - release-charts:
           filters:
             tags:
