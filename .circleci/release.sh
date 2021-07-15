@@ -71,7 +71,7 @@ package_chart() {
 }
 
 release_charts() {
-    chart-releaser upload -o "$GIT_USERNAME" -r "$GIT_REPOSITORY_NAME" -p .deploy
+    chart-releaser upload -o "$GIT_USERNAME" -r "$GIT_REPOSITORY_NAME" -p .deploy -t "$GH_TOKEN"
 }
 
 update_index() {
