@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+set -x
 set -o errexit
 set -o nounset
 set -o pipefail
@@ -95,7 +97,7 @@ update_index() {
         cp --force --recursive .deploy/docs/charts/* charts/
     fi
 
-    # git checkout master -- README.md
+    git checkout master -- README.md
 
     if ! git diff --quiet; then
         git add .
