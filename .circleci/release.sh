@@ -75,7 +75,7 @@ release_charts() {
 }
 
 update_index() {
-    chart-releaser index -o "$GIT_USERNAME" -r "$GIT_REPOSITORY_NAME" -p .deploy/index.yaml
+    chart-releaser index -o "$GIT_USERNAME" -r "$GIT_REPOSITORY_NAME" -p .deploy/index.yaml -c "https://zimagi.github.io/charts/"
 
     git config user.email "$GIT_EMAIL"
     git config user.name "$GIT_USERNAME"
