@@ -13,6 +13,9 @@ set -o pipefail
 
 
 main() {
+    echo "${CIRCLE_REPOSITORY_URL}"
+    git remote add upstream "${CIRCLE_REPOSITORY_URL}"
+    git fetch upstream master
     local charts_dir=charts
 
     local repo_root
@@ -120,7 +123,7 @@ update_index() {
 
     if ! git diff --quiet; then
         git add .
-        git commit --message="Update index.yaml" --signoff
+        git commit --message="Update index.yaml [ci skip]" --signoff
         git push -q https://"${GH_TOKEN}"@github.com/"${GIT_USERNAME}"/"${GIT_REPOSITORY_NAME}".git  gh-pages
 
     fi
