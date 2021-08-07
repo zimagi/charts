@@ -39,7 +39,7 @@ install_kind() {
         echo "Installing kind with version ${KIND_VERSION}"
         curl -Lo ./kind https://kind.sigs.k8s.io/dl/v${KIND_VERSION}/kind-linux-amd64
         chmod +x ./kind
-        mv ./kind /some-dir-in-your-PATH/kind
+        sudo mv ./kind /usr/local/bin/kind
         kind version
     }
     fi
@@ -54,12 +54,13 @@ create_kind_cluster() {
       --image "kindest/node:${K8S_VERSION}" \
       --wait 60s
 
-    docker_exec mkdir -p /root/.kube
 
     echo 'Copying kubeconfig to container...'
+    docker_exec mkdir -p /root/.kube
     local kubeconfig
-    kubeconfig="$(kind get kubeconfig-path --name "${CLUSTER_NAME}")"
-    docker cp "${kubeconfig}" ct:/root/.kube/config
+    kubeconfig="$(kind get kubeconfig --name "${CLUSTER_NAME}")"
+    echo "${kubeconfig}" > .kubeconfig
+    docker cp .kubeconfig ct:/root/.kube/config
 
     docker_exec kubectl cluster-info
     echo
