@@ -2,6 +2,97 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+global:
+  image:
+    repository: zimagi/zimagi
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "latest"
+
+commandApi:
+  replicaCount: 1
+
+  updateStrategy:
+    type: RollingUpdate
+
+  podAffinityPreset: ""
+
+  podAntiAffinityPreset: soft
+
+  nodeAffinityPreset:
+    type: ""
+    key: ""
+    values: []
+
+  affinity: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  priorityClassName: ""
+
+  podSecurityContext:
+    enabled: false
+    fsGroup: 1001
+
+  containerSecurityContext:
+    enabled: false
+    privileged: true
+    runAsUser: 0
+
+  psp:
+    create: false
+
+  args: []
+
+  containerPort: 8080
+
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 10
+    periodSeconds: 15
+    timeoutSeconds: 3
+    failureThreshold: 1
+    successThreshold: 1
+
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 10
+    periodSeconds: 15
+    timeoutSeconds: 3
+    failureThreshold: 1
+    successThreshold: 1
+
+  serviceAccount:
+    create: true
+    name: ""
+
+  rbac:
+    create: true
+
+  resources:
+    limits: {}
+    requests: {}
+
+service:
+  commandApi:
+    type: ClusterIP
+    port: 80
+    tlsPort: 443
+    nodePort: null
+    tlsNodePort: null
+    containerPort: 5123
+  dataApi:
+    type: ClusterIP
+    port: 80
+    tlsPort: 443
+    nodePort: null
+    tlsNodePort: null
+    containerPort: 5432
+
+
+
 replicaCount: 1
 
 image:
@@ -11,8 +102,6 @@ image:
   tag: "latest"
 
 imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -35,18 +124,6 @@ securityContext: {}
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
-
-service:
-  command:
-    type: ClusterIP
-    port: 80
-    targetPort: 5123
-    name: command
-  data:
-    type: ClusterIP
-    port: 80
-    targetPort: 5323
-    name: data
 
 ingress:
   enabled: false

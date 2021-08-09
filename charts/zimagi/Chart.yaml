@@ -6,6 +6,20 @@ type: application
 home: https://github.com/zimagi/zimagi
 icon: https://github.com/zimagi/zimagi/blob/master/docs/_static/logo.png
 appVersion: "0.5.0"
+dependencies:
+  - condition: postgresql.enabled
+    name: postgresql
+    repository: https://charts.bitnami.com/bitnami
+    version: 10.9.1
+  - condition: redis.enabled
+    name: redis
+    repository: https://charts.bitnami.com/bitnami
+    version: 14.8.7
+  - name: common
+    repository: https://charts.bitnami.com/bitnami
+    tags:
+      - bitnami-common
+    version: 1.8.0
 maintainers:
   - name: jagyugyaerik
     email: 500073+jagyugyaerik@users.noreply.github.com

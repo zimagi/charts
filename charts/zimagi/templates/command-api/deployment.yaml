@@ -1,0 +1,85 @@
+apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
+kind: Deployment
+metadata:
+  name: {{ include "zimagi.commandApi.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: command-api
+spec:
+  replicas: {{ .Values.commandApi.replicaCount }}
+  {{- if .Values.commandApi.updateStrategy }}
+  strategy: {{- toYaml .Values.commandApi.updateStrategy | nindent 4 }}
+  {{- end }}
+  selector:
+    matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
+      app.kubernetes.io/component: command-api
+  template:
+    metadata:
+      labels: {{- include "common.labels.standard" . | nindent 8 }}
+        app.kubernetes.io/component: command-api
+    spec:
+      serviceAccountName: {{ template "zimagi.commandApi.serviceAccountName" . }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.commandApi.affinity }}
+      affinity: {{- include "common.tplvalues.render" ( dict "value" .Values.commandApi.affinity "context" $) | nindent 8 }}
+      {{- else }}
+      affinity:
+        podAffinity: {{- include "common.affinities.pods" (dict "type" .Values.commandApi.podAffinityPreset "component" "command-api" "context" $) | nindent 10 }}
+        podAntiAffinity: {{- include "common.affinities.pods" (dict "type" .Values.commandApi.podAntiAffinityPreset "component" "command-api" "context" $) | nindent 10 }}
+        nodeAffinity: {{- include "common.affinities.nodes" (dict "type" .Values.commandApi.nodeAffinityPreset.type "key" .Values.commandApi.nodeAffinityPreset.key "values" .Values.commandApi.nodeAffinityPreset.values) | nindent 10 }}
+      {{- end }}
+      {{- if .Values.commandApi.nodeSelector }}
+      nodeSelector: {{- include "common.tplvalues.render" ( dict "value" .Values.commandApi.nodeSelector "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.commandApi.tolerations }}
+      tolerations: {{- include "common.tplvalues.render" (dict "value" .Values.commandApi.tolerations "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.commandApi.priorityClassName }}
+      priorityClassName: {{ .Values.commandApi.priorityClassName | quote }}
+      {{- end }}
+      {{- if .Values.commandApi.podSecurityContext.enabled }}
+      securityContext: {{- omit .Values.commandApi.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: command-api
+          image: "{{ .Values.global.image.repository }}:{{ .Values.global.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.commandApi.containerSecurityContext.enabled }}
+          securityContext: {{- omit .Values.commandApi.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          command:
+            - zimagi-command
+          {{- if .Values.commandApi.args }}
+          args: {{- include "common.tplvalues.render" (dict "value" .Values.commandApi.args "context" $) | nindent 12 }}
+          {{- end }}
+          env:
+          - name: ZIMAGI_COMMAND_PORT
+            value: {{ .Values.service.commandApi.port | quote }}
+          - name: ZIMAGI_DATA_PORT
+            value: {{ .Values.service.dataApi.port | quote }}
+          - name: ZIMAGI_POSTGRES_HOST
+            value: {{ include "zimagi.postgresql.fullname" . }}
+          - name: ZIMAGI_POSTGRES_PORT
+            value: "5432"
+          - name: ZIMAGI_POSTGRES_USER
+            value: {{ .Values.postgresql.postgresqlUsername | quote }}
+          - name: ZIMAGI_POSTGRES_PASSWORD
+            valueFrom:
+                secretKeyRef:
+                  name: {{ include "zimagi.postgresql.secretName" . }}
+                  key: {{ include "zimagi.database.existingsecret.key" . }}
+          - name: ZIMAGI_POSTGRES_DB
+            value: {{ .Values.postgresql.postgresqlDatabase | quote }}
+          - name: ZIMAGI_LOG_LEVEL
+            value: {{ .Values.logLevel | default "info" | quote }}
+          - name: ZIMAGI_TIME_ZONE
+            value: {{ .Values.timezone | default "America/New_York" | quote }}
+          ports:
+            - name: https
+              containerPort: {{ .Values.commandApi.containerPort }}
+          {{- if .Values.commandApi.resources }}
+          resources: {{- toYaml .Values.commandApi.resources | nindent 12 }}
+          {{- end }}
