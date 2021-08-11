@@ -12,6 +12,8 @@ jobs:
           command: |
             git remote add upstream https://github.com/paulczar/percona-helm-charts
             git fetch upstream master
+            helm repo add bitnami https://charts.bitnami.com/bitnami
+            helm repo update
             ct lint --config .circleci/ct.yaml
   install-charts:
     machine: true
