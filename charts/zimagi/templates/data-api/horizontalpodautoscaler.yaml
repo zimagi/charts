@@ -1,0 +1,25 @@
+{{- if and .Values.dataApi.autoscaling.enabled .Values.dataApi.autoscaling.maxReplicas }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "common.names.fullname" . }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: data-api
+    {{- if .Values.commonLabels }}
+      {{- include "common.tplvalues.render" (dict "value" .Values.commonLabels "context" $) | nindent 4 }}
+    {{- end }}
+spec:
+  minReplicas: {{ .Values.dataApi.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.dataApi.autoscaling.maxReplicas }}
+    metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.dataApi.autoscaling.averageUtilization }}
+  scaleTargetRef:
+    apiVersion: {{ template "common.capabilities.deployment.apiVersion" . }}
+    kind: Deployment
+    name: {{ include "common.names.fullname" . }}
+{{- end }}
