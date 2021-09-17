@@ -127,14 +127,14 @@ entries:
   zimagi:
   - apiVersion: v2
     appVersion: 0.5.0
-    created: "2021-09-17T14:14:52.59297042Z"
+    created: "2021-09-17T14:24:42.689128872Z"
     description: A Helm chart for deploying the Zimagi.
-    digest: 8b72db7cd1d3bafb417c08e5253ac5e5bd607871b0acab6aa839817d041412cd
+    digest: 383ca1dc880823e7c98311ba470a6dd2645ec6fa49e80830a9a18ba307bc7581
     home: https://github.com/zimagi/zimagi
     icon: https://github.com/zimagi/zimagi/blob/master/docs/_static/logo.png
     name: zimagi
     type: application
     urls:
-    - https://github.com/zimagi/charts/releases/download/zimagi-1.0.10/zimagi-1.0.10.tgz
-    version: 1.0.10
-generated: "2021-09-17T14:14:52.593033441Z"
+    - https://github.com/zimagi/charts/releases/download/zimagi-1.0.11/zimagi-1.0.11.tgz
+    version: 1.0.11
+generated: "2021-09-17T14:24:42.689224155Z"
