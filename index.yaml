@@ -3,6 +3,64 @@ entries:
   app1:
   - apiVersion: v2
     appVersion: 1.18.0
+    created: "2021-08-03T05:57:48.350238334Z"
+    description: A Helm chart for Kubernetes
+    digest: 4c0ed3643e99be3eeb3d94ff4b130d5c73e0f1139bcdd1c1258501bca6872d30
+    maintainers:
+    - email: jagyugyaerik@gmail.com
+      name: jagyugyaerik
+      url: https://github.com/jagyugyaerik
+    name: app1
+    type: application
+    urls:
+    - https://github.com/jagyugyaerik/cr--test/releases/download/app1-0.1.30/app1-0.1.30.tgz
+    version: 0.1.30
+  - apiVersion: v2
+    appVersion: 1.18.0
+    created: "2021-08-03T05:47:55.099037902Z"
+    description: A Helm chart for Kubernetes
+    digest: a37dd7b9990ae57e16c08fa16eaaa366d6afe085fe9fcef17b430ad4a5042d00
+    maintainers:
+    - email: jagyugyaerik@gmail.com
+      name: jagyugyaerik
+      url: https://github.com/jagyugyaerik
+    name: app1
+    type: application
+    urls:
+    - https://github.com/jagyugyaerik/cr--test/releases/download/app1-0.1.29/app1-0.1.29.tgz
+    version: 0.1.29
+  - apiVersion: v2
+    appVersion: 1.18.0
+    created: "2021-08-02T21:03:17.15261853Z"
+    description: A Helm chart for Kubernetes
+    digest: 256b1bd84c61efc5b6cfd0a2c0005a20f2a6590607cbf239b5f65f3a293ad028
+    name: app1
+    type: application
+    urls:
+    - https://github.com/jagyugyaerik/cr--test/releases/download/app1-0.1.19/app1-0.1.19.tgz
+    version: 0.1.19
+  - apiVersion: v2
+    appVersion: 1.18.0
+    created: "2021-08-02T20:58:55.070726566Z"
+    description: A Helm chart for Kubernetes
+    digest: d556be63131a50bd16487786bea16b049e27ada89dddcf881cdff83c1de50c12
+    name: app1
+    type: application
+    urls:
+    - https://github.com/jagyugyaerik/cr--test/releases/download/app1-0.1.18/app1-0.1.18.tgz
+    version: 0.1.18
+  - apiVersion: v2
+    appVersion: 1.18.0
+    created: "2021-08-02T20:03:39.630628449Z"
+    description: A Helm chart for Kubernetes
+    digest: c3a674f06b3aaa1060eca774b2c10ec6b5655c265a4943b5c077cb2c7fa07ade
+    name: app1
+    type: application
+    urls:
+    - https://github.com/jagyugyaerik/cr--test/releases/download/app1-0.1.17/app1-0.1.17.tgz
+    version: 0.1.17
+  - apiVersion: v2
+    appVersion: 1.18.0
     created: "2021-08-02T18:40:10.746475059Z"
     description: A Helm chart for Kubernetes
     digest: a77f6ca8ff2ec90bb0a38d25798ca013623356706348b5fefde3452556df54e2
@@ -51,17 +109,32 @@ entries:
     urls:
     - https://github.com/jagyugyaerik/cr--test/releases/download/app1-0.1.4/app1-0.1.4.tgz
     version: 0.1.4
+  app2:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2021-08-04T22:36:35.343200508Z"
+    description: A Helm chart for Kubernetes
+    digest: 2101aa79e113b5fa361ccce7565d74031a7e67dc3d5d115c36ad4b0b1458e09c
+    maintainers:
+    - email: jagyugyaerik@gmail.com
+      name: jagyugyaerik
+      url: https://github.com/jagyugyaerik
+    name: app2
+    type: application
+    urls:
+    - https://github.com/jagyugyaerik/cr--test/releases/download/app2-0.1.2/app2-0.1.2.tgz
+    version: 0.1.2
   zimagi:
   - apiVersion: v2
     appVersion: 0.5.0
-    created: "2021-08-02T19:02:16.02457322Z"
+    created: "2021-09-17T14:14:52.59297042Z"
     description: A Helm chart for deploying the Zimagi.
-    digest: efb8de70ddc2a872f213520bcf2b5d1dac6fb2247e6f9be3fa3d313763d26f32
+    digest: 8b72db7cd1d3bafb417c08e5253ac5e5bd607871b0acab6aa839817d041412cd
     home: https://github.com/zimagi/zimagi
     icon: https://github.com/zimagi/zimagi/blob/master/docs/_static/logo.png
     name: zimagi
     type: application
     urls:
-    - https://github.com/zimagi/charts/releases/download/zimagi-1.0.9/zimagi-1.0.9.tgz
-    version: 1.0.9
-generated: "2021-08-02T19:02:16.024600696Z"
+    - https://github.com/zimagi/charts/releases/download/zimagi-1.0.10/zimagi-1.0.10.tgz
+    version: 1.0.10
+generated: "2021-09-17T14:14:52.593033441Z"
