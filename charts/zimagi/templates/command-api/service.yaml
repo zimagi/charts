@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "zimagi.commandApi.fullname" . }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: command-api
+spec:
+  type: {{ .Values.service.commandApi.type }}
+  ports:
+    - port: {{ .Values.service.commandApi.port }}
+      targetPort: {{ .Values.service.commandApi.containerPort }}
+      name: http
+      protocol: TCP
+      {{- if and (eq "nodePort" .Values.service.commandApi.type) .Values.service.commandApi.nodePort }}
+      nodePort: {{ .Values.service.commandApi.nodePort }}
+      {{- end }}
+    - port: {{ .Values.service.commandApi.tlsPort }}
+      targetPort: {{ .Values.service.commandApi.containerPort }}
+      name: https
+      protocol: TCP
+      {{- if and (eq "nodePort" .Values.service.commandApi.type) .Values.service.commandApi.tlsNodePort }}
+      nodePort: {{ .Values.service.commandApi.tlsNodePort }}
+      {{- end }}
+  selector: {{- include "common.labels.matchLabels" . | nindent 4 }}
+    app.kubernetes.io/component: command-api

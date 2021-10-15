@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "zimagi.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "zimagi.fullname" . }}:{{ .Values.service.commandApi.tlsPort }}']
   restartPolicy: Never

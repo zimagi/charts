@@ -1,0 +1,179 @@
+apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
+kind: Deployment
+metadata:
+  name: {{ include "zimagi.dataApi.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: data-api
+spec:
+  replicas: {{ .Values.dataApi.replicaCount }}
+  {{- if .Values.dataApi.updateStrategy }}
+  strategy: {{- toYaml .Values.dataApi.updateStrategy | nindent 4 }}
+  {{- end }}
+  selector:
+    matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
+      app.kubernetes.io/component: command-api
+  template:
+    metadata:
+      labels: {{- include "common.labels.standard" . | nindent 8 }}
+        app.kubernetes.io/component: command-api
+    spec:
+      serviceAccountName: {{ template "zimagi.dataApi.serviceAccountName" . }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.dataApi.affinity }}
+      affinity: {{- include "common.tplvalues.render" ( dict "value" .Values.dataApi.affinity "context" $) | nindent 8 }}
+      {{- else }}
+      affinity:
+        podAffinity: {{- include "common.affinities.pods" (dict "type" .Values.dataApi.podAffinityPreset "component" "command-api" "context" $) | nindent 10 }}
+        podAntiAffinity: {{- include "common.affinities.pods" (dict "type" .Values.dataApi.podAntiAffinityPreset "component" "command-api" "context" $) | nindent 10 }}
+        nodeAffinity: {{- include "common.affinities.nodes" (dict "type" .Values.dataApi.nodeAffinityPreset.type "key" .Values.dataApi.nodeAffinityPreset.key "values" .Values.dataApi.nodeAffinityPreset.values) | nindent 10 }}
+      {{- end }}
+      {{- if .Values.dataApi.nodeSelector }}
+      nodeSelector: {{- include "common.tplvalues.render" ( dict "value" .Values.dataApi.nodeSelector "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.dataApi.tolerations }}
+      tolerations: {{- include "common.tplvalues.render" (dict "value" .Values.dataApi.tolerations "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.dataApi.priorityClassName }}
+      priorityClassName: {{ .Values.dataApi.priorityClassName | quote }}
+      {{- end }}
+      {{- if .Values.dataApi.podSecurityContext.enabled }}
+      securityContext: {{- omit .Values.dataApi.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+      initContainers:
+        - name: wait-for-db
+          image: {{ include "common.images.image" (dict "imageRoot" .Values.postgresql.image "global" .Values.global) }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/bash
+          args:
+            - -ec
+            - |
+              #!/bin/bash
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+              . /opt/bitnami/scripts/libos.sh
+              . /opt/bitnami/scripts/liblog.sh
+              . /opt/bitnami/scripts/libpostgresql.sh
+              check_postgresql_connection() {
+                  echo "SELECT 1" | postgresql_remote_execute "$POSTGRESQL_CLIENT_DATABASE_HOST" "$POSTGRESQL_CLIENT_DATABASE_PORT_NUMBER" "$POSTGRESQL_CLIENT_DATABASE_NAME" "$POSTGRESQL_CLIENT_POSTGRES_USER" "$POSTGRESQL_CLIENT_CREATE_DATABASE_PASSWORD"
+              }
+              info "Connecting to the PostgreSQL instance $POSTGRESQL_CLIENT_DATABASE_HOST:$POSTGRESQL_CLIENT_DATABASE_PORT_NUMBER"
+              if ! retry_while "check_postgresql_connection"; then
+                  error "Could not connect to the database server"
+                  return 1
+              else
+                  info "Connected to the PostgreSQL instance"
+              fi
+          env:
+            - name: POSTGRESQL_CLIENT_DATABASE_HOST
+              value: {{ include "zimagi.postgresql.fullname" . | quote }}
+            - name: POSTGRESQL_CLIENT_DATABASE_NAME
+              value: {{ .Values.postgresql.postgresqlDatabase | quote }}
+            - name: POSTGRESQL_CLIENT_DATABASE_PORT_NUMBER
+              value: "5432"
+            - name: POSTGRESQL_CLIENT_CREATE_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "zimagi.postgresql.secretName" . }}
+                  key: {{ include "zimagi.database.existingsecret.key" . }}
+            - name: POSTGRESQL_CLIENT_POSTGRES_USER
+              value: {{ .Values.postgresql.postgresqlUsername | quote }}
+      containers:
+        - name: data-api
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.dataApi.containerSecurityContext.enabled }}
+          securityContext: {{- omit .Values.dataApi.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          command:
+            - zimagi-data
+          {{- if .Values.dataApi.args }}
+          args: {{- include "common.tplvalues.render" (dict "value" .Values.dataApi.args "context" $) | nindent 12 }}
+          {{- end }}
+          env:
+          - name: ZIMAGI_COMMAND_PORT
+            value: {{ .Values.service.commandApi.containerPort | quote }}
+          - name: ZIMAGI_DATA_PORT
+            value: {{ .Values.service.dataApi.containerPort | quote }}
+          - name: ZIMAGI_POSTGRES_HOST
+            value: {{ include "zimagi.postgresql.fullname" . | quote }}
+          - name: ZIMAGI_POSTGRES_PORT
+            value: "5432"
+          - name: ZIMAGI_POSTGRES_USER
+            value: {{ .Values.postgresql.postgresqlUsername | quote }}
+          - name: ZIMAGI_POSTGRES_PASSWORD
+            valueFrom:
+                secretKeyRef:
+                  name: {{ include "zimagi.postgresql.secretName" . }}
+                  key: {{ include "zimagi.database.existingsecret.key" . }}
+          - name: ZIMAGI_POSTGRES_DB
+            value: {{ .Values.postgresql.postgresqlDatabase | quote }}
+          - name: ZIMAGI_REDIS_HOST
+            value: {{ include "zimagi.redisMaster.fullname" . | quote }}
+          - name: ZIMAGI_REDIS_PORT
+            value: "6379"
+          - name: ZIMAGI_REDIS_PASSWORD
+            valueFrom:
+                secretKeyRef:
+                  name: {{ include "zimagi.redis.secretName" . }}
+                  key: {{ include "zimagi.redis.existingsecret.key" . }}
+          - name: ZIMAGI_WORKER_CONCURRENCY
+            value: {{ .Values.workerConcurrency | default 2 | quote }}
+          - name: ZIMAGI_LOG_LEVEL
+            value: {{ .Values.logLevel | default "warning" | quote }}
+          - name: ZIMAGI_TIME_ZONE
+            value: {{ .Values.timezone | default "America/New_York" | quote }}
+          {{- if .Values.dataApi.extraEnv }}
+          {{- include "postgresql.tplValue" (dict "value" .Values.dataApi.extraEnv "context" $) | nindent 12 }}
+          {{- end }}
+          envFrom:
+            {{- if .Values.dataApi.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "common.tplvalues.render" (dict "value" .Values.dataApi.extraEnvVarsCM "context" $) }}
+            {{- end }}
+            {{- if .Values.dataApi.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "common.tplvalues.render" (dict "value" .Values.dataApi.extraEnvVarsSecret "context" $) }}
+            {{- end }}
+          ports:
+            - name: https
+              containerPort: {{ .Values.dataApi.containerPort }}
+          {{- if .Values.dataApi.resources }}
+          resources: {{- toYaml .Values.dataApi.resources | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: dockersock
+              mountPath: "/var/run/docker.sock"
+          {{- if .Values.dataApi.extraVolumeMounts }}
+          {{- include "common.tplvalues.render" (dict "value" .Values.dataApi.extraVolumeMounts "context" $) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.dataApi.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /status
+              port: {{ .Values.service.dataApi.containerPort }}
+            initialDelaySeconds: 30
+            periodSeconds: 5
+          {{- end }}
+          {{- if .Values.dataApi.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /status
+              port: {{ .Values.service.dataApi.containerPort }}
+            initialDelaySeconds: 90
+            periodSeconds: 10
+            {{- end }}
+      volumes:
+        - name: dockersock
+          hostPath:
+            path: /var/run/docker.sock
+        {{- if .Values.dataApi.extraVolumes }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.dataApi.extraVolumes "context" $) | nindent 8 }}
+        {{- end }}
