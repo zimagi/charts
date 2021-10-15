@@ -108,7 +108,7 @@ release_charts() {
 }
 
 update_index() {
-    chart-releaser index -o "$GIT_USERNAME" -r "$GIT_REPOSITORY_NAME" -c "https://jagyugyaerik.github.io/cr--test/"
+    chart-releaser index -o "$GIT_USERNAME" -r "$GIT_REPOSITORY_NAME" -c "https://zimagi.github.io/charts/"
     cat .cr-index/index.yaml
 
     git config user.email "$GIT_EMAIL"
