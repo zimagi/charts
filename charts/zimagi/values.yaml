@@ -14,13 +14,6 @@ redis:
   auth:
     password: "zimagi"
 
-global:
-  image:
-    repository: zimagi/zimagi
-    pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: "latest"
-
 commandApi:
   replicaCount: 1
 
@@ -354,8 +347,6 @@ service:
     tlsNodePort: null
     containerPort: 5323
 
-
-
 replicaCount: 1
 
 image:
@@ -369,8 +360,6 @@ nodeSelector: {}
 podAnnotations: {}
 podSecurityContext: {}
 postgres: {}
-redis: {}
-replicaCount: 1
 resources: {}
 securityContext: {}
   # capabilities:

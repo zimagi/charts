@@ -85,7 +85,7 @@ spec:
               value: {{ .Values.postgresql.postgresqlUsername | quote }}
       containers:
         - name: scheduler
-          image: "{{ .Values.global.image.repository }}:{{ .Values.global.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if .Values.scheduler.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.scheduler.containerSecurityContext "enabled" | toYaml | nindent 12 }}

@@ -5,8 +5,4 @@ home: https://github.com/zimagi/zimagi
 icon: https://github.com/zimagi/zimagi/blob/master/docs/_static/logo.png
 name: zimagi
 type: application
-<<<<<<< HEAD
-version: 1.0.12
-=======
 version: 1.0.10
->>>>>>> master
