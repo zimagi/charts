@@ -257,7 +257,7 @@ scheduler:
   extraVolumeMounts: {}
 
 worker:
-  replicaCount: 1
+  replicaCount: 0
 
   updateStrategy:
     type: RollingUpdate
@@ -273,7 +273,9 @@ worker:
 
   affinity: {}
 
-  nodeSelector: {}
+  nodeSelector: {
+    zimagi: worker
+  }
 
   tolerations: []
 
@@ -350,7 +352,7 @@ service:
     tlsPort: 443
     nodePort: null
     tlsNodePort: null
-    containerPort: 5432
+    containerPort: 5323
 
 
 
