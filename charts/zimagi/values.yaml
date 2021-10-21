@@ -352,7 +352,7 @@ replicaCount: 1
 image:
   pullPolicy: IfNotPresent
   repository: zimagi/zimagi
-  tag: 0.6.2-dev
+  tag: 0.6.2
 imagePullSecrets: []
 
 nameOverride: ''
