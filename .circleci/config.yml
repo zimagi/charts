@@ -2,6 +2,21 @@ version: 2.1
 orbs:
   shellcheck: circleci/shellcheck@2.0.0
 jobs:
+  pre-commit:
+    docker:
+    - image: python:3.9-alpine
+    steps:
+      - checkout
+      - run:
+          name: pre-commit
+          command: |
+            pip install pre-commit
+            apk add -y git bash curl
+            curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+            chmod 700 get_helm.sh
+            VERIFY_CHECKSUM=false ./get_helm.sh
+            pre-commit install
+            pre-commit run --all-files
   lint-charts:
     docker:
       - image: quay.io/helmpack/chart-testing:v3.4.0
@@ -38,6 +53,7 @@ workflows:
   version: 2
   lint-and-install:
     jobs:
+      - pre-commit
       - lint-charts:
           filters:
             branches:
@@ -46,9 +62,11 @@ workflows:
               ignore: /.*/
       - install-charts:
           requires:
+            - pre-commit
             - lint-charts
   release:
     jobs:
+      - pre-commit
       - shellcheck/check:
           dir: .circleci
           filters:
@@ -62,3 +80,5 @@ workflows:
               ignore: /.*/
             branches:
               only: master
+            requires:
+            - pre-commit
