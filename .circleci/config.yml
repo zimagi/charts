@@ -80,5 +80,5 @@ workflows:
               ignore: /.*/
             branches:
               only: master
-            requires:
-            - pre-commit
+          requires:
+          - pre-commit
