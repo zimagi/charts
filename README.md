@@ -7,7 +7,6 @@ Organisation Zimagi made Charts, ready to launch on [Kubernetes](https://kuberne
 ```bash
 $ helm repo add zimagi https//zimagi.github.io/charts
 $ helm search repo zimagi
-$ helm install my-release zimagi/<chart>
 ```
 
 # Prerequisites
