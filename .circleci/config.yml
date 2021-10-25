@@ -11,7 +11,11 @@ jobs:
           name: pre-commit
           command: |
             pip install pre-commit
-            apk add -y git bash curl
+            apk add -update-cache \
+              git \
+              bash \
+              curl
+            rm -rf /var/cache/apk/*
             curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
             chmod 700 get_helm.sh
             VERIFY_CHECKSUM=false ./get_helm.sh
