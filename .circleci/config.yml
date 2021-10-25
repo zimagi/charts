@@ -10,7 +10,6 @@ jobs:
       - run:
           name: pre-commit
           command: |
-            pip install pre-commit
             apk add -update-cache \
               git \
               bash \
@@ -19,6 +18,9 @@ jobs:
             curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
             chmod 700 get_helm.sh
             VERIFY_CHECKSUM=false ./get_helm.sh
+            python -m venv pre-commit
+            source pre-commit/bin/activate
+            pip install pre-commit
             pre-commit install
             pre-commit run --all-files
   lint-charts:
