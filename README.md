@@ -1,15 +1,15 @@
-# Zimagi [Helm](https://helm.sh) Charts
+# Charts for Kubernetes
 
-This repository contains [Helm](https://helm.sh) chart for project zimagi
+Organisation Zimagi made Charts, ready to launch on [Kubernetes](https://kubernetes.io/) using [Helm](https://helm.sh/).
 
-* [Zimagi](charts/zimagi/)
+# TL;DR
 
-## Installing Charts from this Repository
+```bash
+$ helm repo add zimagi https//zimagi.github.io/charts
+$ helm search repo zimagi
+$ helm install my-release zimagi/<chart>
+```
 
-Add the Repository to Helm:
-
-    helm repo add zimagi https://zimagi.github.io/charts
-
-Install Zimagi:
-
-    helm install zimagi/zimagi
+# Prerequisites
+- Kubernetes 1.12+
+- Helm 3.1.0
