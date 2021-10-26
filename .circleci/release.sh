@@ -13,6 +13,9 @@ set -o pipefail
 
 
 main() {
+    echo "Install Chart dependency repos"
+    install_chart_dependencies
+
     echo "${CIRCLE_REPOSITORY_URL}"
     git remote add upstream "${CIRCLE_REPOSITORY_URL}"
     git fetch upstream master
@@ -59,6 +62,10 @@ main() {
     fi
 
     popd > /dev/null
+}
+
+install_chart_dependencies() {
+    helm repo add bitnami https://charts.bitnami.com/bitnami
 }
 
 get_changed_charts() {
