@@ -56,7 +56,6 @@ jobs:
             .circleci/setup_tools.sh
             .circleci/release.sh
 workflows:
-  version: 2
   lint-and-install:
     jobs:
       - pre-commit
