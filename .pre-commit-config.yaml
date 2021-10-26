@@ -15,3 +15,7 @@ repos:
       - id: check-added-large-files
       - id: detect-private-key
       - id: trailing-whitespace
+  - repo: https://github.com/zahorniak/pre-commit-circleci.git
+    rev: v0.3 # Ensure this is the latest tag, comparing to the Releases tab
+    hooks:
+      - id: circleci_validate

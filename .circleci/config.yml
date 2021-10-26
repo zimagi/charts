@@ -10,7 +10,7 @@ jobs:
       - run:
           name: pre-commit
           command: |
-            apk add -update-cache \
+            apk add \
               git \
               bash \
               curl
