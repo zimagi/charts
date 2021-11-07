@@ -38,10 +38,11 @@ class Version:
             path.join(self.chart_directory, self.value_file_path)
         )["image"]["tag"]
 
-    def increment_chart_version(self) -> None:
+    def increment_chart_version(self, tag: str) -> None:
         chart_file_path = path.join(self.chart_directory, self.chart_file_path)
         chart_yaml = self._open_yaml_file(chart_file_path)
         chart_yaml["version"] = self.increment_version_number(chart_yaml["version"])
+        chart_yaml["appVersion"] = tag
         self._write_yaml_file(chart_yaml, chart_file_path)
 
     def update_chart_file(self) -> None:
@@ -66,7 +67,7 @@ class Version:
 )
 def main(chart_directory, tag, chart_file_path, values_file_path):
     version = Version(chart_directory, tag, chart_file_path, values_file_path)
-    version.increment_chart_version()
+    version.increment_chart_version(tag)
     version.update_tag(tag)
 
 
