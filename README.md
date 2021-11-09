@@ -5,7 +5,7 @@ Organisation Zimagi made Charts, ready to launch on [Kubernetes](https://kuberne
 # TL;DR
 
 ```bash
-$ helm repo add zimagi https//zimagi.github.io/charts
+$ helm repo add zimagi https://charts.dccs.tech
 $ helm search repo zimagi
 ```
 
