@@ -15,7 +15,7 @@ This chart bootstraps an [Zimagi](https://github.com/zimagi/zimagi) deployment o
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm repo add zimagi https://zimagi.github.io/charts
+$ helm repo add zimagi https://charts.zimagi.com
 $ helm install my-release zimagi/zimagi
 ```
 
