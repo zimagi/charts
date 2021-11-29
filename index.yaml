@@ -2,6 +2,36 @@ apiVersion: v1
 entries:
   zimagi:
   - apiVersion: v2
+    appVersion: 0.7.3
+    created: "2021-11-29T15:57:31.873065694Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.9.1
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 14.8.7
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: 1.8.0
+    description: A Helm chart for deploying the Zimagi.
+    digest: b1da6cee99d4324591f4099e8471602c48f0f98d5ad3259c08b6d9171a324cfb
+    home: https://github.com/zimagi/zimagi
+    icon: https://github.com/zimagi/zimagi/blob/master/docs/_static/logo.png
+    maintainers:
+    - email: jagyugyaerik@gmail.com
+      name: jagyugyaerik
+      url: https://github.com/jagyugyaerik
+    name: zimagi
+    type: application
+    urls:
+    - https://github.com/zimagi/charts/releases/download/zimagi-1.0.18/zimagi-1.0.18.tgz
+    version: 1.0.18
+  - apiVersion: v2
     appVersion: 0.7.2
     created: "2021-11-29T15:12:48.828175489Z"
     dependencies:
@@ -193,4 +223,4 @@ entries:
     urls:
     - https://github.com/zimagi/charts/releases/download/zimagi-1.0.11/zimagi-1.0.11.tgz
     version: 1.0.11
-generated: "2021-11-29T15:12:48.828239543Z"
+generated: "2021-11-29T15:57:31.873135919Z"
