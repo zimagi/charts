@@ -115,7 +115,7 @@ dataApi:
 image:
   pullPolicy: IfNotPresent
   repository: zimagi/zimagi
-  tag: 0.7.4
+  tag: 0.7.5
 imagePullSecrets: []
 ingress:
   annotations: {}
