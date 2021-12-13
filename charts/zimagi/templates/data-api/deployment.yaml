@@ -12,11 +12,11 @@ spec:
   {{- end }}
   selector:
     matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
-      app.kubernetes.io/component: command-api
+      app.kubernetes.io/component: data-api
   template:
     metadata:
       labels: {{- include "common.labels.standard" . | nindent 8 }}
-        app.kubernetes.io/component: command-api
+        app.kubernetes.io/component: data-api
     spec:
       serviceAccountName: {{ template "zimagi.dataApi.serviceAccountName" . }}
       {{- with .Values.imagePullSecrets }}
@@ -27,8 +27,8 @@ spec:
       affinity: {{- include "common.tplvalues.render" ( dict "value" .Values.dataApi.affinity "context" $) | nindent 8 }}
       {{- else }}
       affinity:
-        podAffinity: {{- include "common.affinities.pods" (dict "type" .Values.dataApi.podAffinityPreset "component" "command-api" "context" $) | nindent 10 }}
-        podAntiAffinity: {{- include "common.affinities.pods" (dict "type" .Values.dataApi.podAntiAffinityPreset "component" "command-api" "context" $) | nindent 10 }}
+        podAffinity: {{- include "common.affinities.pods" (dict "type" .Values.dataApi.podAffinityPreset "component" "data-api" "context" $) | nindent 10 }}
+        podAntiAffinity: {{- include "common.affinities.pods" (dict "type" .Values.dataApi.podAntiAffinityPreset "component" "data-api" "context" $) | nindent 10 }}
         nodeAffinity: {{- include "common.affinities.nodes" (dict "type" .Values.dataApi.nodeAffinityPreset.type "key" .Values.dataApi.nodeAffinityPreset.key "values" .Values.dataApi.nodeAffinityPreset.values) | nindent 10 }}
       {{- end }}
       {{- if .Values.dataApi.nodeSelector }}
