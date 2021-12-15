@@ -55,6 +55,16 @@ commandApi:
   tolerations: []
   updateStrategy:
     type: RollingUpdate
+  ingress:
+    tls: false
+    rulesOverride: {}
+    annotations: {}
+    certManager: false
+    enabled: false
+    hostName: ''
+    pathType: Prefix
+    path: /command-api
+    portNumber: 80
 dataApi:
   affinity: {}
   args: []
@@ -112,18 +122,21 @@ dataApi:
   tolerations: []
   updateStrategy:
     type: RollingUpdate
+  ingress:
+    tls: false
+    rulesOverride: {}
+    annotations: {}
+    certManager: false
+    enabled: false
+    hostName: ''
+    pathType: Prefix
+    path: /data-api
+    portNumber: 80
 image:
   pullPolicy: IfNotPresent
   repository: zimagi/zimagi
   tag: 0.7.7
 imagePullSecrets: []
-ingress:
-  annotations: {}
-  enabled: false
-  hostName: ''
-  http:
-    path: ''
-    servicePort: 80
 nameOverride: ''
 nodeSelector: {}
 podAnnotations: {}
