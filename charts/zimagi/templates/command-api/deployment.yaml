@@ -147,8 +147,6 @@ spec:
           resources: {{- toYaml .Values.commandApi.resources | nindent 12 }}
           {{- end }}
           volumeMounts:
-            - name: dockersock
-              mountPath: "/var/run/docker.sock"
           {{- if .Values.commandApi.extraVolumeMounts }}
           {{- include "common.tplvalues.render" (dict "value" .Values.commandApi.extraVolumeMounts "context" $) | nindent 12 }}
           {{- end }}
@@ -171,9 +169,6 @@ spec:
             periodSeconds: 10
             {{- end }}
       volumes:
-        - name: dockersock
-          hostPath:
-            path: /var/run/docker.sock
         {{- if .Values.commandApi.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" .Values.commandApi.extraVolumes "context" $) | nindent 8 }}
         {{- end }}

@@ -144,15 +144,10 @@ spec:
           resources: {{- toYaml .Values.scheduler.resources | nindent 12 }}
           {{- end }}
           volumeMounts:
-            - name: dockersock
-              mountPath: "/var/run/docker.sock"
           {{- if .Values.scheduler.extraVolumeMounts }}
           {{- include "common.tplvalues.render" (dict "value" .Values.scheduler.extraVolumeMounts "context" $) | nindent 12 }}
           {{- end }}
       volumes:
-        - name: dockersock
-          hostPath:
-            path: /var/run/docker.sock
         {{- if .Values.scheduler.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" .Values.scheduler.extraVolumes "context" $) | nindent 8 }}
         {{- end }}
