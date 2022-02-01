@@ -9,15 +9,11 @@ replicaCount: 1
 service:
   commandApi:
     containerPort: 5000
-    nodePort: null
-    port: 80
     tlsNodePort: null
     tlsPort: 443
     type: ClusterIP
   dataApi:
     containerPort: 5000
-    nodePort: null
-    port: 80
     tlsNodePort: null
     tlsPort: 443
     type: ClusterIP

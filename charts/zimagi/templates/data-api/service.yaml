@@ -7,13 +7,6 @@ metadata:
 spec:
   type: {{ .Values.service.dataApi.type }}
   ports:
-    - port: {{ .Values.service.dataApi.port }}
-      targetPort: {{ .Values.service.dataApi.containerPort }}
-      name: http
-      protocol: TCP
-      {{- if and (eq "nodePort" .Values.service.dataApi.type) .Values.service.dataApi.nodePort }}
-      nodePort: {{ .Values.service.dataApi.nodePort }}
-      {{- end }}
     - port: {{ .Values.service.dataApi.tlsPort }}
       targetPort: {{ .Values.service.dataApi.containerPort }}
       name: https
