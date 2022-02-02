@@ -6,7 +6,7 @@ home: https://github.com/zimagi/zimagi
 icon: https://github.com/zimagi/zimagi/blob/master/docs/_static/logo.png
 
 apiVersion: v2
-version: 1.0.27
+version: 1.0.28
 appVersion: 0.7.7
 
 dependencies:
