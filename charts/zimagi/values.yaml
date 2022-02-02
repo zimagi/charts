@@ -47,8 +47,6 @@ scheduler:
     minReplicas: 1
   containerSecurityContext:
     enabled: false
-    privileged: true
-    runAsUser: 0
   extraEnv: []
   extraEnvVarsCM: {}
   extraEnvVarsSecret: {}
@@ -105,8 +103,6 @@ worker:
   containerPort: 8080
   containerSecurityContext:
     enabled: false
-    privileged: true
-    runAsUser: 0
   extraEnv: []
   extraEnvVarsCM: {}
   extraEnvVarsSecret: {}
@@ -164,8 +160,6 @@ commandApi:
   containerPort: 5123
   containerSecurityContext:
     enabled: false
-    privileged: true
-    runAsUser: 0
   extraEnv: []
   extraEnvVarsCM: {}
   extraEnvVarsSecret: {}
@@ -211,7 +205,7 @@ commandApi:
   updateStrategy:
     type: RollingUpdate
   ingress:
-    tls: false
+    tls: true
     rulesOverride: {}
     annotations: {}
     certManager: false
@@ -219,7 +213,7 @@ commandApi:
     hostName: ''
     pathType: Prefix
     path: /command-api
-    portNumber: 80
+    portNumber: 443
 
 dataApi:
   affinity: {}
@@ -232,8 +226,6 @@ dataApi:
   containerPort: 5323
   containerSecurityContext:
     enabled: false
-    privileged: true
-    runAsUser: 0
   extraEnv: []
   extraEnvVarsCM: {}
   extraEnvVarsSecret: {}
@@ -279,7 +271,7 @@ dataApi:
   updateStrategy:
     type: RollingUpdate
   ingress:
-    tls: false
+    tls: true
     rulesOverride: {}
     annotations: {}
     certManager: false
@@ -287,4 +279,4 @@ dataApi:
     hostName: ''
     pathType: Prefix
     path: /data-api
-    portNumber: 80
+    portNumber: 443
