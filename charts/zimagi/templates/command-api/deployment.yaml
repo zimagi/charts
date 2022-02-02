@@ -96,37 +96,31 @@ spec:
           args: {{- include "common.tplvalues.render" (dict "value" .Values.commandApi.args "context" $) | nindent 12 }}
           {{- end }}
           env:
-          - name: ZIMAGI_POSTGRES_HOST
-            value: {{ include "zimagi.postgresql.fullname" . | quote }}
-          - name: ZIMAGI_POSTGRES_PORT
-            value: "5432"
-          - name: ZIMAGI_POSTGRES_USER
-            value: {{ .Values.postgresql.postgresqlUsername | quote }}
-          - name: ZIMAGI_POSTGRES_PASSWORD
-            valueFrom:
+            - name: ZIMAGI_POSTGRES_HOST
+              value: {{ include "zimagi.postgresql.fullname" . | quote }}
+            - name: ZIMAGI_POSTGRES_PORT
+              value: "5432"
+            - name: ZIMAGI_POSTGRES_USER
+              value: {{ .Values.postgresql.postgresqlUsername | quote }}
+            - name: ZIMAGI_POSTGRES_PASSWORD
+              valueFrom:
                 secretKeyRef:
                   name: {{ include "zimagi.postgresql.secretName" . }}
                   key: {{ include "zimagi.database.existingsecret.key" . }}
-          - name: ZIMAGI_POSTGRES_DB
-            value: {{ .Values.postgresql.postgresqlDatabase | quote }}
-          - name: ZIMAGI_REDIS_HOST
-            value: {{ include "zimagi.redisMaster.fullname" . | quote }}
-          - name: ZIMAGI_REDIS_PORT
-            value: "6379"
-          - name: ZIMAGI_REDIS_PASSWORD
-            valueFrom:
+            - name: ZIMAGI_POSTGRES_DB
+              value: {{ .Values.postgresql.postgresqlDatabase | quote }}
+            - name: ZIMAGI_REDIS_HOST
+              value: {{ include "zimagi.redisMaster.fullname" . | quote }}
+            - name: ZIMAGI_REDIS_PORT
+              value: "6379"
+            - name: ZIMAGI_REDIS_PASSWORD
+              valueFrom:
                 secretKeyRef:
                   name: {{ include "zimagi.redis.secretName" . }}
                   key: {{ include "zimagi.redis.existingsecret.key" . }}
-          - name: ZIMAGI_WORKER_CONCURRENCY
-            value: {{ .Values.workerConcurrency | default 2 | quote }}
-          - name: ZIMAGI_LOG_LEVEL
-            value: {{ .Values.logLevel | default "warning" | quote }}
-          - name: ZIMAGI_TIME_ZONE
-            value: {{ .Values.timezone | default "America/New_York" | quote }}
-          {{- if .Values.commandApi.extraEnv }}
-          {{- include "postgresql.tplValue" (dict "value" .Values.commandApi.extraEnv "context" $) | nindent 12 }}
-          {{- end }}
+            {{- if .Values.commandApi.extraEnv }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.commandApi.extraEnv "context" $) | nindent 12 }}
+            {{- end }}
           envFrom:
             {{- if .Values.commandApi.extraEnvVarsCM }}
             - configMapRef:
