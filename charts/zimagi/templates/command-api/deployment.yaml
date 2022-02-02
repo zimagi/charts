@@ -96,10 +96,6 @@ spec:
           args: {{- include "common.tplvalues.render" (dict "value" .Values.commandApi.args "context" $) | nindent 12 }}
           {{- end }}
           env:
-          - name: ZIMAGI_COMMAND_PORT
-            value: {{ .Values.service.commandApi.containerPort | quote }}
-          - name: ZIMAGI_DATA_PORT
-            value: {{ .Values.service.dataApi.port | quote }}
           - name: ZIMAGI_POSTGRES_HOST
             value: {{ include "zimagi.postgresql.fullname" . | quote }}
           - name: ZIMAGI_POSTGRES_PORT
