@@ -152,3 +152,8 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
     {{ default "default" .Values.commandApi.serviceAccount.name -}}
 {{- end -}}
 {{- end -}}
+
+
+{{- define "zimagi.pvc.fullname" -}}
+{{- printf "%s-lib" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}

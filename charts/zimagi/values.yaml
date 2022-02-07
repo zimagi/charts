@@ -53,7 +53,7 @@ scheduler:
   extraVolumeMounts: {}
   extraVolumes: {}
   livenessProbe:
-    enabled: true
+    enabled: false
     failureThreshold: 1
     initialDelaySeconds: 10
     periodSeconds: 15
@@ -75,7 +75,7 @@ scheduler:
   rbac:
     create: true
   readinessProbe:
-    enabled: true
+    enabled: false
     failureThreshold: 1
     initialDelaySeconds: 10
     periodSeconds: 15
@@ -157,7 +157,7 @@ commandApi:
     enabled: false
     maxReplicas: 4
     minReplicas: 1
-  containerPort: 5123
+  containerPort: 5000
   containerSecurityContext:
     enabled: false
   extraEnv: []
@@ -223,7 +223,7 @@ dataApi:
     enabled: false
     maxReplicas: 4
     minReplicas: 1
-  containerPort: 5323
+  containerPort: 5000
   containerSecurityContext:
     enabled: false
   extraEnv: []
@@ -280,3 +280,6 @@ dataApi:
     pathType: Prefix
     path: /data-api
     portNumber: 443
+persistenceFlavour:
+  minikube: false
+  size: 1Gi
