@@ -96,6 +96,8 @@ spec:
           args: {{- include "common.tplvalues.render" (dict "value" .Values.worker.args "context" $) | nindent 12 }}
           {{- end }}
           env:
+            - name: ZIMAGI_WORKER_TYPE
+              value: {{ .Values.worker.nodeSelector | quote }}
             - name: ZIMAGI_POSTGRES_HOST
               value: {{ include "zimagi.postgresql.fullname" . | quote }}
             - name: ZIMAGI_POSTGRES_PORT
