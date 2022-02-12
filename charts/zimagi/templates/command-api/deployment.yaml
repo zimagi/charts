@@ -140,13 +140,17 @@ spec:
           {{- if .Values.commandApi.extraVolumeMounts }}
           {{- include "common.tplvalues.render" (dict "value" .Values.commandApi.extraVolumeMounts "context" $) | nindent 12 }}
           {{- end }}
+          {{- if .Values.persistenceFlavour.minikube }}
+          - mountPath: "/usr/local/lib/zimagi"
+            name: {{ .Release.Name }}-lib
+          {{- end }}
           {{- if .Values.commandApi.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
               scheme: HTTPS
               path: /status
               port: {{ .Values.service.commandApi.containerPort }}
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             periodSeconds: 5
           {{- end }}
           {{- if .Values.commandApi.livenessProbe.enabled }}
@@ -162,3 +166,8 @@ spec:
         {{- if .Values.commandApi.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" .Values.commandApi.extraVolumes "context" $) | nindent 8 }}
         {{- end }}
+        {{- if .Values.persistenceFlavour.minikube }}
+        - name: {{ .Release.Name }}-lib
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-lib
+        {{- end}}

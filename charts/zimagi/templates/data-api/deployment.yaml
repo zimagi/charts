@@ -140,6 +140,10 @@ spec:
           {{- if .Values.dataApi.extraVolumeMounts }}
           {{- include "common.tplvalues.render" (dict "value" .Values.dataApi.extraVolumeMounts "context" $) | nindent 12 }}
           {{- end }}
+          {{- if .Values.persistenceFlavour.minikube }}
+          - mountPath: "/usr/local/lib/zimagi"
+            name: {{ .Release.Name }}-lib
+          {{- end }}
           {{- if .Values.dataApi.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
@@ -162,3 +166,8 @@ spec:
         {{- if .Values.dataApi.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" .Values.dataApi.extraVolumes "context" $) | nindent 8 }}
         {{- end }}
+        {{- if .Values.persistenceFlavour.minikube }}
+        - name: {{ .Release.Name }}-lib
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-lib
+        {{- end}}

@@ -1,43 +1,4 @@
-nameOverride: ''
-nodeSelector: {}
-podAnnotations: {}
-podSecurityContext: {}
-securityContext: {}
-resources: {}
-replicaCount: 1
-
-service:
-  commandApi:
-    containerPort: 5000
-    tlsNodePort: null
-    tlsPort: 443
-    type: ClusterIP
-  dataApi:
-    containerPort: 5000
-    tlsNodePort: null
-    tlsPort: 443
-    type: ClusterIP
-
-imagePullSecrets: []
-image:
-  pullPolicy: IfNotPresent
-  repository: zimagi/zimagi
-  tag: 0.7.7
-
-postgres: {}
-postgresql:
-  enabled: true
-  persistence:
-    enabled: false
-  postgresqlDatabase: zimagi
-  postgresqlPassword: zimagi
-  postgresqlUsername: zimagi
-
-redis:
-  auth:
-    password: zimagi
-
-scheduler:
+commandApi:
   affinity: {}
   args: []
   autoscaling:
@@ -45,6 +6,7 @@ scheduler:
     enabled: false
     maxReplicas: 4
     minReplicas: 1
+  containerPort: 5000
   containerSecurityContext:
     enabled: false
   extraEnv: []
@@ -52,6 +14,16 @@ scheduler:
   extraEnvVarsSecret: {}
   extraVolumeMounts: {}
   extraVolumes: {}
+  ingress:
+    annotations: {}
+    certManager: false
+    enabled: false
+    hostName: ''
+    path: /command-api
+    pathType: Prefix
+    portNumber: 443
+    rulesOverride: {}
+    tls: true
   livenessProbe:
     enabled: true
     failureThreshold: 1
@@ -91,7 +63,162 @@ scheduler:
   tolerations: []
   updateStrategy:
     type: RollingUpdate
-
+dataApi:
+  affinity: {}
+  args: []
+  autoscaling:
+    averageUtilization: 70
+    enabled: false
+    maxReplicas: 4
+    minReplicas: 1
+  containerPort: 5000
+  containerSecurityContext:
+    enabled: false
+  extraEnv: []
+  extraEnvVarsCM: {}
+  extraEnvVarsSecret: {}
+  extraVolumeMounts: {}
+  extraVolumes: {}
+  ingress:
+    annotations: {}
+    certManager: false
+    enabled: false
+    hostName: ''
+    path: /data-api
+    pathType: Prefix
+    portNumber: 443
+    rulesOverride: {}
+    tls: true
+  livenessProbe:
+    enabled: true
+    failureThreshold: 1
+    initialDelaySeconds: 10
+    periodSeconds: 15
+    successThreshold: 1
+    timeoutSeconds: 3
+  nodeAffinityPreset:
+    key: ''
+    type: ''
+    values: []
+  nodeSelector: {}
+  podAffinityPreset: ''
+  podAntiAffinityPreset: soft
+  podSecurityContext:
+    enabled: false
+    fsGroup: 1001
+  priorityClassName: ''
+  psp:
+    create: false
+  rbac:
+    create: true
+  readinessProbe:
+    enabled: true
+    failureThreshold: 1
+    initialDelaySeconds: 10
+    periodSeconds: 15
+    successThreshold: 1
+    timeoutSeconds: 3
+  replicaCount: 1
+  resources:
+    limits: {}
+    requests: {}
+  serviceAccount:
+    create: true
+    name: ''
+  tolerations: []
+  updateStrategy:
+    type: RollingUpdate
+image:
+  pullPolicy: IfNotPresent
+  repository: zimagi/zimagi
+  tag: 0.8.8
+imagePullSecrets: []
+nameOverride: ''
+nodeSelector: {}
+persistenceFlavour:
+  minikube: false
+  size: 1Gi
+podAnnotations: {}
+podSecurityContext: {}
+postgres: {}
+postgresql:
+  enabled: true
+  persistence:
+    enabled: false
+  postgresqlDatabase: zimagi
+  postgresqlPassword: zimagi
+  postgresqlUsername: zimagi
+redis:
+  auth:
+    password: zimagi
+replicaCount: 1
+resources: {}
+scheduler:
+  affinity: {}
+  args: []
+  autoscaling:
+    averageUtilization: 70
+    enabled: false
+    maxReplicas: 4
+    minReplicas: 1
+  containerSecurityContext:
+    enabled: false
+  extraEnv: []
+  extraEnvVarsCM: {}
+  extraEnvVarsSecret: {}
+  extraVolumeMounts: {}
+  extraVolumes: {}
+  livenessProbe:
+    enabled: false
+    failureThreshold: 1
+    initialDelaySeconds: 10
+    periodSeconds: 15
+    successThreshold: 1
+    timeoutSeconds: 3
+  nodeAffinityPreset:
+    key: ''
+    type: ''
+    values: []
+  nodeSelector: {}
+  podAffinityPreset: ''
+  podAntiAffinityPreset: soft
+  podSecurityContext:
+    enabled: false
+    fsGroup: 1001
+  priorityClassName: ''
+  psp:
+    create: false
+  rbac:
+    create: true
+  readinessProbe:
+    enabled: false
+    failureThreshold: 1
+    initialDelaySeconds: 10
+    periodSeconds: 15
+    successThreshold: 1
+    timeoutSeconds: 3
+  replicaCount: 1
+  resources:
+    limits: {}
+    requests: {}
+  serviceAccount:
+    create: true
+    name: ''
+  tolerations: []
+  updateStrategy:
+    type: RollingUpdate
+securityContext: {}
+service:
+  commandApi:
+    containerPort: 5000
+    tlsNodePort: null
+    tlsPort: 443
+    type: ClusterIP
+  dataApi:
+    containerPort: 5000
+    tlsNodePort: null
+    tlsPort: 443
+    type: ClusterIP
 worker:
   affinity: {}
   args: []
@@ -148,135 +275,3 @@ worker:
   tolerations: []
   updateStrategy:
     type: RollingUpdate
-
-commandApi:
-  affinity: {}
-  args: []
-  autoscaling:
-    averageUtilization: 70
-    enabled: false
-    maxReplicas: 4
-    minReplicas: 1
-  containerPort: 5123
-  containerSecurityContext:
-    enabled: false
-  extraEnv: []
-  extraEnvVarsCM: {}
-  extraEnvVarsSecret: {}
-  extraVolumeMounts: {}
-  extraVolumes: {}
-  livenessProbe:
-    enabled: true
-    failureThreshold: 1
-    initialDelaySeconds: 10
-    periodSeconds: 15
-    successThreshold: 1
-    timeoutSeconds: 3
-  nodeAffinityPreset:
-    key: ''
-    type: ''
-    values: []
-  nodeSelector: {}
-  podAffinityPreset: ''
-  podAntiAffinityPreset: soft
-  podSecurityContext:
-    enabled: false
-    fsGroup: 1001
-  priorityClassName: ''
-  psp:
-    create: false
-  rbac:
-    create: true
-  readinessProbe:
-    enabled: true
-    failureThreshold: 1
-    initialDelaySeconds: 10
-    periodSeconds: 15
-    successThreshold: 1
-    timeoutSeconds: 3
-  replicaCount: 1
-  resources:
-    limits: {}
-    requests: {}
-  serviceAccount:
-    create: true
-    name: ''
-  tolerations: []
-  updateStrategy:
-    type: RollingUpdate
-  ingress:
-    tls: true
-    rulesOverride: {}
-    annotations: {}
-    certManager: false
-    enabled: false
-    hostName: ''
-    pathType: Prefix
-    path: /command-api
-    portNumber: 443
-
-dataApi:
-  affinity: {}
-  args: []
-  autoscaling:
-    averageUtilization: 70
-    enabled: false
-    maxReplicas: 4
-    minReplicas: 1
-  containerPort: 5323
-  containerSecurityContext:
-    enabled: false
-  extraEnv: []
-  extraEnvVarsCM: {}
-  extraEnvVarsSecret: {}
-  extraVolumeMounts: {}
-  extraVolumes: {}
-  livenessProbe:
-    enabled: true
-    failureThreshold: 1
-    initialDelaySeconds: 10
-    periodSeconds: 15
-    successThreshold: 1
-    timeoutSeconds: 3
-  nodeAffinityPreset:
-    key: ''
-    type: ''
-    values: []
-  nodeSelector: {}
-  podAffinityPreset: ''
-  podAntiAffinityPreset: soft
-  podSecurityContext:
-    enabled: false
-    fsGroup: 1001
-  priorityClassName: ''
-  psp:
-    create: false
-  rbac:
-    create: true
-  readinessProbe:
-    enabled: true
-    failureThreshold: 1
-    initialDelaySeconds: 10
-    periodSeconds: 15
-    successThreshold: 1
-    timeoutSeconds: 3
-  replicaCount: 1
-  resources:
-    limits: {}
-    requests: {}
-  serviceAccount:
-    create: true
-    name: ''
-  tolerations: []
-  updateStrategy:
-    type: RollingUpdate
-  ingress:
-    tls: true
-    rulesOverride: {}
-    annotations: {}
-    certManager: false
-    enabled: false
-    hostName: ''
-    pathType: Prefix
-    path: /data-api
-    portNumber: 443
