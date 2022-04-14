@@ -56,19 +56,19 @@ jobs:
             .circleci/setup_tools.sh
             .circleci/release.sh
 workflows:
-  lint-and-install:
-    jobs:
-      - pre-commit
-      - lint-charts:
-          filters:
-            branches:
-              ignore: master
-            tags:
-              ignore: /.*/
-      - install-charts:
-          requires:
-            - pre-commit
-            - lint-charts
+  # lint-and-install:
+  #   jobs:
+  #     - pre-commit
+  #     - lint-charts:
+  #         filters:
+  #           branches:
+  #             ignore: master
+  #           tags:
+  #             ignore: /.*/
+  #     - install-charts:
+  #         requires:
+  #           - pre-commit
+  #           - lint-charts
   release:
     jobs:
       - pre-commit
