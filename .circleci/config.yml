@@ -71,7 +71,7 @@ workflows:
   #           - lint-charts
   release:
     jobs:
-      - pre-commit
+      # - pre-commit
       - shellcheck/check:
           dir: .circleci
           filters:
@@ -85,5 +85,5 @@ workflows:
               ignore: /.*/
             branches:
               only: master
-          requires:
-          - pre-commit
+          # requires:
+          # - pre-commit
