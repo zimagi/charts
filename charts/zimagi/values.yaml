@@ -15,15 +15,18 @@ commandApi:
   extraVolumeMounts: {}
   extraVolumes: {}
   ingress:
-    annotations: {}
-    certManager: false
     enabled: false
-    hostName: ''
-    path: /command-api
     pathType: Prefix
-    portNumber: 443
-    rulesOverride: {}
-    tls: true
+    ingressClassName: ''
+    hostname: ''
+    path: /command-api
+    annotations: {}
+    tls: false
+    selfSigned: false
+    secrets: []
+    # certManager: false
+    # portNumber: 443
+    # rulesOverride: {}
   livenessProbe:
     enabled: true
     failureThreshold: 1
@@ -83,7 +86,7 @@ dataApi:
     annotations: {}
     certManager: false
     enabled: false
-    hostName: ''
+    ingressClassName: ''
     path: /data-api
     pathType: Prefix
     portNumber: 443
@@ -135,9 +138,27 @@ image:
 imagePullSecrets: []
 nameOverride: ''
 nodeSelector: {}
-persistenceFlavour:
-  minikube: false
-  size: 1Gi
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+##
+persistence:
+  enabled: false
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  ##
+  ## If you want to reuse an existing claim, you can pass the name of the PVC using
+  ## the existingClaim variable
+  # existingClaim: your-claim
+  accessMode: ReadWriteOnce
+  size: 10Gi
+
 podAnnotations: {}
 podSecurityContext: {}
 postgres: {}
