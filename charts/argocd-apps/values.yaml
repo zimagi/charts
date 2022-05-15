@@ -1,0 +1,6 @@
+zimagi:
+  enabled: false
+  app_name: "zimagi"
+  release_name: "zimagi"
+  namespace: "zimagi"
+  values:
