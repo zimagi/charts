@@ -2,6 +2,15 @@ apiVersion: v1
 entries:
   argocd-apps:
   - apiVersion: v2
+    created: "2022-05-16T00:58:04.200409793Z"
+    description: A Helm chart for Kubernetes
+    digest: 11b4d43a13ea5896ecb290956e1c54156b9f718d19dc8fffe5d1cf69d1d91c63
+    name: argocd-apps
+    type: application
+    urls:
+    - https://github.com/zimagi/charts/releases/download/argocd-apps-0.1.2/argocd-apps-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
     created: "2022-05-16T00:40:21.242007322Z"
     description: A Helm chart for Kubernetes
     digest: 5952dccf99975dc1be06c81f5ed285880cda3bafebc7b3f0641cb4174c61f940
@@ -977,4 +986,4 @@ entries:
     urls:
     - https://github.com/zimagi/charts/releases/download/zimagi-1.0.11/zimagi-1.0.11.tgz
     version: 1.0.11
-generated: "2022-05-16T00:40:21.242155697Z"
+generated: "2022-05-16T00:58:04.200560116Z"
