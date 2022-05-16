@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     chart: zimagi
-    repoURL: https://zimagi.com/charts
+    repoURL: https://zimagi.github.io/charts
     targetRevision: 1.0.41
     helm:
       releaseName: {{ coalesce .Values.zimagi.release_name "zimagi" }}
@@ -18,4 +18,10 @@ spec:
   destination:
     server: "https://kubernetes.default.svc"
     namespace: {{ coalesce .Values.zimagi.namespace "zimagi" }}
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+    - CreateNamespace=true
 {{- end }}
