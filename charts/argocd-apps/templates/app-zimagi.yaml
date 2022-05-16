@@ -9,7 +9,7 @@ spec:
   source:
     chart: zimagi
     repoURL: https://zimagi.github.io/charts
-    targetRevision: 1.0.41
+    targetRevision: 1.0.42
     helm:
       releaseName: {{ coalesce .Values.zimagi.release_name "zimagi" }}
       {{- if .Values.zimagi.values }}
