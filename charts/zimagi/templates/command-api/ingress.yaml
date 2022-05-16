@@ -19,32 +19,42 @@ metadata:
     {{ $key }}: {{ include "common.tplvalues.render" (dict "value" $value "context" $) | quote }}
     {{- end }}
 spec:
+  {{- if and .Values.commandApi.ingress.ingressClassName (eq "true" (include "common.ingress.supportsIngressClassname" .)) }}
+  ingressClassName: {{ .Values.commandApi.ingress.ingressClassName | quote }}
+  {{- end }}
   rules:
-    {{- if .Values.commandApi.ingress.rulesOverride }}
-    {{- toYaml .Values.commandApi.ingress.rulesOverride | nindent 4 }}
-    {{- else }}
-    {{- if .Values.commandApi.ingress.hostName }}
-    - host: {{ .Values.commandApi.ingress.hostName }}
+    {{- if .Values.commandApi.ingress.hostname }}
+    - host: {{ .Values.commandApi.ingress.hostname | quote }}
       http:
         paths:
+          {{- if .Values.commandApi.ingress.extraPaths }}
+          {{- toYaml .Values.commandApi.ingress.extraPaths | nindent 10 }}
+          {{- end }}
           - path: {{ .Values.commandApi.ingress.path }}
-            {{- if eq "true" (include "common.ingress.supportsPathType" $) }}
+            {{- if eq "true" (include "common.ingress.supportsPathType" .) }}
             pathType: {{ .Values.commandApi.ingress.pathType }}
             {{- end }}
-            backend:
-              service:
-                name: {{ include "zimagi.commandApi.fullname" . }}
-                port:
-                  number: {{ .Values.commandApi.ingress.portNumber }}
+            backend: {{- include "common.ingress.backend" (dict "serviceName" (include "zimagi.commandApi.fullname" .) "servicePort" "https" "context" $)  | nindent 14 }}
     {{- end }}
+    {{- range .Values.commandApi.ingress.extraHosts }}
+    - host: {{ .name | quote }}
+      http:
+        paths:
+          - path: {{ default "/" .path }}
+            {{- if eq "true" (include "common.ingress.supportsPathType" $) }}
+            pathType: {{ default "ImplementationSpecific" .pathType }}
+            {{- end }}
+            backend: {{- include "common.ingress.backend" (dict "serviceName" (include "zimagi.commandApi.fullname" $) "servicePort" "https" "context" $) | nindent 14 }}
     {{- end }}
-
-  {{- if .Values.commandApi.ingress.tls}}
+  {{- if or (and .Values.commandApi.ingress.tls (or .Values.commandApi.ingress.certManager .Values.commandApi.ingress.selfSigned)) .Values.commandApi.ingress.extraTls }}
   tls:
-    {{- if .Values.commandApi.ingress.tls }}
+    {{- if and .Values.commandApi.ingress.tls (or .Values.commandApi.ingress.certManager .Values.commandApi.ingress.selfSigned) }}
     - hosts:
-      - {{ .Values.commandApi.ingress.hostname }}
+        - {{ .Values.commandApi.ingress.hostname | quote }}
       secretName: {{ printf "%s-tls" .Values.commandApi.ingress.hostname }}
+    {{- end }}
+    {{- if .Values.commandApi.ingress.extraTls }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.commandApi.ingress.extraTls "context" $ ) | nindent 4 }}
     {{- end }}
   {{- end }}
 {{- end }}

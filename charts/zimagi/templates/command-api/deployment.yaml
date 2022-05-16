@@ -170,7 +170,7 @@ spec:
         - name: {{ include "zimagi.pvc.fullname" . }}
           persistentVolumeClaim:
             claimName: {{ include "zimagi.pvc.fullname" . }}
-        {{- else }}
+        {{- else if and .Values.persistence.existingClaim .Values.persistence.enabled }}
         - name: {{ include "zimagi.pvc.fullname" . }}
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.existingClaim }}

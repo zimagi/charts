@@ -14,16 +14,24 @@ commandApi:
   extraEnvVarsSecret: {}
   extraVolumeMounts: {}
   extraVolumes: {}
+
   ingress:
     annotations: {}
     enabled: false
-    hostname: ''
-    ingressClassName: ''
-    path: /command-api
-    pathType: Prefix
-    secrets: []
-    selfSigned: false
-    tls: false
+    className: ""
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: chart-example.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
   livenessProbe:
     enabled: true
     failureThreshold: 1
@@ -136,6 +144,21 @@ imagePullSecrets: []
 nameOverride: ''
 nodeSelector: {}
 persistence:
+  enabled: enabled
+  ## If defined,
+  # storageClassName: <storageClass>
+  ##
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  # storageClass: "-"
+  ##
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  # storageClass: null
+  ##
+  ## If you want to reuse an existing claim, you can pass the name of the PVC using
+  ## the existingClaim variable
+  # existingClaim: your-claim
   accessMode: ReadWriteOnce
   enabled: false
   size: 10Gi
