@@ -18,7 +18,7 @@ description: A Helm chart for deploying the Zimagi data management platform.
 home: https://github.com/zimagi/zimagi
 icon: https://github.com/zimagi/zimagi/blob/master/docs/_static/logo.png
 maintainers:
-- email: jagyugyaerik@gmail.com
+- email: erik.jagyugya@dccs.tech
   name: jagyugyaerik
   url: https://github.com/jagyugyaerik
 - email: adrian.webb@dccs.tech
