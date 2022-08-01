@@ -1,0 +1,27 @@
+{{- if .Values.zimagi.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ coalesce .Values.zimagi.app_name "zimagi" }}
+  namespace: argocd
+spec:
+  project: default
+  source:
+    chart: zimagi
+    repoURL: https://zimagi.github.io/charts
+    targetRevision: 1.0.42
+    helm:
+      releaseName: {{ coalesce .Values.zimagi.release_name "zimagi" }}
+      {{- if .Values.zimagi.values }}
+      values: {{ .Values.zimagi.values }}
+      {{- end }}
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: {{ coalesce .Values.zimagi.namespace "zimagi" }}
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+    - CreateNamespace=true
+{{- end }}

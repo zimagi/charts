@@ -1,0 +1,13 @@
+zimagi:
+  enabled: false
+  app_name: "zimagi"
+  release_name: "zimagi"
+  namespace: "zimagi"
+  values:
+
+nfsGaneshaServer:
+  enabled: false
+  app_name: "nfs-server-provisioner"
+  release_name: "nfs-server-provisioner"
+  namespace: "nfs-server-provisioner"
+  values:
