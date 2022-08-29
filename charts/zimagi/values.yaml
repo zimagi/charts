@@ -131,7 +131,7 @@ dataApi:
 image:
   pullPolicy: IfNotPresent
   repository: zimagi/zimagi
-  tag: 0.9.4
+  tag: 0.9.5
 imagePullSecrets: []
 nameOverride: ''
 nodeSelector: {}
