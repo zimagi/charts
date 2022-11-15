@@ -141,14 +141,16 @@ persistence:
   size: 10Gi
 podAnnotations: {}
 podSecurityContext: {}
-postgres: {}
 postgresql:
   enabled: true
-  persistence:
-    enabled: false
-  postgresqlDatabase: zimagi
-  postgresqlPassword: zimagi
-  postgresqlUsername: zimagi
+  primary:
+    persistence:
+      enabled: false
+  global:
+    auth:
+      username: zimagi
+      password: zimagi
+      database: zimagi
 redis:
   auth:
     password: zimagi
