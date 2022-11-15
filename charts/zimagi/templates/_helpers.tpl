@@ -64,7 +64,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{- define "zimagi.database.existingsecret.key" -}}
-{{- printf "%s" "postgresql-password" -}}
+{{- printf "%s" "postgres-password" -}}
 {{- end -}}
 
 {{/*
