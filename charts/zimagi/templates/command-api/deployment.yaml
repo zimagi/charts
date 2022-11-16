@@ -73,7 +73,7 @@ spec:
             - name: POSTGRESQL_CLIENT_DATABASE_HOST
               value: {{ include "zimagi.postgresql.fullname" . | quote }}
             - name: POSTGRESQL_CLIENT_DATABASE_NAME
-              value: {{ .Values.postgresql.postgresqlDatabase | quote }}
+              value: {{ .Values.postgresql.global.auth.database | quote }}
             - name: POSTGRESQL_CLIENT_DATABASE_PORT_NUMBER
               value: "5432"
             - name: POSTGRESQL_CLIENT_CREATE_DATABASE_PASSWORD
@@ -82,7 +82,7 @@ spec:
                   name: {{ include "zimagi.postgresql.secretName" . }}
                   key: {{ include "zimagi.database.existingsecret.key" . }}
             - name: POSTGRESQL_CLIENT_POSTGRES_USER
-              value: {{ .Values.postgresql.postgresqlUsername | quote }}
+              value: {{ .Values.postgresql.global.auth.username | quote }}
       containers:
         - name: command-api
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -101,14 +101,14 @@ spec:
             - name: ZIMAGI_POSTGRES_PORT
               value: "5432"
             - name: ZIMAGI_POSTGRES_USER
-              value: {{ .Values.postgresql.postgresqlUsername | quote }}
+              value: {{ .Values.postgresql.global.auth.username | quote }}
             - name: ZIMAGI_POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ include "zimagi.postgresql.secretName" . }}
                   key: {{ include "zimagi.database.existingsecret.key" . }}
             - name: ZIMAGI_POSTGRES_DB
-              value: {{ .Values.postgresql.postgresqlDatabase | quote }}
+              value: {{ .Values.postgresql.global.auth.database | quote }}
             - name: ZIMAGI_REDIS_HOST
               value: {{ include "zimagi.redisMaster.fullname" . | quote }}
             - name: ZIMAGI_REDIS_PORT

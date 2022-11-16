@@ -145,12 +145,16 @@ postgresql:
   enabled: true
   primary:
     persistence:
-      enabled: false
+      enabled: true
   global:
     auth:
       username: zimagi
       password: zimagi
       database: zimagi
+  auth:
+    username: zimagi
+    password: zimagi
+    database: zimagi
 redis:
   auth:
     password: zimagi
