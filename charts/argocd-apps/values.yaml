@@ -1,13 +1,222 @@
-zimagi:
-  enabled: false
-  app_name: "zimagi"
-  release_name: "zimagi"
-  namespace: "zimagi"
-  values:
+# Default values for test.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
 
-nfsGaneshaServer:
-  enabled: false
-  app_name: "nfs-server-provisioner"
-  release_name: "nfs-server-provisioner"
-  namespace: "nfs-server-provisioner"
-  values:
+common:
+  applications:
+    metadata:
+      namespace: "argocd"
+    source:
+      extraSourceFields: {}
+    extraFields: {}
+
+applications:
+  zimagi:
+    enabled: true
+    metadata:
+      applicationName: "zimagi"
+      annotations: {}
+    source:
+      chart: "zimagi"
+      repoURL: "https://zimagi.github.io/charts"
+      targetRevision: "1.0.42"
+      helm:
+        releaseName: "zimagi"
+        values: {}
+        skipCrds: false
+      extraSourceFields: {}
+    destination:
+      namespace: "zimagi"
+    extraFields: {}
+    syncOptions:
+      replace: false
+
+  nfsGaneshaServer:
+    enabled: true
+    metadata:
+      applicationName: "nfs-server-provisioner"
+      annotations: {}
+    source:
+      chart: "nfs-server-provisioner"
+      repoURL: "https://kubernetes-sigs.github.io/nfs-ganesha-server-and-external-provisioner"
+      targetRevision: "1.4.0"
+      helm:
+        releaseName: "nfs-server-provisioner"
+        values: {}
+        skipCrds: false
+      extraSourceFields: {}
+    destination:
+      namespace: "nfs-server-provisioner"
+    extraFields: {}
+    syncOptions:
+      replace: false
+
+  kube-prometheus-stack:
+    enabled: true
+    metadata:
+      applicationName: "kube-prometheus-stack"
+      annotations: {}
+    source:
+      chart: "kube-prometheus-stack"
+      repoURL: "https://prometheus-community.github.io/helm-charts"
+      targetRevision: "41.9.1"
+      helm:
+        releaseName: "kube-prometheus-stack"
+        values: |
+          grafana:
+            ingress:
+              enabled: true
+              hosts:
+                - 34.142.49.89.nip.io
+              path: "/grafana"
+              annotations:
+                kubernetes.io/ingress.class: "nginx"
+                # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+                # nginx.ingress.kubernetes.io/rewrite-target: /
+              ingressClassName: nginx
+            grafana.ini:
+              server:
+                root_url: "%(protocol)s://%(domain)s:%(http_port)s/grafana"
+                domain: "34.142.49.89.nip.io"
+                serve_from_sub_path: true
+              auth.basic:
+                enabled: false
+              auth.anonymous:
+                enabled: true
+        skipCrds: true
+      extraSourceFields: {}
+    destination:
+      namespace: "kube-prometheus-stack"
+    extraFields: {}
+    syncOptions:
+      replace: false
+
+  kube-prometheus-stack-crds:
+    enabled: true
+    metadata:
+      applicationName: "kube-prometheus-stack-crds"
+      annotations: {}
+    source:
+      path: charts/kube-prometheus-stack/crds
+      repoURL: "https://github.com/prometheus-community/helm-charts.git"
+      targetRevision: "kube-prometheus-stack-41.9.1"
+      extraSourceFields: {}
+    destination:
+      namespace: "kube-prometheus-stack"
+    extraFields: {}
+    syncOptions:
+      replace: true
+
+  elasticsearch:
+    enabled: true
+    metadata:
+      applicationName: "elasticsearch"
+      annotations: {}
+    source:
+      chart: "elasticsearch"
+      repoURL: "https://helm.elastic.co"
+      targetRevision: "7.17.3"
+      helm:
+        releaseName: "elasticsearch"
+        values: {}
+        skipCrds: false
+      extraSourceFields: {}
+    destination:
+      namespace: "elastic-system"
+    extraFields: {}
+    syncOptions:
+      replace: false
+
+  kibana:
+    enabled: true
+    metadata:
+      applicationName: "kibana"
+      annotations: {}
+    source:
+      chart: "kibana"
+      repoURL: "https://helm.elastic.co"
+      targetRevision: "7.17.3"
+      helm:
+        releaseName: "kibana"
+        values: |
+            ingress:
+              enabled: true
+              className: "nginx"
+              pathtype: ImplementationSpecific
+              hosts:
+                - host: 34.142.49.89.nip.io
+                  paths:
+                    - path: /kibana
+            kibanaConfig:
+              kibana.yml: |
+                server.basePath: /kibana
+                server.rewriteBasePath: true
+                xpack.security.enabled: false
+            healthCheckPath: /kibana
+        skipCrds: false
+      extraSourceFields: {}
+    destination:
+      namespace: "elastic-system"
+    extraFields: {}
+    syncOptions:
+      replace: false
+
+  filebeat:
+    enabled: true
+    metadata:
+      applicationName: "filebeat"
+      annotations: {}
+    source:
+      chart: "filebeat"
+      repoURL: "https://helm.elastic.co"
+      targetRevision: "7.17.3"
+      helm:
+        releaseName: "filebeat"
+        values: {}
+        skipCrds: false
+      extraSourceFields: {}
+    destination:
+      namespace: "elastic-system"
+    extraFields: {}
+    syncOptions:
+      replace: false
+
+  cert-manager:
+    enabled: true
+    metadata:
+      applicationName: "cert-manager"
+      annotations: {}
+    source:
+      chart: "cert-manager"
+      repoURL: "https://charts.jetstack.io"
+      targetRevision: "1.2.0"
+      helm:
+        releaseName: "cert-manager"
+        values: {}
+        skipCrds: false
+      extraSourceFields: {}
+    destination:
+      namespace: "cert-manager"
+    extraFields: {}
+    syncOptions:
+      replace: false
+
+  nginx-ingress-controller:
+    enabled: true
+    metadata:
+      applicationName: "nginx-ingress-controller"
+      annotations: {}
+    source:
+      chart: "nginx-ingress-controller"
+      repoURL: "bitnami/nginx-ingress-controller"
+      targetRevision: "9.3.22"
+      helm:
+        releaseName: "nginx-ingress-controller"
+        values: {}
+        skipCrds: false
+      extraSourceFields: {}
+    destination:
+      namespace: "nginx-ingress-controller"
+    extraFields: {}
+    syncOptions:
+      replace: false
