@@ -131,7 +131,7 @@ dataApi:
 image:
   pullPolicy: IfNotPresent
   repository: zimagi/zimagi
-  tag: 0.11.7
+  tag: 0.11.8
 imagePullSecrets: []
 nameOverride: ''
 nodeSelector: {}
@@ -142,19 +142,19 @@ persistence:
 podAnnotations: {}
 podSecurityContext: {}
 postgresql:
+  auth:
+    database: zimagi
+    password: zimagi
+    username: zimagi
   enabled: true
+  global:
+    auth:
+      database: zimagi
+      password: zimagi
+      username: zimagi
   primary:
     persistence:
       enabled: true
-  global:
-    auth:
-      username: zimagi
-      password: zimagi
-      database: zimagi
-  auth:
-    username: zimagi
-    password: zimagi
-    database: zimagi
 redis:
   auth:
     password: zimagi
