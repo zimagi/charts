@@ -102,21 +102,21 @@ spec:
             - name: https
               containerPort: {{ .Values.commandApi.containerPort }}
           readinessProbe:
-            failureThreshold: {{ .Values.commandAPI.readinessProbe.failureThreshold }}
-            initialDelaySeconds: {{ .Values.commandAPI.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.commandAPI.readinessProbe.periodSeconds }}
-            successThreshold: {{ .Values.commandAPI.readinessProbe.successThreshold }}
-            timeoutSeconds: {{ .Values.commandAPI.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.commandApi.readinessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.commandApi.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.commandApi.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.commandApi.readinessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.commandApi.readinessProbe.timeoutSeconds }}
             httpGet:
               scheme: HTTPS
               path: /status
               port: {{ .Values.service.commandApi.containerPort }}
           livenessProbe:
-            failureThreshold: {{ .Values.commandAPI.livenessProbe.failureThreshold }}
-            initialDelaySeconds: {{ .Values.commandAPI.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.commandAPI.livenessProbe.periodSeconds }}
-            successThreshold: {{ .Values.commandAPI.livenessProbe.successThreshold }}
-            timeoutSeconds: {{ .Values.commandAPI.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.commandApi.livenessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.commandApi.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.commandApi.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.commandApi.livenessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.commandApi.livenessProbe.timeoutSeconds }}
             httpGet:
               scheme: HTTPS
               path: /status

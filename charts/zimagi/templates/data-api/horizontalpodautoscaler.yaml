@@ -11,7 +11,7 @@ metadata:
 spec:
   minReplicas: {{ .Values.dataApi.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.dataApi.autoscaling.maxReplicas }}
-    metrics:
+  metrics:
   - type: Resource
     resource:
       name: cpu
