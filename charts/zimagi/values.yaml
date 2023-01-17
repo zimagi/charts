@@ -1,284 +1,280 @@
-commandApi:
-  affinity: {}
-  args: []
-  autoscaling:
-    averageUtilization: 70
-    enabled: false
-    maxReplicas: 4
-    minReplicas: 1
-  containerPort: 5000
-  containerSecurityContext:
-    enabled: false
-  extraEnv: []
-  extraEnvVarsCM: {}
-  extraEnvVarsSecret: {}
-  extraVolumeMounts: {}
-  extraVolumes: {}
-  ingress:
-    annotations: {}
-    className: ''
-    enabled: false
-    hosts:
-    - host: chart-example.local
-      paths:
-      - path: /
-        pathType: ImplementationSpecific
-    tls: []
-  livenessProbe:
-    enabled: true
-    failureThreshold: 1
-    initialDelaySeconds: 10
-    periodSeconds: 15
-    successThreshold: 1
-    timeoutSeconds: 3
-  nodeAffinityPreset:
-    key: ''
-    type: ''
-    values: []
-  nodeSelector: {}
-  podAffinityPreset: ''
-  podAntiAffinityPreset: soft
-  podSecurityContext:
-    enabled: false
-    fsGroup: 1001
-  priorityClassName: ''
-  psp:
-    create: false
-  rbac:
-    create: true
-  readinessProbe:
-    enabled: true
-    failureThreshold: 1
-    initialDelaySeconds: 10
-    periodSeconds: 15
-    successThreshold: 1
-    timeoutSeconds: 3
-  replicaCount: 1
-  resources:
-    limits: {}
-    requests: {}
-  serviceAccount:
-    create: true
-    name: ''
-  tolerations: []
-  updateStrategy:
-    type: RollingUpdate
-dataApi:
-  affinity: {}
-  args: []
-  autoscaling:
-    averageUtilization: 70
-    enabled: false
-    maxReplicas: 4
-    minReplicas: 1
-  containerPort: 5000
-  containerSecurityContext:
-    enabled: false
-  extraEnv: []
-  extraEnvVarsCM: {}
-  extraEnvVarsSecret: {}
-  extraVolumeMounts: {}
-  extraVolumes: {}
-  ingress:
-    annotations: {}
-    certManager: false
-    enabled: false
-    ingressClassName: ''
-    path: /data-api
-    pathType: Prefix
-    portNumber: 443
-    rulesOverride: {}
-    tls: true
-  livenessProbe:
-    enabled: true
-    failureThreshold: 1
-    initialDelaySeconds: 10
-    periodSeconds: 15
-    successThreshold: 1
-    timeoutSeconds: 3
-  nodeAffinityPreset:
-    key: ''
-    type: ''
-    values: []
-  nodeSelector: {}
-  podAffinityPreset: ''
-  podAntiAffinityPreset: soft
-  podSecurityContext:
-    enabled: false
-    fsGroup: 1001
-  priorityClassName: ''
-  psp:
-    create: false
-  rbac:
-    create: true
-  readinessProbe:
-    enabled: true
-    failureThreshold: 1
-    initialDelaySeconds: 10
-    periodSeconds: 15
-    successThreshold: 1
-    timeoutSeconds: 3
-  replicaCount: 1
-  resources:
-    limits: {}
-    requests: {}
-  serviceAccount:
-    create: true
-    name: ''
-  tolerations: []
-  updateStrategy:
-    type: RollingUpdate
+nameOverride: ''
+
+imagePullSecrets: []
 image:
   pullPolicy: IfNotPresent
   repository: zimagi/zimagi
   tag: 0.11.14
-imagePullSecrets: []
-nameOverride: ''
-nodeSelector: {}
+
 persistence:
-  accessMode: ReadWriteOnce
   enabled: false
+  accessMode: ReadWriteOnce
   size: 10Gi
-podAnnotations: {}
-podSecurityContext: {}
+
+commonAnnotations: {}
+commonLabels: {}
+
 postgresql:
+  enabled: false
+  nameOverride: ''
   auth:
     database: zimagi
-    password: zimagi
     username: zimagi
-  enabled: true
-  global:
-    auth:
-      database: zimagi
-      password: zimagi
-      username: zimagi
+    password: zimagi
   primary:
     persistence:
       enabled: true
+
+postgresqlService:
+  host: localhost
+  port: 5432
+
 redis:
+  enabled: false
+  nameOverride: ''
   auth:
     password: zimagi
-replicaCount: 1
-resources: {}
-scheduler:
-  affinity: {}
-  args: []
-  autoscaling:
-    averageUtilization: 70
-    enabled: false
-    maxReplicas: 4
-    minReplicas: 1
-  containerSecurityContext:
-    enabled: false
-  extraEnv: []
-  extraEnvVarsCM: {}
-  extraEnvVarsSecret: {}
-  extraVolumeMounts: {}
-  extraVolumes: {}
-  livenessProbe:
-    enabled: false
-    failureThreshold: 1
-    initialDelaySeconds: 10
-    periodSeconds: 15
-    successThreshold: 1
-    timeoutSeconds: 3
-  nodeAffinityPreset:
-    key: ''
-    type: ''
-    values: []
-  nodeSelector: {}
-  podAffinityPreset: ''
-  podAntiAffinityPreset: soft
-  podSecurityContext:
-    enabled: false
-    fsGroup: 1001
-  priorityClassName: ''
-  psp:
-    create: false
-  rbac:
-    create: true
-  readinessProbe:
-    enabled: false
-    failureThreshold: 1
-    initialDelaySeconds: 10
-    periodSeconds: 15
-    successThreshold: 1
-    timeoutSeconds: 3
-  replicaCount: 1
-  resources:
-    limits: {}
-    requests: {}
-  serviceAccount:
-    create: true
-    name: ''
-  tolerations: []
-  updateStrategy:
-    type: RollingUpdate
-securityContext: {}
+
+redisService:
+  host: localhost
+  port: 6379
+
 service:
   commandApi:
+    type: ClusterIP
+    tlsPort: 443
     containerPort: 5000
     tlsNodePort: null
-    tlsPort: 443
-    type: ClusterIP
+
   dataApi:
+    type: ClusterIP
+    tlsPort: 443
     containerPort: 5000
     tlsNodePort: null
-    tlsPort: 443
-    type: ClusterIP
-worker:
-  affinity: {}
-  args: []
-  autoscaling:
-    averageUtilization: 70
-    enabled: false
-    maxReplicas: 4
-    minReplicas: 1
-  containerPort: 8080
+
+scheduler:
+  serviceAccount:
+    create: true
+    name: zimagi-scheduler
+
+  psp:
+    create: true
   containerSecurityContext:
-    enabled: false
-  extraEnv: []
-  extraEnvVarsCM: {}
-  extraEnvVarsSecret: {}
-  extraVolumeMounts: {}
-  extraVolumes: {}
-  livenessProbe:
-    enabled: false
-    failureThreshold: 1
-    initialDelaySeconds: 10
-    periodSeconds: 15
-    successThreshold: 1
-    timeoutSeconds: 3
+    enabled: true
+    privileged: false
+  podSecurityContext:
+    enabled: true
+    fsGroup: 1001
+
+  replicaCount: 2
+  updateStrategy:
+    type: RollingUpdate
+
+  affinity: {}
+  podAffinityPreset: ''
+  podAntiAffinityPreset: soft
   nodeAffinityPreset:
     key: ''
     type: ''
     values: []
-  nodeSelector:
-    zimagi: worker
-  podAffinityPreset: ''
-  podAntiAffinityPreset: soft
-  podSecurityContext:
-    enabled: false
-    fsGroup: 1001
+
   priorityClassName: ''
-  psp:
-    create: false
-  rbac:
-    create: true
-  readinessProbe:
-    enabled: false
-    failureThreshold: 1
-    initialDelaySeconds: 10
-    periodSeconds: 15
-    successThreshold: 1
-    timeoutSeconds: 3
-  replicaCount: 0
+  nodeSelector: {}
+  tolerations: []
+
   resources:
     limits: {}
     requests: {}
+
+  extraEnv: []
+  extraEnvVarsCM: {}
+  extraEnvVarsSecret: {}
+
+commandApi:
   serviceAccount:
     create: true
-    name: ''
-  tolerations: []
+    name: zimagi-command
+
+  psp:
+    create: true
+  containerSecurityContext:
+    enabled: true
+    privileged: false
+  podSecurityContext:
+    enabled: true
+    fsGroup: 1001
+
+  replicaCount: 1
   updateStrategy:
     type: RollingUpdate
+
+  affinity: {}
+  podAffinityPreset: ''
+  podAntiAffinityPreset: soft
+  nodeAffinityPreset:
+    key: ''
+    type: ''
+    values: []
+
+  priorityClassName: ''
+  nodeSelector: {}
+  tolerations: []
+
+  resources:
+    limits: {}
+    requests: {}
+
+  containerPort: 5000
+  livenessProbe:
+    failureThreshold: 1
+    initialDelaySeconds: 60
+    periodSeconds: 5
+    successThreshold: 1
+    timeoutSeconds: 3
+  readinessProbe:
+    failureThreshold: 1
+    initialDelaySeconds: 90
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 3
+
+  extraEnv: []
+  extraEnvVarsCM: {}
+  extraEnvVarsSecret: {}
+
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 4
+    averageUtilization: 70
+
+  ingress:
+    enabled: false
+    className: ''
+    annotations: {}
+    hostname: ''
+    extraHosts: []
+    path: /
+    pathType: ImplementationSpecific
+    extraPaths: []
+    tls: false
+    certManager: false
+    selfSigned: false
+    extraTls: {}
+
+dataApi:
+  serviceAccount:
+    create: true
+    name: zimagi-data
+
+  psp:
+    create: true
+  containerSecurityContext:
+    enabled: true
+    privileged: false
+  podSecurityContext:
+    enabled: true
+    fsGroup: 1001
+
+  replicaCount: 1
+  updateStrategy:
+    type: RollingUpdate
+
+  affinity: {}
+  podAffinityPreset: ''
+  podAntiAffinityPreset: soft
+  nodeAffinityPreset:
+    key: ''
+    type: ''
+    values: []
+
+  priorityClassName: ''
+  nodeSelector: {}
+  tolerations: []
+
+  resources:
+    limits: {}
+    requests: {}
+
+  containerPort: 5000
+  livenessProbe:
+    failureThreshold: 1
+    initialDelaySeconds: 60
+    periodSeconds: 5
+    successThreshold: 1
+    timeoutSeconds: 3
+  readinessProbe:
+    failureThreshold: 1
+    initialDelaySeconds: 90
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 3
+
+  extraEnv: []
+  extraEnvVarsCM: {}
+  extraEnvVarsSecret: {}
+
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 4
+    averageUtilization: 70
+
+  ingress:
+    enabled: false
+    className: ''
+    annotations: {}
+    hostname: ''
+    extraHosts: []
+    path: /
+    pathType: ImplementationSpecific
+    extraPaths: []
+    tls: false
+    certManager: false
+    selfSigned: false
+    extraTls: {}
+
+worker:
+  serviceAccount:
+    create: true
+    name: zimagi-worker
+
+  psp:
+    create: true
+  containerSecurityContext:
+    enabled: true
+    privileged: false
+  podSecurityContext:
+    enabled: true
+    fsGroup: 1001
+
+  replicaCount: 1
+  updateStrategy:
+    type: RollingUpdate
+
+  affinity: {}
+  podAffinityPreset: ''
+  podAntiAffinityPreset: soft
+  nodeAffinityPreset:
+    key: ''
+    type: ''
+    values: []
+
+  priorityClassName: ''
+  nodeSelector:
+    zimagi: worker
+  tolerations: []
+
+  resources:
+    limits: {}
+    requests: {}
+
+  extraEnv: []
+  extraEnvVarsCM: {}
+  extraEnvVarsSecret: {}
+
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 4
+    averageUtilization: 70
