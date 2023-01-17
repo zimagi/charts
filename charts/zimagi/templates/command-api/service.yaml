@@ -11,7 +11,7 @@ spec:
       targetPort: {{ .Values.service.commandApi.containerPort }}
       name: https
       protocol: TCP
-      {{- if and (eq "nodePort" .Values.service.commandApi.type) .Values.service.commandApi.tlsNodePort }}
+      {{- if and (eq "NodePort" .Values.service.commandApi.type) .Values.service.commandApi.tlsNodePort }}
       nodePort: {{ .Values.service.commandApi.tlsNodePort }}
       {{- end }}
   selector: {{- include "common.labels.matchLabels" . | nindent 4 }}

@@ -43,46 +43,6 @@ spec:
       {{- if .Values.worker.podSecurityContext.enabled }}
       securityContext: {{- omit .Values.worker.podSecurityContext "enabled" | toYaml | nindent 8 }}
       {{- end }}
-      initContainers:
-        - name: wait-for-db
-          image: {{ include "common.images.image" (dict "imageRoot" .Values.postgresql.image "global" .Values.global) }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command:
-            - /bin/bash
-          args:
-            - -ec
-            - |
-              #!/bin/bash
-              set -o errexit
-              set -o nounset
-              set -o pipefail
-              . /opt/bitnami/scripts/libos.sh
-              . /opt/bitnami/scripts/liblog.sh
-              . /opt/bitnami/scripts/libpostgresql.sh
-              check_postgresql_connection() {
-                  echo "SELECT 1" | postgresql_remote_execute "$POSTGRESQL_CLIENT_DATABASE_HOST" "$POSTGRESQL_CLIENT_DATABASE_PORT_NUMBER" "$POSTGRESQL_CLIENT_DATABASE_NAME" "$POSTGRESQL_CLIENT_POSTGRES_USER" "$POSTGRESQL_CLIENT_CREATE_DATABASE_PASSWORD"
-              }
-              info "Connecting to the PostgreSQL instance $POSTGRESQL_CLIENT_DATABASE_HOST:$POSTGRESQL_CLIENT_DATABASE_PORT_NUMBER"
-              if ! retry_while "check_postgresql_connection"; then
-                  error "Could not connect to the database server"
-                  return 1
-              else
-                  info "Connected to the PostgreSQL instance"
-              fi
-          env:
-            - name: POSTGRESQL_CLIENT_DATABASE_HOST
-              value: {{ include "zimagi.postgresql.fullname" . | quote }}
-            - name: POSTGRESQL_CLIENT_DATABASE_NAME
-              value: {{ .Values.postgresql.global.auth.database | quote }}
-            - name: POSTGRESQL_CLIENT_DATABASE_PORT_NUMBER
-              value: "5432"
-            - name: POSTGRESQL_CLIENT_CREATE_DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "zimagi.postgresql.secretName" . }}
-                  key: {{ include "zimagi.database.existingsecret.key" . }}
-            - name: POSTGRESQL_CLIENT_POSTGRES_USER
-              value: {{ .Values.postgresql.global.auth.username | quote }}
       containers:
         - name: worker
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -90,38 +50,42 @@ spec:
           {{- if .Values.worker.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.worker.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
+          {{- if .Values.worker.resources }}
+          resources: {{- toYaml .Values.worker.resources | nindent 12 }}
+          {{- end }}
           command:
             - zimagi-worker
-          {{- if .Values.worker.args }}
-          args: {{- include "common.tplvalues.render" (dict "value" .Values.worker.args "context" $) | nindent 12 }}
-          {{- end }}
           env:
-            - name: ZIMAGI_WORKER_TYPE
-              value: {{ .Values.worker.nodeSelector | quote }}
+            {{- if .Values.postgresql.enabled }}
             - name: ZIMAGI_POSTGRES_HOST
               value: {{ include "zimagi.postgresql.fullname" . | quote }}
             - name: ZIMAGI_POSTGRES_PORT
               value: "5432"
-            - name: ZIMAGI_POSTGRES_USER
-              value: {{ .Values.postgresql.global.auth.username | quote }}
-            - name: ZIMAGI_POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "zimagi.postgresql.secretName" . }}
-                  key: {{ include "zimagi.database.existingsecret.key" . }}
+            {{- else }}
+            - name: ZIMAGI_POSTGRES_HOST
+              value: {{ .Values.postgresqlService.host | quote }}
+            - name: ZIMAGI_POSTGRES_PORT
+              value: {{ .Values.postgresqlService.port | quote }}
+            {{- end }}
             - name: ZIMAGI_POSTGRES_DB
-              value: {{ .Values.postgresql.global.auth.database | quote }}
+              value: {{ .Values.postgresql.auth.database | quote }}
+            - name: ZIMAGI_POSTGRES_USER
+              value: {{ .Values.postgresql.auth.username | quote }}
+            - name: ZIMAGI_POSTGRES_PASSWORD
+              value: {{ .Values.postgresql.auth.password | quote }}
+            {{- if .Values.redis.enabled }}
             - name: ZIMAGI_REDIS_HOST
               value: {{ include "zimagi.redisMaster.fullname" . | quote }}
             - name: ZIMAGI_REDIS_PORT
               value: "6379"
+            {{- else }}
+            - name: ZIMAGI_REDIS_HOST
+              value: {{ .Values.redisService.host | quote }}
+            - name: ZIMAGI_REDIS_PORT
+              value: {{ .Values.redisService.port | quote }}
+            {{- end }}
             - name: ZIMAGI_REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "zimagi.redis.secretName" . }}
-                  key: {{ include "zimagi.redis.existingsecret.key" . }}
-            - name: ZIMAGI_WORKER_CONCURRENCY
-              value: {{ .Values.workerConcurrency | default 2 | quote }}
+              value: {{ .Values.redis.auth.password | quote }}
             {{- if .Values.worker.extraEnv }}
             {{- include "common.tplvalues.render" (dict "value" .Values.worker.extraEnv "context" $) | nindent 12 }}
             {{- end }}
@@ -134,47 +98,15 @@ spec:
             - secretRef:
                 name: {{ include "common.tplvalues.render" (dict "value" .Values.worker.extraEnvVarsSecret "context" $) }}
             {{- end }}
-          ports:
-            - name: https
-              containerPort: {{ .Values.worker.containerPort }}
-          {{- if .Values.worker.resources }}
-          resources: {{- toYaml .Values.worker.resources | nindent 12 }}
-          {{- end }}
           volumeMounts:
-          {{- if .Values.worker.extraVolumeMounts }}
-          {{- include "common.tplvalues.render" (dict "value" .Values.worker.extraVolumeMounts "context" $) | nindent 12 }}
-          {{- end }}
-          {{- if .Values.persistence.enabled }}
           - mountPath: "/usr/local/lib/zimagi"
             name: {{ include "zimagi.pvc.fullname" . }}
-          {{- end }}
-          {{- if .Values.worker.readinessProbe.enabled }}
-          readinessProbe:
-            httpGet:
-              scheme: HTTPS
-              path: /status
-              port: {{ .Values.service.worker.containerPort }}
-            initialDelaySeconds: 30
-            periodSeconds: 5
-          {{- end }}
-          {{- if .Values.worker.livenessProbe.enabled }}
-          livenessProbe:
-            httpGet:
-              scheme: HTTPS
-              path: /status
-              port: {{ .Values.service.worker.containerPort }}
-            initialDelaySeconds: 90
-            periodSeconds: 10
-            {{- end }}
       volumes:
-        {{- if .Values.worker.extraVolumes }}
-        {{- include "common.tplvalues.render" (dict "value" .Values.worker.extraVolumes "context" $) | nindent 8 }}
-        {{- end }}
-        {{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+        {{- if not .Values.persistence.existingClaim }}
         - name: {{ include "zimagi.pvc.fullname" . }}
           persistentVolumeClaim:
             claimName: {{ include "zimagi.pvc.fullname" . }}
-        {{- else if and .Values.persistence.existingClaim .Values.persistence.enabled }}
+        {{- else }}
         - name: {{ include "zimagi.pvc.fullname" . }}
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.existingClaim }}

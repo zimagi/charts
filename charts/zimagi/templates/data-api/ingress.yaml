@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
   name: {{ include "zimagi.dataApi.fullname" . }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
-    app.kubernetes.io/component: data-api
+    app.kubernetes.io/component: command-api
     {{- if .Values.commonLabels }}
       {{- include "common.tplvalues.render" (dict "value" .Values.commonLabels "context" $) | nindent 4 }}
     {{- end }}
@@ -19,32 +19,42 @@ metadata:
     {{ $key }}: {{ include "common.tplvalues.render" (dict "value" $value "context" $) | quote }}
     {{- end }}
 spec:
+  {{- if and .Values.dataApi.ingress.className (eq "true" (include "common.ingress.supportsIngressClassname" .)) }}
+  ingressClassName: {{ .Values.dataApi.ingress.className | quote }}
+  {{- end }}
   rules:
-    {{- if .Values.dataApi.ingress.rulesOverride }}
-    {{- toYaml .Values.dataApi.ingress.rulesOverride | nindent 4 }}
-    {{- else }}
-    {{- if .Values.dataApi.ingress.hostName }}
-    - host: {{ .Values.dataApi.ingress.hostName }}
+    {{- if .Values.dataApi.ingress.hostname }}
+    - host: {{ .Values.dataApi.ingress.hostname | quote }}
       http:
         paths:
+          {{- if .Values.dataApi.ingress.extraPaths }}
+          {{- toYaml .Values.dataApi.ingress.extraPaths | nindent 10 }}
+          {{- end }}
           - path: {{ .Values.dataApi.ingress.path }}
-            {{- if eq "true" (include "common.ingress.supportsPathType" $) }}
+            {{- if eq "true" (include "common.ingress.supportsPathType" .) }}
             pathType: {{ .Values.dataApi.ingress.pathType }}
             {{- end }}
-            backend:
-              service:
-                name: {{ include "zimagi.dataApi.fullname" . }}
-                port:
-                  number: {{ .Values.dataApi.ingress.portNumber }}
+            backend: {{- include "common.ingress.backend" (dict "serviceName" (include "zimagi.dataApi.fullname" .) "servicePort" "https" "context" $)  | nindent 14 }}
     {{- end }}
+    {{- range .Values.dataApi.ingress.extraHosts }}
+    - host: {{ .name | quote }}
+      http:
+        paths:
+          - path: {{ default "/" .path }}
+            {{- if eq "true" (include "common.ingress.supportsPathType" $) }}
+            pathType: {{ default "ImplementationSpecific" .pathType }}
+            {{- end }}
+            backend: {{- include "common.ingress.backend" (dict "serviceName" (include "zimagi.dataApi.fullname" $) "servicePort" "https" "context" $) | nindent 14 }}
     {{- end }}
-
-  {{- if .Values.dataApi.ingress.tls}}
+  {{- if or (and .Values.dataApi.ingress.tls (or .Values.dataApi.ingress.certManager .Values.dataApi.ingress.selfSigned)) .Values.dataApi.ingress.extraTls }}
   tls:
-    {{- if .Values.dataApi.ingress.tls }}
+    {{- if and .Values.dataApi.ingress.tls (or .Values.dataApi.ingress.certManager .Values.dataApi.ingress.selfSigned) }}
     - hosts:
-      - {{ .Values.dataApi.ingress.hostname }}
+        - {{ .Values.dataApi.ingress.hostname | quote }}
       secretName: {{ printf "%s-tls" .Values.dataApi.ingress.hostname }}
+    {{- end }}
+    {{- if .Values.dataApi.ingress.extraTls }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.dataApi.ingress.extraTls "context" $ ) | nindent 4 }}
     {{- end }}
   {{- end }}
 {{- end }}

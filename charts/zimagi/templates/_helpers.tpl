@@ -6,24 +6,6 @@ Expand the name of the chart.
 {{- end }}
 
 {{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
-*/}}
-{{- define "zimagi.fullname" -}}
-{{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
-{{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
-{{- end }}
-{{- end }}
-{{- end }}
-
-{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "zimagi.chart" -}}
@@ -59,14 +41,6 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "zimagi.postgresql.secretName" -}}
-{{- printf "%s" (include "zimagi.postgresql.fullname" .) -}}
-{{- end -}}
-
-{{- define "zimagi.database.existingsecret.key" -}}
-{{- printf "%s" "password" -}}
-{{- end -}}
-
 {{/*
 Create a default fully qualified Redis name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
@@ -79,14 +53,6 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "zimagi.redis.fullname" -}}
 {{- $name := default "redis" .Values.redis.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{- define "zimagi.redis.secretName" -}}
-{{- printf "%s" (include "zimagi.redis.fullname" .) -}}
-{{- end -}}
-
-{{- define "zimagi.redis.existingsecret.key" -}}
-{{- printf "%s" "redis-password" -}}
 {{- end -}}
 
 {{/*
@@ -114,10 +80,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{- define "zimagi.dataApi.serviceAccountName" -}}
-{{- if .Values.commandApi.serviceAccount.create -}}
-    {{ default (include "zimagi.dataApi.fullname" .) .Values.commandApi.serviceAccount.name -}}
+{{- if .Values.dataApi.serviceAccount.create -}}
+    {{ default (include "zimagi.dataApi.fullname" .) .Values.dataApi.serviceAccount.name -}}
 {{- else -}}
-    {{ default "default" .Values.commandApi.serviceAccount.name -}}
+    {{ default "default" .Values.dataApi.serviceAccount.name -}}
 {{- end -}}
 {{- end -}}
 
@@ -130,10 +96,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{- define "zimagi.scheduler.serviceAccountName" -}}
-{{- if .Values.commandApi.serviceAccount.create -}}
-    {{ default (include "zimagi.scheduler.fullname" .) .Values.commandApi.serviceAccount.name -}}
+{{- if .Values.scheduler.serviceAccount.create -}}
+    {{ default (include "zimagi.scheduler.fullname" .) .Values.scheduler.serviceAccount.name -}}
 {{- else -}}
-    {{ default "default" .Values.commandApi.serviceAccount.name -}}
+    {{ default "default" .Values.scheduler.serviceAccount.name -}}
 {{- end -}}
 {{- end -}}
 
@@ -146,10 +112,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{- define "zimagi.worker.serviceAccountName" -}}
-{{- if .Values.commandApi.serviceAccount.create -}}
-    {{ default (include "zimagi.worker.fullname" .) .Values.commandApi.serviceAccount.name -}}
+{{- if .Values.worker.serviceAccount.create -}}
+    {{ default (include "zimagi.worker.fullname" .) .Values.worker.serviceAccount.name -}}
 {{- else -}}
-    {{ default "default" .Values.commandApi.serviceAccount.name -}}
+    {{ default "default" .Values.worker.serviceAccount.name -}}
 {{- end -}}
 {{- end -}}
 

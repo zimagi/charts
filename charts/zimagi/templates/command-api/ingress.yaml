@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
   name: {{ include "zimagi.commandApi.fullname" . }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
-    app.kubernetes.io/component: data-api
+    app.kubernetes.io/component: command-api
     {{- if .Values.commonLabels }}
       {{- include "common.tplvalues.render" (dict "value" .Values.commonLabels "context" $) | nindent 4 }}
     {{- end }}
@@ -19,8 +19,8 @@ metadata:
     {{ $key }}: {{ include "common.tplvalues.render" (dict "value" $value "context" $) | quote }}
     {{- end }}
 spec:
-  {{- if and .Values.commandApi.ingress.ingressClassName (eq "true" (include "common.ingress.supportsIngressClassname" .)) }}
-  ingressClassName: {{ .Values.commandApi.ingress.ingressClassName | quote }}
+  {{- if and .Values.commandApi.ingress.className (eq "true" (include "common.ingress.supportsIngressClassname" .)) }}
+  ingressClassName: {{ .Values.commandApi.ingress.className | quote }}
   {{- end }}
   rules:
     {{- if .Values.commandApi.ingress.hostname }}
