@@ -261,8 +261,7 @@ worker:
     values: []
 
   priorityClassName: ''
-  nodeSelector:
-    zimagi: worker
+  nodeSelector: {}
   tolerations: []
 
   resources:

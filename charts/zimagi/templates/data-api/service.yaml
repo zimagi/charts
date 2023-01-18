@@ -11,7 +11,7 @@ spec:
       targetPort: {{ .Values.service.dataApi.containerPort }}
       name: api
       protocol: TCP
-      {{- if and (eq "nodePort" .Values.service.dataApi.type) .Values.service.dataApi.nodePort }}
+      {{- if and (eq "NodePort" .Values.service.dataApi.type) .Values.service.dataApi.nodePort }}
       nodePort: {{ .Values.service.dataApi.nodePort }}
       {{- end }}
   selector: {{- include "common.labels.matchLabels" . | nindent 4 }}
