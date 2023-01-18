@@ -138,9 +138,8 @@ commandApi:
     successThreshold: 1
     timeoutSeconds: 3
 
-  extraEnv: []
-  extraEnvVarsCM: {}
-  extraEnvVarsSecret: {}
+  extraEnvVarsCM: []
+  extraEnvVarsSecret: []
 
   autoscaling:
     enabled: true
@@ -210,9 +209,8 @@ dataApi:
     successThreshold: 1
     timeoutSeconds: 3
 
-  extraEnv: []
-  extraEnvVarsCM: {}
-  extraEnvVarsSecret: {}
+  extraEnvVarsCM: []
+  extraEnvVarsSecret: []
 
   autoscaling:
     enabled: true
@@ -269,9 +267,8 @@ worker:
     limits: {}
     requests: {}
 
-  extraEnv: []
-  extraEnvVarsCM: {}
-  extraEnvVarsSecret: {}
+  extraEnvVarsCM: []
+  extraEnvVarsSecret: []
 
   autoscaling:
     enabled: true

@@ -86,17 +86,14 @@ spec:
             {{- end }}
             - name: ZIMAGI_REDIS_PASSWORD
               value: {{ .Values.redis.auth.password | quote }}
-            {{- if .Values.commandApi.extraEnv }}
-            {{- include "common.tplvalues.render" (dict "value" .Values.commandApi.extraEnv "context" $) | nindent 12 }}
-            {{- end }}
           envFrom:
-            {{- if .Values.commandApi.extraEnvVarsCM }}
+            {{- range .Values.commandApi.extraEnvVarsCM }}
             - configMapRef:
-                name: {{ include "common.tplvalues.render" (dict "value" .Values.commandApi.extraEnvVarsCM "context" $) }}
+                name: {{ include "common.tplvalues.render" (dict "value" . "context" $) }}
             {{- end }}
-            {{- if .Values.commandApi.extraEnvVarsSecret }}
+            {{- range .Values.commandApi.extraEnvVarsSecret }}
             - secretRef:
-                name: {{ include "common.tplvalues.render" (dict "value" .Values.commandApi.extraEnvVarsSecret "context" $) }}
+                name: {{ include "common.tplvalues.render" (dict "value" . "context" $) }}
             {{- end }}
           ports:
             - name: https
