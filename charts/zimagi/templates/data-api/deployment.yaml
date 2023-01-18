@@ -96,7 +96,7 @@ spec:
                 name: {{ include "common.tplvalues.render" (dict "value" . "context" $) }}
             {{- end }}
           ports:
-            - name: https
+            - name: api
               containerPort: {{ .Values.dataApi.containerPort }}
           readinessProbe:
             failureThreshold: {{ .Values.dataApi.readinessProbe.failureThreshold }}
@@ -105,7 +105,7 @@ spec:
             successThreshold: {{ .Values.dataApi.readinessProbe.successThreshold }}
             timeoutSeconds: {{ .Values.dataApi.readinessProbe.timeoutSeconds }}
             httpGet:
-              scheme: HTTPS
+              scheme: {{ .Values.commandApi.readinessProbe.type }}
               path: /status
               port: {{ .Values.service.dataApi.containerPort }}
           livenessProbe:
@@ -115,7 +115,7 @@ spec:
             successThreshold: {{ .Values.dataApi.livenessProbe.successThreshold }}
             timeoutSeconds: {{ .Values.dataApi.livenessProbe.timeoutSeconds }}
             httpGet:
-              scheme: HTTPS
+              scheme: {{ .Values.commandApi.livenessProbe.type }}
               path: /status
               port: {{ .Values.service.dataApi.containerPort }}
           volumeMounts:
