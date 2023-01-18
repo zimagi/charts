@@ -4,6 +4,10 @@ metadata:
   name: {{ include "zimagi.dataApi.fullname" . }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: data-api
+  annotations:
+    {{- range $key, $value := .Values.service.dataApi.annotations }}
+    {{ $key }}: {{ include "common.tplvalues.render" (dict "value" $value "context" $) | quote }}
+    {{- end }}
 spec:
   type: {{ .Values.service.dataApi.type }}
   ports:

@@ -4,6 +4,10 @@ metadata:
   name: {{ include "zimagi.commandApi.fullname" . }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: command-api
+  annotations:
+    {{- range $key, $value := .Values.service.commandApi.annotations }}
+    {{ $key }}: {{ include "common.tplvalues.render" (dict "value" $value "context" $) | quote }}
+    {{- end }}
 spec:
   type: {{ .Values.service.commandApi.type }}
   ports:

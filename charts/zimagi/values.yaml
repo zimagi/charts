@@ -42,6 +42,7 @@ redisService:
 service:
   commandApi:
     type: ClusterIP
+    annotations: {}
     protocol: https
     port: 443
     containerPort: 5000
@@ -49,6 +50,7 @@ service:
 
   dataApi:
     type: ClusterIP
+    annotations: {}
     protocol: https
     port: 443
     containerPort: 5000
