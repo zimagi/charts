@@ -7,12 +7,12 @@ metadata:
 spec:
   type: {{ .Values.service.commandApi.type }}
   ports:
-    - port: {{ .Values.service.commandApi.tlsPort }}
+    - port: {{ .Values.service.commandApi.port }}
       targetPort: {{ .Values.service.commandApi.containerPort }}
-      name: https
+      name: api
       protocol: TCP
-      {{- if and (eq "NodePort" .Values.service.commandApi.type) .Values.service.commandApi.tlsNodePort }}
-      nodePort: {{ .Values.service.commandApi.tlsNodePort }}
+      {{- if and (eq "NodePort" .Values.service.commandApi.type) .Values.service.commandApi.nodePort }}
+      nodePort: {{ .Values.service.commandApi.nodePort }}
       {{- end }}
   selector: {{- include "common.labels.matchLabels" . | nindent 4 }}
     app.kubernetes.io/component: command-api

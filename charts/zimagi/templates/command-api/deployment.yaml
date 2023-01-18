@@ -105,7 +105,7 @@ spec:
             successThreshold: {{ .Values.commandApi.readinessProbe.successThreshold }}
             timeoutSeconds: {{ .Values.commandApi.readinessProbe.timeoutSeconds }}
             httpGet:
-              scheme: {{ .Values.commandApi.readinessProbe.type }}
+              scheme: {{ .Values.service.commandApi.protocol | upper }}
               path: /status
               port: {{ .Values.service.commandApi.containerPort }}
           livenessProbe:
@@ -115,7 +115,7 @@ spec:
             successThreshold: {{ .Values.commandApi.livenessProbe.successThreshold }}
             timeoutSeconds: {{ .Values.commandApi.livenessProbe.timeoutSeconds }}
             httpGet:
-              scheme: {{ .Values.commandApi.livenessProbe.type }}
+              scheme: {{ .Values.service.commandApi.protocol | upper }}
               path: /status
               port: {{ .Values.service.commandApi.containerPort }}
           volumeMounts:

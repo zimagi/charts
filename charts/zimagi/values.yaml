@@ -42,15 +42,17 @@ redisService:
 service:
   commandApi:
     type: ClusterIP
-    tlsPort: 443
+    protocol: https
+    port: 443
     containerPort: 5000
-    tlsNodePort: null
+    nodePort: null
 
   dataApi:
     type: ClusterIP
-    tlsPort: 443
+    protocol: https
+    port: 443
     containerPort: 5000
-    tlsNodePort: null
+    nodePort: null
 
 scheduler:
   serviceAccount:
@@ -126,14 +128,12 @@ commandApi:
 
   containerPort: 5000
   livenessProbe:
-    type: HTTPS
     failureThreshold: 1
     initialDelaySeconds: 60
     periodSeconds: 5
     successThreshold: 1
     timeoutSeconds: 3
   readinessProbe:
-    type: HTTPS
     failureThreshold: 1
     initialDelaySeconds: 90
     periodSeconds: 10
@@ -199,14 +199,12 @@ dataApi:
 
   containerPort: 5000
   livenessProbe:
-    type: HTTPS
     failureThreshold: 1
     initialDelaySeconds: 60
     periodSeconds: 5
     successThreshold: 1
     timeoutSeconds: 3
   readinessProbe:
-    type: HTTPS
     failureThreshold: 1
     initialDelaySeconds: 90
     periodSeconds: 10

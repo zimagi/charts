@@ -7,12 +7,12 @@ metadata:
 spec:
   type: {{ .Values.service.dataApi.type }}
   ports:
-    - port: {{ .Values.service.dataApi.tlsPort }}
+    - port: {{ .Values.service.dataApi.port }}
       targetPort: {{ .Values.service.dataApi.containerPort }}
-      name: https
+      name: api
       protocol: TCP
-      {{- if and (eq "nodePort" .Values.service.dataApi.type) .Values.service.dataApi.tlsNodePort }}
-      nodePort: {{ .Values.service.dataApi.tlsNodePort }}
+      {{- if and (eq "nodePort" .Values.service.dataApi.type) .Values.service.dataApi.nodePort }}
+      nodePort: {{ .Values.service.dataApi.nodePort }}
       {{- end }}
   selector: {{- include "common.labels.matchLabels" . | nindent 4 }}
     app.kubernetes.io/component: data-api
