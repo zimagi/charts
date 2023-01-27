@@ -1,14 +1,14 @@
-{{- range $key,$values := .Values.applications }}
-{{- if $values.enabled }}
+{{- range $key,$app := .Values.applications }}
+{{- if $app.enabled }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ $values.metadata.applicationName }}
-  namespace: {{ coalesce $.Values.common.applications.metadata.namespace $values.destination.namespace }}
-  {{- if $values.metadata.annotations }}
+  name: {{ $app.metadata.applicationName }}
+  namespace: {{ coalesce $.Values.common.applications.metadata.namespace $app.destination.namespace }}
+  {{- if $app.metadata.annotations }}
   annotations:
-  {{ toYaml $values.metadata.annotations | nindent 4  }}
+  {{ toYaml $app.metadata.annotations | nindent 4  }}
   {{- end }}
 spec:
   project: default
@@ -18,36 +18,36 @@ spec:
       selfHeal: true
       prune: true
     syncOptions:
-    - CreateNamespace=true
-    {{- if $values.syncOptions.replace }}
+    - CreateNamespace=false
+    {{- if $app.syncOptions.replace }}
     - Replace=true
     {{- end }}
 
   source:
-    path: {{ $values.source.path | default nil }}
-    chart: {{ $values.source.chart | default nil }}
-    repoURL: {{ $values.source.repoURL }}
-    targetRevision: {{ $values.source.targetRevision }}
+    path: {{ $app.source.path | default nil }}
+    chart: {{ $app.source.chart | default nil }}
+    repoURL: {{ $app.source.repoURL }}
+    targetRevision: {{ $app.source.targetRevision }}
 
     helm:
-      skipCrds: {{ $values.source.helm.skipCrds }}
-      releaseName: {{ $values.source.helm.releaseName }}
-      {{- if $values.source.helm.values }}
-      values: {{ toYaml $values.source.helm.values | nindent 8 }}
+      skipCrds: {{ $app.source.helm.skipCrds }}
+      releaseName: {{ $app.source.helm.releaseName }}
+      {{- if $app.source.helm.values }}
+      values: {{ toYaml $app.source.helm.values | nindent 8 }}
       {{- end }}
 
-{{- if $values.source.extraSourceFields }}
-{{ tpl $values.source.extraSourceFields $ | indent 4 }}
+{{- if $app.source.extraSourceFields }}
+{{ tpl $app.source.extraSourceFields $ | indent 4 }}
 {{- else if and $.Values.common.applications.source $.Values.common.applications.source.extraSourceFields }}
 {{ tpl $.Values.common.applications.source.extraSourceFields $ | indent 4 }}
 {{- end }}
 
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: {{  $values.destination.namespace }}
+    namespace: {{ coalesce $.Values.common.applications.metadata.namespace $app.destination.namespace }}
 
-{{- if $values.extraFields }}
-{{ tpl $values.extraFields $ | indent 2 }}
+{{- if $app.extraFields }}
+{{ tpl $app.extraFields $ | indent 2 }}
 {{- else if $.Values.common.applications.extraFields }}
 {{ tpl $.Values.common.applications.extraFields $ | indent 2 }}
 {{- end }}
