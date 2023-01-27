@@ -6,7 +6,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ $name }}
-  namespace: {{ coalesce $.Values.common.applications.metadata.namespace $app.destination.namespace }}
+  namespace: {{ coalesce $app.destination.namespace $.Values.common.applications.metadata.namespace }}
 data:
   {{- range $env_var,$env_value := $config }}
   {{ $env_var }}: {{ include "common.tplvalues.render" (dict "value" $env_value "context" $) | quote }}

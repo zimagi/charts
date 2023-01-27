@@ -5,7 +5,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: {{ $app.metadata.applicationName }}
-  namespace: {{ coalesce $.Values.common.applications.metadata.namespace $app.destination.namespace }}
+  namespace: {{ coalesce $app.destination.namespace $.Values.common.applications.metadata.namespace }}
   {{- if $app.metadata.annotations }}
   annotations:
   {{ toYaml $app.metadata.annotations | nindent 4  }}
@@ -18,7 +18,7 @@ spec:
       selfHeal: true
       prune: true
     syncOptions:
-    - CreateNamespace=false
+    - CreateNamespace=true
     {{- if $app.syncOptions.replace }}
     - Replace=true
     {{- end }}
@@ -44,7 +44,7 @@ spec:
 
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: {{ coalesce $.Values.common.applications.metadata.namespace $app.destination.namespace }}
+    namespace: {{ coalesce $app.destination.namespace $.Values.common.applications.metadata.namespace }}
 
 {{- if $app.extraFields }}
 {{ tpl $app.extraFields $ | indent 2 }}

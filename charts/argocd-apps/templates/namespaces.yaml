@@ -1,9 +1,0 @@
-{{- range $key,$app := .Values.applications }}
-{{- if $app.enabled }}
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: {{ coalesce $.Values.common.applications.metadata.namespace $app.destination.namespace }}
-{{- end }}
-{{- end }}
