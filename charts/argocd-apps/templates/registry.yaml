@@ -1,0 +1,13 @@
+{{- range $key,$app := .Values.applications }}
+{{- if and $app.enabled $app.destination.registryCredential }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ $app.metadata.applicationName }}
+  namespace: {{ coalesce $.Values.common.applications.metadata.namespace $app.destination.namespace }}
+type: kubernetes.io/dockerconfigjson
+data:
+  ".dockerconfigjson": '{{ $app.destination.registryCredential }}'
+{{- end }}
+{{- end }}
