@@ -1,8 +1,22 @@
-# Default values for test.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
 
 common: {}
+  # applications:
+  #   metadata:
+  #     namespace: "argocd"
 
 applications: {}
-
+  # app:
+  #   enabled: true
+  #   metadata:
+  #     applicationName: "app-name"
+  #     annotations: {}
+  #   source:
+  #     chart: "chart-name"
+  #     repoURL: "https://example.com/charts/"
+  #     targetRevision: "1.1.1"
+  #     helm:
+  #       skipCrds: false
+  #   destination:
+  #     namespace: "app-name"
+  #   syncOptions:
+  #     replace: false
