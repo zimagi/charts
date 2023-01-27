@@ -16,7 +16,16 @@ applications: {}
   #     targetRevision: "1.1.1"
   #     helm:
   #       skipCrds: false
+  #       values: {}
   #   destination:
   #     namespace: "app-name"
   #   syncOptions:
   #     replace: false
+  #   config:
+  #     name:
+  #       ENV_VAR1: value1
+  #       ENV_VAR2: value2
+  #   secrets:
+  #     name:
+  #       ENV_VAR3: secret3
+  #       ENV_VAR4: secret4
