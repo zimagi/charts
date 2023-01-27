@@ -1,7 +1,21 @@
 apiVersion: v2
+version: 0.1.9
+
 name: argocd-apps
-description: A Helm chart for Kubernetes
-
 type: application
+description: Deploy ArgoCD Applications from Helm Charts
 
-version: 0.1.8
+dependencies:
+- name: common
+  repository: https://charts.bitnami.com/bitnami
+  version: 2.2.2
+  tags:
+  - bitnami-common
+
+maintainers:
+- email: erik.jagyugya@dccs.tech
+  name: jagyugyaerik
+  url: https://github.com/jagyugyaerik
+- email: adrian.webb@dccs.tech
+  name: adrianwebb
+  url: https://github.com/adrianwebb
