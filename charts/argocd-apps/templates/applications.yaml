@@ -5,16 +5,15 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: {{ $values.metadata.applicationName }}
-  namespace: {{ coalesce $.Values.common.applications.metadata.namespace $values.applicationNamespace }}
+  namespace: {{ coalesce $.Values.common.applications.metadata.namespace $values.destination.namespace }}
   {{- if $values.metadata.annotations }}
   annotations:
   {{ toYaml $values.metadata.annotations | nindent 4  }}
   {{- end }}
+  labels: {{- include "argocd-apps.labels" . | nindent 4 }}
 spec:
-  destination:
-    server: "https://kubernetes.default.svc"
-    namespace: {{  $values.destination.namespace }}
   project: default
+
   syncPolicy:
     automated:
       selfHeal: true
@@ -24,24 +23,30 @@ spec:
     {{- if $values.syncOptions.replace }}
     - Replace=true
     {{- end }}
+
   source:
     path: {{ $values.source.path | default nil }}
     chart: {{ $values.source.chart | default nil }}
     repoURL: {{ $values.source.repoURL }}
     targetRevision: {{ $values.source.targetRevision }}
-    {{- if $values.source.helm }}
+
     helm:
       skipCrds: {{ $values.source.helm.skipCrds }}
       releaseName: {{ $values.source.helm.releaseName }}
       {{- if $values.source.helm.values }}
       values: {{ toYaml $values.source.helm.values | nindent 8 }}
       {{- end }}
-    {{- end }}
+
 {{- if $values.source.extraSourceFields }}
 {{ tpl $values.source.extraSourceFields $ | indent 4 }}
-{{- else if $.Values.common.applications.source.extraSourceFields }}
+{{- else if and $.Values.common.applications.source $.Values.common.applications.source.extraSourceFields }}
 {{ tpl $.Values.common.applications.source.extraSourceFields $ | indent 4 }}
 {{- end }}
+
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: {{  $values.destination.namespace }}
+
 {{- if $values.extraFields }}
 {{ tpl $values.extraFields $ | indent 2 }}
 {{- else if $.Values.common.applications.extraFields }}
