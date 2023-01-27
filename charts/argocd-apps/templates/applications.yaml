@@ -10,7 +10,6 @@ metadata:
   annotations:
   {{ toYaml $values.metadata.annotations | nindent 4  }}
   {{- end }}
-  labels: {{- include "argocd-apps.labels" . | nindent 4 }}
 spec:
   project: default
 
