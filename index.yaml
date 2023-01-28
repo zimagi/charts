@@ -2,6 +2,28 @@ apiVersion: v1
 entries:
   argocd-apps:
   - apiVersion: v2
+    created: "2023-01-28T07:19:56.505429161Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: 2.2.2
+    description: Deploy ArgoCD Applications from Helm Charts
+    digest: bd5893545e48c7be7ded37284c26381ea91c098a3e3b01b0066b3662c85af012
+    maintainers:
+    - email: erik.jagyugya@dccs.tech
+      name: jagyugyaerik
+      url: https://github.com/jagyugyaerik
+    - email: adrian.webb@dccs.tech
+      name: adrianwebb
+      url: https://github.com/adrianwebb
+    name: argocd-apps
+    type: application
+    urls:
+    - https://github.com/zimagi/charts/releases/download/argocd-apps-0.1.14/argocd-apps-0.1.14.tgz
+    version: 0.1.14
+  - apiVersion: v2
     created: "2023-01-28T07:07:36.369361792Z"
     dependencies:
     - name: common
@@ -1737,4 +1759,4 @@ entries:
     urls:
     - https://github.com/zimagi/charts/releases/download/zimagi-1.0.11/zimagi-1.0.11.tgz
     version: 1.0.11
-generated: "2023-01-28T07:07:36.370394019Z"
+generated: "2023-01-28T07:19:56.50610308Z"
