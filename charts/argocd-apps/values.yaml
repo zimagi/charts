@@ -2,7 +2,8 @@
 common: {}
   # applications:
   #   metadata:
-  #     namespace: "argocd"
+  #     argocdNamespace: "argocd"
+  #     namespace: "default"
 
 applications: {}
   # app:
