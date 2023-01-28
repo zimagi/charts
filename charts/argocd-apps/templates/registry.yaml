@@ -8,6 +8,6 @@ metadata:
   namespace: {{ coalesce $app.destination.namespace $.Values.common.applications.metadata.namespace }}
 type: kubernetes.io/dockerconfigjson
 data:
-  ".dockerconfigjson": '{{ $app.destination.registryCredential }}'
+  ".dockerconfigjson": {{ $app.destination.registryCredential | quote }}
 {{- end }}
 {{- end }}
