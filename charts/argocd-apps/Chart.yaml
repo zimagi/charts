@@ -1,5 +1,5 @@
 apiVersion: v2
-version: 0.1.16
+version: 0.1.17
 
 name: argocd-apps
 type: application
