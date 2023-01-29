@@ -7,4 +7,3 @@ metadata:
   name: {{ $app.metadata.name }}
 {{- end }}
 {{- end }}
-{{- end }}
