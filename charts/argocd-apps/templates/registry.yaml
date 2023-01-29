@@ -4,7 +4,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ $app.metadata.applicationName }}
+  name: {{ $app.metadata.name }}
   namespace: {{ coalesce $app.destination.namespace $.Values.common.applications.metadata.namespace }}
 type: kubernetes.io/dockerconfigjson
 data:
