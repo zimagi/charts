@@ -1,15 +1,17 @@
 
 common: {}
+  # namespace: "argocd"
   # applications:
   #   metadata:
-  #     argocdNamespace: "argocd"
+  #     project: "default"
   #     namespace: "default"
 
 applications: {}
   # app:
   #   enabled: true
   #   metadata:
-  #     applicationName: "app-name"
+  #     name: "app-name"
+  #     project: "app-system"
   #     annotations: {}
   #   source:
   #     chart: "chart-name"

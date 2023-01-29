@@ -4,14 +4,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ $app.metadata.applicationName }}
-  namespace: {{ coalesce $.Values.common.applications.metadata.argocdNamespace "argocd" }}
+  name: {{ $app.metadata.name }}
+  namespace: {{ coalesce $.Values.common.namespace "argocd" }}
   {{- if $app.metadata.annotations }}
   annotations:
   {{ toYaml $app.metadata.annotations | nindent 4  }}
   {{- end }}
 spec:
-  project: default
+  project: {{ coalesce $app.metadata.project $.Values.common.applications.metadata.project "default" }}
 
   syncPolicy:
     automated:
