@@ -1,9 +1,6 @@
 
 common: {}
   # namespace: "argocd"
-  # applications:
-  #   metadata:
-  #     namespace: "default"
 
 applications: {}
   # app:
@@ -17,9 +14,7 @@ applications: {}
   #     targetRevision: "1.1.1"
   #     helm:
   #       skipCrds: false
-  #       values: {}
-  #   destination:
-  #     namespace: "app-name"
+  #       values: "{}"
   #   syncOptions:
   #     replace: false
   #   config:

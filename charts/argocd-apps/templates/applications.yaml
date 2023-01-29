@@ -44,7 +44,7 @@ spec:
 
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: {{ coalesce $app.destination.namespace $.Values.common.applications.metadata.namespace }}
+    namespace: {{ $app.metadata.name }}
 
 {{- if $app.extraFields }}
 {{ tpl $app.extraFields $ | indent 2 }}

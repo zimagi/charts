@@ -1,12 +1,10 @@
 {{- range $key,$app := .Values.applications }}
-{{- $namespace := coalesce $app.destination.namespace $.Values.common.applications.metadata.namespace }}
-{{- if and $app.enabled $namespace }}
-{{- if not (lookup "v1" "Namespace" "" $namespace) }}
+{{- if $app.enabled }}
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ $namespace }}
+  name: {{ $app.metadata.name }}
 {{- end }}
 {{- end }}
 {{- end }}
