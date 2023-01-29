@@ -11,7 +11,7 @@ metadata:
   {{ toYaml $app.metadata.annotations | nindent 4  }}
   {{- end }}
 spec:
-  project: {{ coalesce $app.metadata.project $.Values.common.applications.metadata.project "default" }}
+  project: default
 
   syncPolicy:
     automated:

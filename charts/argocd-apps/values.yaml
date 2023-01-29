@@ -3,7 +3,6 @@ common: {}
   # namespace: "argocd"
   # applications:
   #   metadata:
-  #     project: "default"
   #     namespace: "default"
 
 applications: {}
@@ -11,7 +10,6 @@ applications: {}
   #   enabled: true
   #   metadata:
   #     name: "app-name"
-  #     project: "app-system"
   #     annotations: {}
   #   source:
   #     chart: "chart-name"
