@@ -8,8 +8,6 @@ Generate standardized resource metadata
 metadata:
   name: {{ $name | quote }}
   namespace: {{ $root.Release.Namespace | quote }}
-  labels:
-    {{- include "zimagi-lib.labels" (list $root $service) | nindent 4 }}
-  annotations:
-    {{- include "zimagi-lib.annotations" (list $root $service) | nindent 4 }}
+  labels: {{- include "zimagi-lib.labels" (list $root $service) | nindent 4 }}
+  annotations: {{- include "zimagi-lib.annotations" (list $root $service) | nindent 4 }}
 {{- end -}}

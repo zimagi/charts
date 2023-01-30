@@ -3,19 +3,19 @@ Generate a deployment
 */}}
 {{- define "zimagi-lib.deployment" -}}
 {{- $root := (index . 0) -}}
-{{- $service := (index . 1) -}}
+{{- $service := (index . 1) }}
 ---
-apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
+apiVersion: {{ include "common.capabilities.deployment.apiVersion" $root }}
 kind: Deployment
-{{- $name := include "zimagi-lib.serviceName" (list $root $service) -}}
+{{- $name := include "zimagi-lib.serviceName" (list $root $service) }}
 {{ include "zimagi-lib.metadata" (list $root $service $name) }}
 spec:
   replicas: {{ coalesce $service.deployment.replicaCount $root.Values.deployment.replicaCount }}
-  {{- $updateStrategy := coalesce $service.deployment.updateStrategy $root.Values.deployment.updateStrategy -}}
+  {{ $updateStrategy := coalesce $service.deployment.updateStrategy $root.Values.deployment.updateStrategy -}}
   {{- if $updateStrategy -}}
   strategy:
     {{- toYaml $updateStrategy | nindent 4 }}
-  {{- end -}}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "zimagi-lib.selectorLabels" (list $root $service) | nindent 6 }}
@@ -24,23 +24,23 @@ spec:
       labels:
         {{- include "zimagi-lib.labels" (list $root $service) | nindent 8 }}
     spec:
-      serviceAccountName: {{ $name }}
+      serviceAccountName: {{ $name | quote }}
       {{- $imagePullSecrets := coalesce $service.image.pullSecrets $root.Values.image.pullSecrets -}}
-      {{- if $imagePullSecrets -}}
+      {{ if $imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml $imagePullSecrets | nindent 8 }}
-      {{- end -}}
-      {{- $affinity := merge $service.deployment.affinity $root.Values.deployment.affinity -}}
-      {{- if $affinity -}}
+      {{ end }}
+      {{ $affinity := merge ($service.deployment.affinity | default (dict )) $root.Values.deployment.affinity -}}
+      {{ if $affinity -}}
       affinity:
-        {{- include "common.tplvalues.render" ( dict "value" $affinity "context" $) | nindent 8 }}
+        {{- include "common.tplvalues.render" ( dict "value" $affinity "context" $root) | nindent 8 }}
       {{- else -}}
       affinity:
-        {{- with merge $service.deployment $root.Values.deployment -}}
+        {{- with merge ($service.deployment | default (dict )) $root.Values.deployment }}
         podAffinity:
-          {{- include "common.affinities.pods" (dict "type" .podAffinityPreset "component" $name "context" $) | nindent 10 }}
+          {{- include "common.affinities.pods" (dict "type" .podAffinityPreset "component" $name "context" $root) | nindent 10 }}
         podAntiAffinity:
-          {{- include "common.affinities.pods" (dict "type" .podAntiAffinityPreset "component" $name "context" $) | nindent 10 }}
+          {{- include "common.affinities.pods" (dict "type" .podAntiAffinityPreset "component" $name "context" $root) | nindent 10 }}
         nodeAffinity:
           {{- include "common.affinities.nodes" (dict "type" .nodeAffinityPreset.type "key" .nodeAffinityPreset.key "values" .nodeAffinityPreset.values) | nindent 10 }}
         {{- end -}}
@@ -48,58 +48,59 @@ spec:
       {{- $nodeSelector := coalesce $service.deployment.nodeSelector $root.Values.deployment.nodeSelector -}}
       {{- if $nodeSelector -}}
       nodeSelector:
-        {{- include "common.tplvalues.render" ( dict "value" $nodeSelector "context" $) | nindent 8 }}
+        {{- include "common.tplvalues.render" (dict "value" $nodeSelector "context" $root) | nindent 8 }}
       {{- end -}}
       {{- $tolerations := coalesce $service.deployment.tolerations $root.Values.deployment.tolerations -}}
       {{- if $tolerations -}}
       tolerations:
-        {{- include "common.tplvalues.render" (dict "value" $tolerations "context" $) | nindent 8 }}
+        {{- include "common.tplvalues.render" (dict "value" $tolerations "context" $root) | nindent 8 }}
       {{- end -}}
       {{- $priorityClassName := coalesce $service.deployment.priorityClassName $root.Values.deployment.priorityClassName -}}
       {{- if $priorityClassName -}}
       priorityClassName: {{ $priorityClassName | quote }}
-      {{- end -}}
+      {{- end }}
       containers:
         - name: {{ $name }}
           {{- $imageRepository := coalesce $service.image.repository $root.Values.image.repository -}}
-          {{- $imageTag := coalesce $service.image.tag $root.Values.image.tag -}}
-          image: "{{ $imageRepository }}:{{ $imageTag | default $root.Chart.AppVersion }}"
+          {{- $imageImage := coalesce $service.image.image $root.Values.image.image -}}
+          {{- $imageTag := coalesce $service.image.tag $root.Values.image.tag }}
+          image: "{{ $imageRepository }}/{{ $imageImage }}:{{ $imageTag | default $root.Chart.AppVersion }}"
           imagePullPolicy: {{ coalesce $service.image.pullPolicy $root.Values.image.pullPolicy }}
-          {{- $resources := merge $service.deployment.resources $root.Values.deployment.resources -}}
-          {{- if $resources -}}
+          {{- $resources := merge ($service.deployment.resources | default (dict )) $root.Values.deployment.resources -}}
+          {{- if $resources }}
           resources:
-            {{- include "common.tplvalues.render" ( dict "value" $resources "context" $) | nindent 12 }}
+            {{- include "common.tplvalues.render" (dict "value" $resources "context" $root) | nindent 12 }}
           {{- end -}}
           {{- $imageEntrypoint := coalesce $service.image.entrypoint $root.Values.image.entrypoint -}}
-          {{- if $imageEntrypoint -}}
+          {{- if $imageEntrypoint }}
           command:
-            {{- include "common.tplvalues.render" (dict "value" $imageEntrypoint "context" $) | nindent 12 }}
+            {{- include "common.tplvalues.render" (dict "value" $imageEntrypoint "context" $root) | nindent 12 }}
           {{- end -}}
-          {{- $env_vars := merge $service.deployment.env $root.Values.deployment.env -}}
-          {{- if $env_vars -}}
+          {{- $env_vars := merge ($service.deployment.env | default (dict )) $root.Values.deployment.env -}}
+          {{- if $env_vars }}
           env:
-            {{- range $env_var, $env_value := $env_vars -}}
+            {{- range $env_var, $env_value := $env_vars }}
             - name: {{ $env_var }}
-              value: {{ $env_value | quote }}
+              value: {{ tpl ($env_value | toString) $root | quote }}
             {{- end -}}
-          {{- end -}}
+          {{- end }}
           envFrom:
-            {{- range $config_map := coalesce $service.deployment.config $root.Values.deployment.config -}}
+            {{ range $config_map := coalesce $service.deployment.config $root.Values.deployment.config -}}
             - configMapRef:
-                name: {{ include "common.tplvalues.render" (dict "value" $config_map "context" $) }}
-            {{- end -}}
+                name: {{ include "common.tplvalues.render" (dict "value" $config_map "context" $root) }}
+            {{ end -}}
             {{- range $secret := coalesce $service.deployment.secrets $root.Values.deployment.secrets -}}
             - secretRef:
-                name: {{ include "common.tplvalues.render" (dict "value" $secret "context" $) }}
-            {{- end -}}
+                name: {{ include "common.tplvalues.render" (dict "value" $secret "context" $root) }}
+            {{ end -}}
           {{- $port_protocol := coalesce $service.deployment.protocol $root.Values.deployment.protocol -}}
           {{- $container_port := coalesce $service.deployment.port $root.Values.deployment.port -}}
-          {{- if and $port_protocol $container_port -}}
+          {{- if and $port_protocol $container_port }}
           ports:
             - name: {{ $name }}
               containerPort: {{ $container_port }}
-          {{- end -}}
-          {{- with merge $service.deployment.readinessProbe $root.Values.deployment.readinessProbe -}}
+          {{ end -}}
+          {{- with merge ($service.deployment.readinessProbe | default (dict )) $root.Values.deployment.readinessProbe -}}
           {{- if and $port_protocol $container_port .enabled -}}
           readinessProbe:
             failureThreshold: {{ .failureThreshold }}
@@ -111,9 +112,9 @@ spec:
               scheme: {{ $port_protocol | upper }}
               port: {{ $container_port }}
               path: {{ .endpoint }}
+          {{ end -}}
           {{- end -}}
-          {{- end -}}
-          {{- with merge $service.deployment.livenessProbe $root.Values.deployment.livenessProbe -}}
+          {{- with merge ($service.deployment.livenessProbe | default (dict )) $root.Values.deployment.livenessProbe -}}
           {{- if and $port_protocol $container_port .enabled -}}
           livenessProbe:
             failureThreshold: {{ .failureThreshold }}
@@ -125,25 +126,27 @@ spec:
               scheme: {{ $port_protocol | upper }}
               port: {{ $container_port }}
               path: {{ .endpoint }}
-          {{- end -}}
-          {{- end -}}
-      {{- $volumes := merge $service.pvc.claims $root.Values.pvc.claims -}}
-      {{- $volume_mounts := merge $service.pvc.mounts $root.Values.pvc.mounts -}}
-      {{- if and $volumes $volume_mounts -}}
+          {{- end }}
+          {{- end }}
+      {{- $pvc := ($service.pvc | default (dict )) -}}
+      {{- $volumes := merge ($pvc.claims | default (dict )) $root.Values.pvc.claims -}}
+      {{- $volume_mounts := merge ($pvc.mounts | default (dict )) $root.Values.pvc.mounts -}}
+      {{ if and $volumes $volume_mounts }}
           volumeMounts:
-          {{- range $path, $claim := $volume_mounts -}}
+          {{- range $path, $claim := $volume_mounts }}
           - mountPath: {{ $path }}
             name: {{ $claim }}
-          {{- end -}}
+          {{ end }}
       volumes:
-        {{- range $name, $claim := $volumes -}}
-        {{- if $claim -}}
+        {{- range $name, $claim := $volumes }}
+        {{- if $claim }}
         - name: {{ $name }}
           persistentVolumeClaim:
             claimName: {{ $name }}
-        {{- end -}}
+        {{ end -}}
         {{- end -}}
       {{- end -}}
+{{- end -}}
 
 {{- define "zimagi-lib.deployment.ext" -}}
 {{- include "zimagi-lib.util.merge" (append . "zimagi-lib.deployment") -}}

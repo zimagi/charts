@@ -4,8 +4,9 @@ Generate persistent volume claims
 {{- define "zimagi-lib.pvc" -}}
 {{- $root := (index . 0) -}}
 {{- $service := (index . 1) -}}
-{{- range $name, $claim := merge $service.pvc.claims $root.Values.pvc.claims -}}
-{{- if $claim -}}
+{{- $pvc := ($service.pvc | default (dict )) -}}
+{{- range $name, $claim := merge ($pvc.claims | default (dict )) $root.Values.pvc.claims -}}
+{{- if $claim }}
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
