@@ -1,5 +1,0 @@
-persistence:
-  enabled: true
-  storageClass: "efs-sc"
-  accessMode: ReadWriteMany
-  size: 10Gi
