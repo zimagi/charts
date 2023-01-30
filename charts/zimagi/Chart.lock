@@ -5,8 +5,8 @@ dependencies:
 - name: redis
   repository: https://charts.bitnami.com/bitnami
   version: 17.3.11
-- name: library
-  repository: file://../library
-  version: 1.1.1
-digest: sha256:4fa11c67eed0d047cd8c4b9ccf1f0c570876453420b98f440bb05fb5b5897098
-generated: "2023-01-25T23:16:55.270834167-05:00"
+- name: zimagi-lib
+  repository: https://charts.zimagi.com
+  version: 0.0.1
+digest: sha256:74b5d2807bf67d05b46324fd45487246fbf0cb02b8019212d68ad6caa586da21
+generated: "2023-01-30T04:44:04.804557366-05:00"

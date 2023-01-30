@@ -4,7 +4,7 @@ labels: {}
 annotations: {}
 
 postgresql:
-  enabled: true
+  enabled: false
   auth:
     database: zimagi
     username: zimagi
@@ -14,13 +14,14 @@ postgresql:
       enabled: true
 
 redis:
-  enabled: true
+  enabled: false
   auth:
     password: zimagi
 
 image:
   pullSecrets: []
   pullPolicy: IfNotPresent
+  repository: registry.hub.docker.com
   image: zimagi/zimagi
   tag: 0.11.14
 
@@ -54,12 +55,12 @@ deployment:
     requests: {}
 
   env:
-    ZIMAGI_POSTGRES_HOST: "{{ include 'zimagi.postgresql.fullname' . }}"
+    ZIMAGI_POSTGRES_HOST: '{{ include "zimagi.postgresql.fullname" . }}'
     ZIMAGI_POSTGRES_PORT: 5432
     ZIMAGI_POSTGRES_DB: "{{ .Values.postgresql.auth.database }}"
     ZIMAGI_POSTGRES_USER: "{{ .Values.postgresql.auth.username }}"
     ZIMAGI_POSTGRES_PASSWORD: "{{ .Values.postgresql.auth.password }}"
-    ZIMAGI_REDIS_HOST: "{{ include 'zimagi.redisMaster.fullname' . }}"
+    ZIMAGI_REDIS_HOST: '{{ include "zimagi.redisMaster.fullname" . }}'
     ZIMAGI_REDIS_PORT: 6379
     ZIMAGI_REDIS_PASSWORD: "{{ .Values.redis.auth.password }}"
 
@@ -113,6 +114,20 @@ zimagi:
         enabled: true
         minReplicas: 1
         maxReplicas: 4
+      annotations:
+        kubernetes.digitalocean.com/load-balancer-id: "command"
+        service.beta.kubernetes.io/do-loadbalancer-name: "command-api"
+        service.beta.kubernetes.io/do-loadbalancer-size-unit: "1"
+        service.beta.kubernetes.io/do-loadbalancer-disable-lets-encrypt-dns-records: "true"
+        service.beta.kubernetes.io/do-loadbalancer-enable-backend-keepalive: "true"
+        service.beta.kubernetes.io/do-loadbalancer-protocol: "https"
+        service.beta.kubernetes.io/do-loadbalancer-certificate-id: "${certificate_id}"
+        service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol: "http"
+        service.beta.kubernetes.io/do-loadbalancer-healthcheck-path: "/status"
+        service.beta.kubernetes.io/do-loadbalancer-healthcheck-check-interval-seconds: "3"
+        service.beta.kubernetes.io/do-loadbalancer-healthcheck-response-timeout-seconds: "5"
+        service.beta.kubernetes.io/do-loadbalancer-healthcheck-unhealthy-threshold: "3"
+        service.beta.kubernetes.io/do-loadbalancer-healthcheck-healthy-threshold: "5"
 
     data-api:
       image:
