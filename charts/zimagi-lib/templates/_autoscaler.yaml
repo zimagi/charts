@@ -1,0 +1,34 @@
+{{/*
+Generate a horizontal pod autoscaler
+*/}}
+{{- define "zimagi-lib.autoscaler" -}}
+{{- $root := (index . 0) -}}
+{{- $service := (index . 1) -}}
+{{- $min_replicas := coalesce $service.autoscaling.minReplicas $root.Values.autoscaling.minReplicas -}}
+{{- $max_replicas := coalesce $service.autoscaling.maxReplicas $root.Values.autoscaling.maxReplicas -}}
+{{- if and $service.autoscaling.enabled $max_replicas -}}
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+{{- $name := include "zimagi-lib.serviceName" (list $root $service) -}}
+{{ include "zimagi-lib.metadata" (list $root $service $name) }}
+spec:
+  minReplicas: {{ $min_replicas }}
+  maxReplicas: {{ $max_replicas }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ coalesce $service.autoscaling.avgCpuUtilization $root.Values.autoscaling.avgCpuUtilization }}
+  scaleTargetRef:
+    apiVersion: {{ include "common.capabilities.deployment.apiVersion" $root }}
+    kind: Deployment
+    name: {{ $name | quote }}
+{{- end -}}
+{{- end -}}
+
+{{- define "zimagi-lib.autoscaler.ext" -}}
+{{- include "zimagi-lib.util.merge" (append . "zimagi-lib.autoscaler") -}}
+{{- end -}}

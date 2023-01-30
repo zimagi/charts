@@ -1,0 +1,19 @@
+{{/*
+Generate a multi-service application
+*/}}
+{{- define "zimagi-lib.app" -}}
+{{- $root := (index . 0) -}}
+{{- $app := (index . 1) | default $root -}}
+{{- range $name, $service := $app.services -}}
+{{- $schema := merge $service (dict "name" $name) -}}
+{{ template "zimagi-lib.serviceAccount" (list $root $schema) }}
+{{ template "zimagi-lib.pvc" (list $root $schema) }}
+{{ template "zimagi-lib.deployment" (list $root $schema) }}
+{{ template "zimagi-lib.autoscaler" (list $root $schema) }}
+{{ template "zimagi-lib.service" (list $root $schema) }}
+{{- end -}}
+{{- end -}}
+
+{{- define "zimagi-lib.app.ext" -}}
+{{- include "zimagi-lib.util.merge" (append . "zimagi-lib.app") -}}
+{{- end -}}

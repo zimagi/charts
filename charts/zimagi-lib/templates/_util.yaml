@@ -1,0 +1,13 @@
+{{- /*
+zimagi-lib.util.merge will merge two YAML templates and output the result.
+This takes an array of three values:
+- the root context
+- the template name of the overrides (destination)
+- the template name of the base (source)
+*/}}
+{{- define "zimagi-lib.util.merge" -}}
+{{- $root := first . -}}
+{{- $overrides := fromYaml (include (index . 1) $root) | default (dict ) -}}
+{{- $tpl := fromYaml (include (index . 2) $root) | default (dict ) -}}
+{{- toYaml (merge $overrides $tpl) -}}
+{{- end -}}

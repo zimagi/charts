@@ -1,0 +1,15 @@
+{{/*
+Generate standardized resource metadata
+*/}}
+{{- define "zimagi-lib.metadata" -}}
+{{- $root := (index . 0) -}}
+{{- $service := (index . 1) -}}
+{{- $name := (index . 2) -}}
+metadata:
+  name: {{ $name | quote }}
+  namespace: {{ $root.Release.Namespace | quote }}
+  labels:
+    {{- include "zimagi-lib.labels" (list $root $service) | nindent 4 }}
+  annotations:
+    {{- include "zimagi-lib.annotations" (list $root $service) | nindent 4 }}
+{{- end -}}

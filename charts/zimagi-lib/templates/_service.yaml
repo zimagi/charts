@@ -1,0 +1,35 @@
+{{/*
+Generate a service
+*/}}
+{{- define "zimagi-lib.service" -}}
+{{- $root := (index . 0) -}}
+{{- $service := (index . 1) -}}
+{{- $port_protocol := coalesce $service.deployment.protocol $root.Values.deployment.protocol -}}
+{{- $container_port := coalesce $service.deployment.port $root.Values.deployment.port -}}
+{{- if and $port_protocol $container_port -}}
+---
+apiVersion: v1
+kind: Service
+{{- $name := include "zimagi-lib.serviceName" (list $root $service) -}}
+{{ include "zimagi-lib.metadata" (list $root $service $name) }}
+spec:
+  {{- $service_type := coalesce $service.service.type $root.Values.service.type -}}
+  {{- $service_port := coalesce $service.service.port $root.Values.service.port -}}
+  {{- $node_port := coalesce $service.service.nodePort $root.Values.service.nodePort -}}
+  type: {{ $service_type }}
+  ports:
+    - name: {{ $name | quote }}
+      protocol: TCP
+      targetPort: {{ $container_port }}
+      port: {{ $service_port }}
+      {{- if and (eq "NodePort" $service_type) $node_port -}}
+      nodePort: {{ $node_port }}
+      {{- end -}}
+  selector:
+    {{- include "zimagi-lib.selectorLabels" (list $root $service) | nindent 4 }}
+{{- end -}}
+{{- end -}}
+
+{{- define "zimagi-lib.service.ext" -}}
+{{- include "zimagi-lib.util.merge" (append . "zimagi-lib.service") -}}
+{{- end -}}

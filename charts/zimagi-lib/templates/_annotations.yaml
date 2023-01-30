@@ -1,0 +1,10 @@
+{{/*
+Service annotations
+*/}}
+{{- define "zimagi-lib.annotations" -}}
+{{- $root := (index . 0) -}}
+{{- $service := (index . 1) -}}
+{{- range $key, $value := merge $service.annotations $root.Values.annotations -}}
+{{ $key }}: {{ $value | quote }}
+{{- end -}}
+{{- end -}}
