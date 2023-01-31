@@ -19,7 +19,7 @@ dependencies:
   version: 17.3.11
 - name: zimagi-lib
   repository: https://charts.zimagi.com
-  version: 0.0.4
+  version: 0.0.5
 
 maintainers:
 - email: erik.jagyugya@dccs.tech

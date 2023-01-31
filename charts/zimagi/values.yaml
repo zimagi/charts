@@ -4,7 +4,7 @@ labels: {}
 annotations: {}
 
 postgresql:
-  enabled: false
+  enabled: true
   auth:
     database: zimagi
     username: zimagi
@@ -14,7 +14,7 @@ postgresql:
       enabled: true
 
 redis:
-  enabled: false
+  enabled: true
   auth:
     password: zimagi
 
@@ -73,7 +73,6 @@ deployment:
   port: 5000
 
   livenessProbe:
-    enabled: true
     endpoint: "/status"
     failureThreshold: 1
     initialDelaySeconds: 60
@@ -82,7 +81,6 @@ deployment:
     timeoutSeconds: 3
 
   readinessProbe:
-    enabled: true
     endpoint: "/status"
     failureThreshold: 1
     initialDelaySeconds: 90
@@ -106,7 +104,6 @@ zimagi:
       image:
         entrypoint: "zimagi-command"
       deployment:
-        replicaCount: 1
         config:
           - global
           - command-api
@@ -114,12 +111,13 @@ zimagi:
         enabled: true
         minReplicas: 1
         maxReplicas: 4
+      service:
+        enabled: true
 
     data-api:
       image:
         entrypoint: "zimagi-data"
       deployment:
-        replicaCount: 1
         config:
           - global
           - data-api
@@ -127,13 +125,14 @@ zimagi:
         enabled: true
         minReplicas: 1
         maxReplicas: 4
+      service:
+        enabled: true
 
     scheduler:
       image:
         entrypoint: "zimagi-scheduler"
       deployment:
         replicaCount: 2
-        protocol: ""
         config:
           - global
           - scheduler
@@ -142,8 +141,6 @@ zimagi:
       image:
         entrypoint: "zimagi-worker"
       deployment:
-        replicaCount: 1
-        protocol: ""
         config:
           - global
           - worker
