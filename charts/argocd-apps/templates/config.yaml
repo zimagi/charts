@@ -9,7 +9,7 @@ metadata:
   namespace: {{ $app.metadata.name }}
 data:
   {{- range $env_var,$env_value := $config }}
-  {{ $env_var }}: {{ $env_value | quote }}
+  {{ $env_var }}: {{ $env_value | toString | quote }}
   {{- end }}
 {{- end }}
 {{- end }}
