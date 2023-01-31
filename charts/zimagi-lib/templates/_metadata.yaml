@@ -9,5 +9,8 @@ metadata:
   name: {{ $name | quote }}
   namespace: {{ $root.Release.Namespace | quote }}
   labels: {{- include "zimagi-lib.labels" (list $root $service) | nindent 4 }}
+  {{- $annotations := ternary (merge ($service.annotations | default (dict )) $root.Values.annotations) $root.Values.annotations (not (empty $service)) -}}
+  {{ if $annotations }}
   annotations: {{- include "zimagi-lib.annotations" (list $root $service) | nindent 4 }}
+  {{- end -}}
 {{- end -}}

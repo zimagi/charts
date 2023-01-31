@@ -35,15 +35,23 @@ spec:
       affinity:
         {{- include "common.tplvalues.render" ( dict "value" $affinity "context" $root) | nindent 8 }}
       {{- else -}}
+      {{- with merge ($service.deployment | default (dict )) $root.Values.deployment }}
+      {{- if or .podAffinityPreset .podAntiAffinityPreset (and .nodeAffinityPreset.type .nodeAffinityPreset.key .nodeAffinityPreset.values) -}}
       affinity:
-        {{- with merge ($service.deployment | default (dict )) $root.Values.deployment }}
+        {{ if .podAffinityPreset -}}
         podAffinity:
           {{- include "common.affinities.pods" (dict "type" .podAffinityPreset "component" $name "context" $root) | nindent 10 }}
+        {{- end -}}
+        {{ if .podAntiAffinityPreset -}}
         podAntiAffinity:
           {{- include "common.affinities.pods" (dict "type" .podAntiAffinityPreset "component" $name "context" $root) | nindent 10 }}
+        {{- end -}}
+        {{ if and .nodeAffinityPreset.type .nodeAffinityPreset.key .nodeAffinityPreset.values -}}
         nodeAffinity:
           {{- include "common.affinities.nodes" (dict "type" .nodeAffinityPreset.type "key" .nodeAffinityPreset.key "values" .nodeAffinityPreset.values) | nindent 10 }}
         {{- end -}}
+      {{- end -}}
+      {{- end -}}
       {{- end -}}
       {{- $nodeSelector := coalesce $service.deployment.nodeSelector $root.Values.deployment.nodeSelector -}}
       {{- if $nodeSelector -}}
@@ -73,8 +81,7 @@ spec:
           {{- end -}}
           {{- $imageEntrypoint := coalesce $service.image.entrypoint $root.Values.image.entrypoint -}}
           {{- if $imageEntrypoint }}
-          command:
-            {{- include "common.tplvalues.render" (dict "value" $imageEntrypoint "context" $root) | nindent 12 }}
+          command: {{- include "zimagi-lib.util.ensureList" $imageEntrypoint | nindent 12 }}
           {{- end -}}
           {{- $env_vars := merge ($service.deployment.env | default (dict )) $root.Values.deployment.env -}}
           {{- if $env_vars }}
@@ -95,13 +102,12 @@ spec:
             {{ end -}}
           {{- $port_protocol := coalesce $service.deployment.protocol $root.Values.deployment.protocol -}}
           {{- $container_port := coalesce $service.deployment.port $root.Values.deployment.port -}}
-          {{- if and $port_protocol $container_port }}
+          {{- $app_service := ($service.service | default (dict )) -}}
+          {{- if $app_service.enabled }}
           ports:
             - name: {{ $name }}
               containerPort: {{ $container_port }}
-          {{ end -}}
-          {{- with merge ($service.deployment.readinessProbe | default (dict )) $root.Values.deployment.readinessProbe -}}
-          {{- if and $port_protocol $container_port .enabled -}}
+          {{- with merge ($service.deployment.readinessProbe | default (dict )) $root.Values.deployment.readinessProbe }}
           readinessProbe:
             failureThreshold: {{ .failureThreshold }}
             initialDelaySeconds: {{ .initialDelaySeconds }}
@@ -113,9 +119,7 @@ spec:
               port: {{ $container_port }}
               path: {{ .endpoint }}
           {{ end -}}
-          {{- end -}}
           {{- with merge ($service.deployment.livenessProbe | default (dict )) $root.Values.deployment.livenessProbe -}}
-          {{- if and $port_protocol $container_port .enabled -}}
           livenessProbe:
             failureThreshold: {{ .failureThreshold }}
             initialDelaySeconds: {{ .initialDelaySeconds }}

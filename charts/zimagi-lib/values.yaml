@@ -42,7 +42,6 @@ deployment:
   port: 80
 
   livenessProbe:
-    enabled: true
     endpoint: "/"
     failureThreshold: 1
     initialDelaySeconds: 60
@@ -51,7 +50,6 @@ deployment:
     timeoutSeconds: 3
 
   readinessProbe:
-    enabled: true
     endpoint: "/"
     failureThreshold: 1
     initialDelaySeconds: 90

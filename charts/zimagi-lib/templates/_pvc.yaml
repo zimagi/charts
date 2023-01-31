@@ -1,16 +1,15 @@
 {{/*
-Generate persistent volume claims
+Generate shared persistent volume claims
 */}}
 {{- define "zimagi-lib.pvc" -}}
 {{- $root := (index . 0) -}}
-{{- $service := (index . 1) -}}
-{{- $pvc := ($service.pvc | default (dict )) -}}
-{{- range $name, $claim := merge ($pvc.claims | default (dict )) $root.Values.pvc.claims -}}
+{{- $claim := (index . 1) -}}
+{{- $name := (index . 2) -}}
 {{- if $claim }}
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
-{{ include "zimagi-lib.metadata" (list $root $service $name) }}
+{{ include "zimagi-lib.metadata" (list $root nil $name) }}
 spec:
   storageClassName: {{ $claim.storageClass | quote }}
   accessModes:
@@ -20,8 +19,23 @@ spec:
       storage: {{ $claim.size | quote }}
 {{- end -}}
 {{- end -}}
-{{- end -}}
 
 {{- define "zimagi-lib.pvc.ext" -}}
 {{- include "zimagi-lib.util.merge" (append . "zimagi-lib.pvc") -}}
+{{- end -}}
+
+{{/*
+Generate individual service persistent volume claims
+*/}}
+{{- define "zimagi-lib.servicePvc" -}}
+{{- $root := (index . 0) -}}
+{{- $service := (index . 1) -}}
+{{- $pvc := ($service.pvc | default (dict )) -}}
+{{- range $name, $claim := ($pvc.claims | default (dict )) -}}
+{{ template "zimagi-lib.pvc" (list $root $claim $name) }}
+{{- end -}}
+{{- end -}}
+
+{{- define "zimagi-lib.servicePvc.ext" -}}
+{{- include "zimagi-lib.util.merge" (append . "zimagi-lib.servicePvc") -}}
 {{- end -}}

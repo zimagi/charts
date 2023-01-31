@@ -13,7 +13,9 @@ Selector labels
 {{- $service := (index . 1) -}}
 app.kubernetes.io/name: {{ include "zimagi-lib.name" $root | quote }}
 app.kubernetes.io/instance: {{ $root.Release.Name | quote }}
+{{- if $service }}
 app.kubernetes.io/component: {{ include "zimagi-lib.serviceName" (list $root $service) | quote }}
+{{- end -}}
 {{- end -}}
 
 {{/*
@@ -28,7 +30,8 @@ app.kubernetes.io/version: {{ $root.Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ $root.Release.Service }}
 {{ include "zimagi-lib.selectorLabels" (list $root $service) }}
-{{- range $key, $value := merge ($service.labels | default (dict )) $root.Values.labels -}}
+{{- $labels := ternary (merge ($service.labels | default (dict )) $root.Values.labels) $root.Values.labels (not (empty $service)) -}}
+{{- range $key, $value := $labels -}}
 {{ $key }}: {{ $value | quote }}
 {{- end -}}
 {{- end -}}

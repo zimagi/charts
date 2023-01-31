@@ -11,3 +11,16 @@ This takes an array of three values:
 {{- $tpl := fromYaml (include (index . 2) $root) | default (dict ) -}}
 {{- toYaml (merge $overrides $tpl) -}}
 {{- end -}}
+
+{{- /*
+zimagi-lib.util.ensureList will ensure the input is rendered as a list.
+This takes a single value:
+- the data item
+*/}}
+{{- define "zimagi-lib.util.ensureList" -}}
+{{- if and . (kindIs "slice" .) -}}
+{{- toYaml . -}}
+{{- else -}}
+{{- toYaml (list .) -}}
+{{- end -}}
+{{- end -}}

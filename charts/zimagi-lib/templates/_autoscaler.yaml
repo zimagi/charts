@@ -4,7 +4,7 @@ Generate a horizontal pod autoscaler
 {{- define "zimagi-lib.autoscaler" -}}
 {{- $root := (index . 0) -}}
 {{- $service := (index . 1) -}}
-{{- $autoscaling := ($service.service | default (dict )) -}}
+{{- $autoscaling := ($service.autoscaling | default (dict )) -}}
 {{- $min_replicas := coalesce $autoscaling.minReplicas $root.Values.autoscaling.minReplicas -}}
 {{- $max_replicas := coalesce $autoscaling.maxReplicas $root.Values.autoscaling.maxReplicas -}}
 {{- if and $autoscaling.enabled $max_replicas }}

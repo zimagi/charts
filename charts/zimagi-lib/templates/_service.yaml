@@ -4,16 +4,15 @@ Generate a service
 {{- define "zimagi-lib.service" -}}
 {{- $root := (index . 0) -}}
 {{- $service := (index . 1) -}}
-{{- $port_protocol := coalesce $service.deployment.protocol $root.Values.deployment.protocol -}}
-{{- $container_port := coalesce $service.deployment.port $root.Values.deployment.port -}}
-{{- if and $port_protocol $container_port }}
+{{- $app_service := ($service.service | default (dict )) -}}
+{{- if $app_service.enabled }}
 ---
 apiVersion: v1
 kind: Service
 {{- $name := include "zimagi-lib.serviceName" (list $root $service) }}
 {{ include "zimagi-lib.metadata" (list $root $service $name) }}
 spec:
-  {{- $app_service := ($service.service | default (dict )) -}}
+  {{- $container_port := coalesce $service.deployment.port $root.Values.deployment.port -}}
   {{- $service_type := coalesce $app_service.type $root.Values.service.type -}}
   {{- $service_port := coalesce $app_service.port $root.Values.service.port -}}
   {{- $node_port := coalesce $app_service.nodePort $root.Values.service.nodePort }}
