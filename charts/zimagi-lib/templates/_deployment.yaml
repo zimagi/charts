@@ -108,7 +108,7 @@ spec:
           {{- $app_service := ($service.service | default (dict )) -}}
           {{- if $app_service.enabled }}
           ports:
-            - name: {{ $name }}
+            - name: gateway
               containerPort: {{ $container_port }}
           {{- with merge ($service.deployment.readinessProbe | default (dict )) $root.Values.deployment.readinessProbe }}
           readinessProbe:
