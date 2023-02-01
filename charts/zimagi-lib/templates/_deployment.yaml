@@ -29,7 +29,9 @@ spec:
       {{- $imagePullSecrets := coalesce $image.pullSecrets $root.Values.image.pullSecrets -}}
       {{ if $imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml $imagePullSecrets | nindent 8 }}
+        {{- range $secret := $imagePullSecrets }}
+        - name: {{ $secret | quote }}
+        {{ end -}}
       {{ end }}
       {{ $affinity := merge ($service.deployment.affinity | default (dict )) $root.Values.deployment.affinity -}}
       {{ if $affinity -}}
