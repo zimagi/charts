@@ -12,14 +12,14 @@ dependencies:
 - condition: postgresql.enabled
   name: postgresql
   repository: https://charts.bitnami.com/bitnami
-  version: 12.1.1
+  version: 12.x.x
 - condition: redis.enabled
   name: redis
   repository: https://charts.bitnami.com/bitnami
-  version: 17.3.11
+  version: 17.x.x
 - name: zimagi-lib
   repository: https://charts.zimagi.com
-  version: 0.0.5
+  version: 0.x.x
 
 maintainers:
 - email: erik.jagyugya@dccs.tech
