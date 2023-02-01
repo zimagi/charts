@@ -25,7 +25,8 @@ spec:
         {{- include "zimagi-lib.labels" (list $root $service) | nindent 8 }}
     spec:
       serviceAccountName: {{ $name | quote }}
-      {{- $imagePullSecrets := coalesce $service.image.pullSecrets $root.Values.image.pullSecrets -}}
+      {{- $image := ($service.image | default (dict )) -}}
+      {{- $imagePullSecrets := coalesce $image.pullSecrets $root.Values.image.pullSecrets -}}
       {{ if $imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml $imagePullSecrets | nindent 8 }}
@@ -69,17 +70,17 @@ spec:
       {{- end }}
       containers:
         - name: {{ $name }}
-          {{- $imageRepository := coalesce $service.image.repository $root.Values.image.repository -}}
-          {{- $imageImage := coalesce $service.image.image $root.Values.image.image -}}
-          {{- $imageTag := coalesce $service.image.tag $root.Values.image.tag }}
+          {{- $imageRepository := coalesce $image.repository $root.Values.image.repository -}}
+          {{- $imageImage := coalesce $image.image $root.Values.image.image -}}
+          {{- $imageTag := coalesce $image.tag $root.Values.image.tag }}
           image: "{{ $imageRepository }}/{{ $imageImage }}:{{ $imageTag | default $root.Chart.AppVersion }}"
-          imagePullPolicy: {{ coalesce $service.image.pullPolicy $root.Values.image.pullPolicy }}
+          imagePullPolicy: {{ coalesce $image.pullPolicy $root.Values.image.pullPolicy }}
           {{- $resources := merge ($service.deployment.resources | default (dict )) $root.Values.deployment.resources -}}
           {{- if $resources }}
           resources:
             {{- include "common.tplvalues.render" (dict "value" $resources "context" $root) | nindent 12 }}
           {{- end -}}
-          {{- $imageEntrypoint := coalesce $service.image.entrypoint $root.Values.image.entrypoint -}}
+          {{- $imageEntrypoint := coalesce $image.entrypoint $root.Values.image.entrypoint -}}
           {{- if $imageEntrypoint }}
           command: {{- include "zimagi-lib.util.ensureList" $imageEntrypoint | nindent 12 }}
           {{- end -}}
