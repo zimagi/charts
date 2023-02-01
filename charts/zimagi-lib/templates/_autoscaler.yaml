@@ -9,7 +9,7 @@ Generate a horizontal pod autoscaler
 {{- $max_replicas := coalesce $autoscaling.maxReplicas $root.Values.autoscaling.maxReplicas -}}
 {{- if and $autoscaling.enabled $max_replicas }}
 ---
-apiVersion: autoscaling/v2beta1
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 {{- $name := include "zimagi-lib.serviceName" (list $root $service) }}
 {{ include "zimagi-lib.metadata" (list $root $service $name) }}
