@@ -1,6 +1,7 @@
 
-common: {}
-  # namespace: "argocd"
+common:
+  namespace: "argocd"
+  applications: {}
 
 applications: {}
   # app:
