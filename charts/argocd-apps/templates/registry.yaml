@@ -1,5 +1,5 @@
 {{- range $key,$app := .Values.applications }}
-{{- if and $app.enabled $app.destination.registryCredential }}
+{{- if and $app.enabled $app.destination $app.destination.registryCredential }}
 ---
 apiVersion: v1
 kind: Secret
