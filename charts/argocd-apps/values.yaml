@@ -18,6 +18,7 @@ applications: {}
   #       values: "{}"
   #   syncOptions:
   #     replace: false
+  #     createNamespace: true
   #   config:
   #     name:
   #       ENV_VAR1: value1
