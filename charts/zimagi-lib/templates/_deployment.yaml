@@ -57,12 +57,12 @@ spec:
       {{- end -}}
       {{- end -}}
       {{- $nodeSelector := coalesce $service.deployment.nodeSelector $root.Values.deployment.nodeSelector -}}
-      {{- if $nodeSelector -}}
+      {{- if $nodeSelector }}
       nodeSelector:
         {{- include "common.tplvalues.render" (dict "value" $nodeSelector "context" $root) | nindent 8 }}
       {{- end -}}
       {{- $tolerations := coalesce $service.deployment.tolerations $root.Values.deployment.tolerations -}}
-      {{- if $tolerations -}}
+      {{- if $tolerations }}
       tolerations:
         {{- include "common.tplvalues.render" (dict "value" $tolerations "context" $root) | nindent 8 }}
       {{- end -}}
