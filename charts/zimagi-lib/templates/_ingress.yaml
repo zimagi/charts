@@ -21,8 +21,14 @@ spec:
   tls:
     {{- range $cert := $spec.tls }}
     - hosts:
+        {{- if $cert.hosts -}}
         {{- range $host := $cert.hosts }}
         - {{ $host | quote }}
+        {{- end }}
+        {{- else -}}
+        {{- range $host := $spec.hosts }}
+        - {{ $host.host | quote }}
+        {{- end }}
         {{- end }}
       secretName: {{ $cert.secretName | quote }}
     {{- end }}
