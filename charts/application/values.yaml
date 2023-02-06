@@ -73,13 +73,3 @@ ingress:
   className: ''
   hosts: []
   tls: []
-
-services:
-  app:
-    autoscaling:
-      enabled: false
-      minReplicas: 1
-      maxReplicas: 4
-
-    service:
-      enabled: true

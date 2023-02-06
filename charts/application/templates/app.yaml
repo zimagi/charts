@@ -1,4 +1,4 @@
 {{/*
-Generate a simple application
+Generate an application
 */}}
 {{ include "zimagi-lib.app" (list . .Values) }}
