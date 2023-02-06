@@ -18,12 +18,7 @@ spec:
       selfHeal: true
       prune: true
     syncOptions:
-    {{- if $app.syncOptions.createNamespace }}
-    - CreateNamespace=true
-    {{- else }}
     - CreateNamespace=false
-    {{- end }}
-    
     {{- if $app.syncOptions.replace }}
     - Replace=true
     {{- end }}

@@ -18,12 +18,3 @@ applications: {}
   #       values: "{}"
   #   syncOptions:
   #     replace: false
-  #     createNamespace: true
-  #   config:
-  #     name:
-  #       ENV_VAR1: value1
-  #       ENV_VAR2: value2
-  #   secrets:
-  #     name:
-  #       ENV_VAR3: secret3
-  #       ENV_VAR4: secret4
