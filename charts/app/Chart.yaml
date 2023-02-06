@@ -1,0 +1,22 @@
+apiVersion: v2
+version: 0.0.1
+appVersion: 0.0.0
+
+name: application
+type: application
+description: A Helm chart for flexibly deploying the simple applications.
+home: https://github.com/zimagi/charts
+icon: https://github.com/zimagi/zimagi/blob/master/docs/_static/logo.png
+
+dependencies:
+- name: zimagi-lib
+  repository: https://charts.zimagi.com
+  version: 0.x.x
+
+maintainers:
+- email: erik.jagyugya@dccs.tech
+  name: jagyugyaerik
+  url: https://github.com/jagyugyaerik
+- email: adrian.webb@dccs.tech
+  name: adrianwebb
+  url: https://github.com/adrianwebb

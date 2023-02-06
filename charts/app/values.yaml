@@ -1,0 +1,85 @@
+nameOverride: ""
+
+labels: {}
+annotations: {}
+
+image:
+  pullSecrets: []
+  pullPolicy: IfNotPresent
+  repository: registry.hub.docker.com
+  image: ""
+  tag: ""
+
+pvc:
+  claims: {}
+  mounts: {}
+
+deployment:
+  replicaCount: 1
+  updateStrategy:
+    type: RollingUpdate
+
+  priorityClassName: ""
+  affinity: {}
+  podAffinityPreset: ""
+  podAntiAffinityPreset: soft
+  nodeAffinityPreset:
+    type: ""
+    key: ""
+    values: []
+
+  nodeSelector: {}
+  tolerations: []
+  resources:
+    limits: {}
+    requests: {}
+
+  env: {}
+  config:
+    - global
+  secrets:
+    - global
+
+  protocol: HTTP
+  port: 80
+
+  livenessProbe:
+    endpoint: "/"
+    failureThreshold: 1
+    initialDelaySeconds: 60
+    periodSeconds: 5
+    successThreshold: 1
+    timeoutSeconds: 3
+
+  readinessProbe:
+    endpoint: "/"
+    failureThreshold: 1
+    initialDelaySeconds: 90
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 3
+
+autoscaling:
+  minReplicas: 1
+  maxReplicas: 4
+  avgCpuUtilization: 70
+
+service:
+  type: ClusterIP
+  protocol: http
+  port: 80
+
+ingress:
+  className: ''
+  hosts: []
+  tls: []
+
+services:
+  app:
+    autoscaling:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 4
+
+    service:
+      enabled: true

@@ -1,0 +1,4 @@
+{{/*
+Generate a simple application
+*/}}
+{{ include "zimagi-lib.app" (list . .Values) }}
