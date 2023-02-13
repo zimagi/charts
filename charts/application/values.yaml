@@ -7,8 +7,8 @@ image:
   pullSecrets: []
   pullPolicy: IfNotPresent
   repository: registry.hub.docker.com
-  image: ""
-  tag: ""
+  image: "" # Required
+  tag: ""   # Required
 
 pvc:
   claims: {}
@@ -35,10 +35,8 @@ deployment:
     requests: {}
 
   env: {}
-  config:
-    - global
-  secrets:
-    - global
+  config: []  # Config map names
+  secrets: [] # Secret names
 
   protocol: HTTP
   port: 80
@@ -46,15 +44,15 @@ deployment:
   livenessProbe:
     endpoint: "/"
     failureThreshold: 1
-    initialDelaySeconds: 60
-    periodSeconds: 5
+    initialDelaySeconds: 10
+    periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 3
 
   readinessProbe:
     endpoint: "/"
     failureThreshold: 1
-    initialDelaySeconds: 90
+    initialDelaySeconds: 10
     periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 3
@@ -73,3 +71,5 @@ ingress:
   className: ''
   hosts: []
   tls: []
+
+services: {} # Service definitions here!!!
