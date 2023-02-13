@@ -4,14 +4,15 @@ Generate a deployment
 {{- define "zimagi-lib.deployment" -}}
 {{- $root := (index . 0) -}}
 {{- $service := (index . 1) }}
+{{- $app_deployment := ($service.deployment | default (dict )) -}}
 ---
 apiVersion: {{ include "common.capabilities.deployment.apiVersion" $root }}
 kind: Deployment
 {{- $name := include "zimagi-lib.serviceName" (list $root $service) }}
 {{ include "zimagi-lib.metadata" (list $root $service $name) }}
 spec:
-  replicas: {{ coalesce $service.deployment.replicaCount $root.Values.deployment.replicaCount }}
-  {{ $updateStrategy := coalesce $service.deployment.updateStrategy $root.Values.deployment.updateStrategy -}}
+  replicas: {{ coalesce $app_deployment.replicaCount $root.Values.deployment.replicaCount }}
+  {{ $updateStrategy := coalesce $app_deployment.updateStrategy $root.Values.deployment.updateStrategy -}}
   {{- if $updateStrategy -}}
   strategy:
     {{- toYaml $updateStrategy | nindent 4 }}
@@ -33,12 +34,12 @@ spec:
         - name: {{ $secret | quote }}
         {{ end -}}
       {{ end }}
-      {{ $affinity := merge ($service.deployment.affinity | default (dict )) $root.Values.deployment.affinity -}}
+      {{ $affinity := merge ($app_deployment.affinity | default (dict )) $root.Values.deployment.affinity -}}
       {{ if $affinity -}}
       affinity:
         {{- include "common.tplvalues.render" ( dict "value" $affinity "context" $root) | nindent 8 }}
       {{- else -}}
-      {{- with merge ($service.deployment | default (dict )) $root.Values.deployment }}
+      {{- with merge $app_deployment $root.Values.deployment }}
       {{- if or .podAffinityPreset .podAntiAffinityPreset (and .nodeAffinityPreset.type .nodeAffinityPreset.key .nodeAffinityPreset.values) -}}
       affinity:
         {{ if .podAffinityPreset -}}
@@ -56,17 +57,17 @@ spec:
       {{- end -}}
       {{- end -}}
       {{- end -}}
-      {{- $nodeSelector := coalesce $service.deployment.nodeSelector $root.Values.deployment.nodeSelector -}}
+      {{- $nodeSelector := coalesce $app_deployment.nodeSelector $root.Values.deployment.nodeSelector -}}
       {{- if $nodeSelector }}
       nodeSelector:
         {{- include "common.tplvalues.render" (dict "value" $nodeSelector "context" $root) | nindent 8 }}
       {{- end -}}
-      {{- $tolerations := coalesce $service.deployment.tolerations $root.Values.deployment.tolerations -}}
+      {{- $tolerations := coalesce $app_deployment.tolerations $root.Values.deployment.tolerations -}}
       {{- if $tolerations }}
       tolerations:
         {{- include "common.tplvalues.render" (dict "value" $tolerations "context" $root) | nindent 8 }}
       {{- end -}}
-      {{- $priorityClassName := coalesce $service.deployment.priorityClassName $root.Values.deployment.priorityClassName -}}
+      {{- $priorityClassName := coalesce $app_deployment.priorityClassName $root.Values.deployment.priorityClassName -}}
       {{- if $priorityClassName -}}
       priorityClassName: {{ $priorityClassName | quote }}
       {{- end }}
@@ -77,7 +78,7 @@ spec:
           {{- $imageTag := coalesce $image.tag $root.Values.image.tag }}
           image: "{{ $imageRepository }}/{{ $imageImage }}:{{ $imageTag | default $root.Chart.AppVersion }}"
           imagePullPolicy: {{ coalesce $image.pullPolicy $root.Values.image.pullPolicy }}
-          {{- $resources := merge ($service.deployment.resources | default (dict )) $root.Values.deployment.resources -}}
+          {{- $resources := merge ($app_deployment.resources | default (dict )) $root.Values.deployment.resources -}}
           {{- if $resources }}
           resources:
             {{- include "common.tplvalues.render" (dict "value" $resources "context" $root) | nindent 12 }}
@@ -86,7 +87,7 @@ spec:
           {{- if $imageEntrypoint }}
           command: {{- include "zimagi-lib.util.ensureList" $imageEntrypoint | nindent 12 }}
           {{- end -}}
-          {{- $env_vars := merge ($service.deployment.env | default (dict )) $root.Values.deployment.env -}}
+          {{- $env_vars := merge ($app_deployment.env | default (dict )) $root.Values.deployment.env -}}
           {{- if $env_vars }}
           env:
             {{- range $env_var, $env_value := $env_vars }}
@@ -95,22 +96,22 @@ spec:
             {{- end -}}
           {{- end }}
           envFrom:
-            {{ range $config_map := coalesce $service.deployment.config $root.Values.deployment.config -}}
+            {{ range $config_map := coalesce $app_deployment.config $root.Values.deployment.config -}}
             - configMapRef:
                 name: {{ include "common.tplvalues.render" (dict "value" $config_map "context" $root) }}
             {{ end -}}
-            {{- range $secret := coalesce $service.deployment.secrets $root.Values.deployment.secrets -}}
+            {{- range $secret := coalesce $app_deployment.secrets $root.Values.deployment.secrets -}}
             - secretRef:
                 name: {{ include "common.tplvalues.render" (dict "value" $secret "context" $root) }}
             {{ end -}}
-          {{- $port_protocol := coalesce $service.deployment.protocol $root.Values.deployment.protocol -}}
-          {{- $container_port := coalesce $service.deployment.port $root.Values.deployment.port -}}
+          {{- $port_protocol := coalesce $app_deployment.protocol $root.Values.deployment.protocol -}}
+          {{- $container_port := coalesce $app_deployment.port $root.Values.deployment.port -}}
           {{- $app_service := ($service.service | default (dict )) -}}
           {{- if $app_service.enabled }}
           ports:
             - name: gateway
               containerPort: {{ $container_port }}
-          {{- with merge ($service.deployment.readinessProbe | default (dict )) $root.Values.deployment.readinessProbe }}
+          {{- with merge ($app_deployment.readinessProbe | default (dict )) $root.Values.deployment.readinessProbe }}
           readinessProbe:
             failureThreshold: {{ .failureThreshold }}
             initialDelaySeconds: {{ .initialDelaySeconds }}
@@ -122,7 +123,7 @@ spec:
               port: {{ $container_port }}
               path: {{ .endpoint }}
           {{ end -}}
-          {{- with merge ($service.deployment.livenessProbe | default (dict )) $root.Values.deployment.livenessProbe -}}
+          {{- with merge ($app_deployment.livenessProbe | default (dict )) $root.Values.deployment.livenessProbe -}}
           livenessProbe:
             failureThreshold: {{ .failureThreshold }}
             initialDelaySeconds: {{ .initialDelaySeconds }}
