@@ -30,7 +30,7 @@ app.kubernetes.io/version: {{ $root.Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ $root.Release.Service }}
 {{ include "zimagi-lib.selectorLabels" (list $root $service) }}
-{{- $labels := ternary (merge ($service.labels | default (dict )) $root.Values.labels) $root.Values.labels (not (empty $service)) -}}
+{{ $labels := ternary (merge ($service.labels | default (dict )) $root.Values.labels) $root.Values.labels (not (empty $service)) -}}
 {{- range $key, $value := $labels -}}
 {{ $key }}: {{ $value | quote }}
 {{- end -}}
