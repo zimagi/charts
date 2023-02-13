@@ -6,17 +6,23 @@ annotations: {}
 postgresql:
   enabled: true
   auth:
+    existingSecret: zimagi-db # keys: postgres-password, replication-password, password
     database: zimagi
     username: zimagi
-    password: zimagi
   primary:
     persistence:
       enabled: true
+      size: 10Gi
 
 redis:
   enabled: true
   auth:
-    password: zimagi
+    existingSecret: zimagi-db
+    existingSecretPasswordKey: redis-password
+  master:
+    persistence:
+      enabled: true
+      size: 5Gi
 
 image:
   pullSecrets: []
@@ -31,8 +37,7 @@ pvc:
       storageClass: nfs
       accessMode: ReadWriteMany
       size: 10Gi
-  mounts:
-    "/usr/local/lib/zimagi": lib
+  mounts: {}
 
 deployment:
   replicaCount: 1
@@ -51,18 +56,17 @@ deployment:
   nodeSelector: {}
   tolerations: []
   resources:
-    limits: {}
-    requests: {}
+    requests:
+      cpu: "100m"
+      memory: "100Mi"
 
   env:
     ZIMAGI_POSTGRES_HOST: '{{ include "zimagi.postgresql.fullname" . }}'
     ZIMAGI_POSTGRES_PORT: 5432
     ZIMAGI_POSTGRES_DB: "{{ .Values.postgresql.auth.database }}"
     ZIMAGI_POSTGRES_USER: "{{ .Values.postgresql.auth.username }}"
-    ZIMAGI_POSTGRES_PASSWORD: "{{ .Values.postgresql.auth.password }}"
     ZIMAGI_REDIS_HOST: '{{ include "zimagi.redisMaster.fullname" . }}'
     ZIMAGI_REDIS_PORT: 6379
-    ZIMAGI_REDIS_PASSWORD: "{{ .Values.redis.auth.password }}"
 
   config:
     - global
@@ -75,15 +79,15 @@ deployment:
   livenessProbe:
     endpoint: "/status"
     failureThreshold: 1
-    initialDelaySeconds: 60
-    periodSeconds: 5
+    initialDelaySeconds: 10
+    periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 3
 
   readinessProbe:
     endpoint: "/status"
     failureThreshold: 1
-    initialDelaySeconds: 90
+    initialDelaySeconds: 10
     periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 3
@@ -98,53 +102,96 @@ service:
   protocol: http
   port: 80
 
-zimagi:
-  services:
-    command-api:
-      image:
-        entrypoint: "zimagi-command"
-      deployment:
-        config:
-          - global
-          - command-api
-      autoscaling:
-        enabled: true
-        minReplicas: 1
-        maxReplicas: 4
-      service:
-        enabled: true
+ingress:
+  className: ''
+  hosts: []
+  tls: []
 
-    data-api:
-      image:
-        entrypoint: "zimagi-data"
-      deployment:
-        config:
-          - global
-          - data-api
-      autoscaling:
-        enabled: true
-        minReplicas: 1
-        maxReplicas: 4
-      service:
-        enabled: true
+services:
+  command-api:
+    image:
+      entrypoint: "zimagi-command"
+    pvc:
+      mounts:
+        "/usr/local/lib/zimagi": lib
+    deployment:
+      config:
+        - global
+        - command-api
+    autoscaling:
+      enabled: false
+    service:
+      enabled: true
+    ingress:
+      enabled: false
+      # hosts:
+      #   - host: "command-api.${domain}"
+      # tls:
+      #   - secretName: origin-cert
 
-    scheduler:
-      image:
-        entrypoint: "zimagi-scheduler"
-      deployment:
-        replicaCount: 2
-        config:
-          - global
-          - scheduler
+  data-api:
+    image:
+      entrypoint: "zimagi-data"
+    pvc:
+      mounts:
+        "/usr/local/lib/zimagi": lib
+    deployment:
+      config:
+        - global
+        - data-api
+    autoscaling:
+      enabled: false
+    service:
+      enabled: true
+    ingress:
+      enabled: false
+      # hosts:
+      #   - host: "data-api.${domain}"
+      # tls:
+      #   - secretName: origin-cert
 
-    worker:
-      image:
-        entrypoint: "zimagi-worker"
-      deployment:
-        config:
-          - global
-          - worker
-      autoscaling:
-        enabled: true
-        minReplicas: 1
-        maxReplicas: 4
+  scheduler:
+    image:
+      entrypoint: "zimagi-scheduler"
+    pvc:
+      mounts:
+        "/usr/local/lib/zimagi": lib
+    deployment:
+      config:
+        - global
+        - scheduler
+
+  worker:
+    image:
+      entrypoint: "zimagi-worker"
+    pvc:
+      mounts:
+        "/usr/local/lib/zimagi": lib
+    deployment:
+      config:
+        - global
+        - worker
+    autoscaling:
+      enabled: false
+
+  tasks:
+    image:
+      entrypoint: "celery-flower"
+    deployment:
+      config:
+        - global
+        - flower
+      resources:
+        requests:
+          cpu: "20m"
+          memory: "50Mi"
+    autoscaling:
+      enabled: false
+    service:
+      enabled: true
+    ingress:
+      enabled: false
+      # hosts:
+      #   - host: "tasks.${domain}"
+      # tls:
+      #   - secretName: origin-cert
