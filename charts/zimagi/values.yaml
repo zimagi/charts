@@ -29,7 +29,7 @@ image:
   pullPolicy: IfNotPresent
   repository: registry.hub.docker.com
   image: zimagi/zimagi
-  tag: 0.11.15
+  tag: 0.11.16
 
 pvc:
   claims:
