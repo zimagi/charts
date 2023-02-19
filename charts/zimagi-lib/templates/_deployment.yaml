@@ -90,6 +90,36 @@ spec:
           {{- $env_vars := merge ($app_deployment.env | default (dict )) $root.Values.deployment.env -}}
           {{- if $env_vars }}
           env:
+            - name: KUBERNETES_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: KUBERNETES_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: KUBERNETES_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: KUBERNETES_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: KUBERNETES_SERVICE_ACCOUNT
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.serviceAccountName
+            - name: KUBERNETES_CONTAINER_CPU_REQUEST_MILLICORES
+              valueFrom:
+                resourceFieldRef:
+                  resource: requests.cpu
+                  divisor: 1m
+            - name: KUBERNETES_CONTAINER_MEMORY_LIMIT_KILOBYTES
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.memory
+                  divisor: 1Ki
             {{- range $env_var, $env_value := $env_vars }}
             - name: {{ $env_var }}
               value: {{ tpl ($env_value | toString) $root | quote }}
