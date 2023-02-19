@@ -18,7 +18,7 @@ main() {
 
     echo "${CIRCLE_REPOSITORY_URL}"
     git remote add upstream "${CIRCLE_REPOSITORY_URL}"
-    git fetch upstream master
+    git fetch upstream main
     local charts_dir=charts
 
     local repo_root

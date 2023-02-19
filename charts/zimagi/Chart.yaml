@@ -1,12 +1,12 @@
 apiVersion: v2
-version: 2.1.1
+version: 2.1.2
 appVersion: 0.11.15
 
 name: zimagi
 type: application
 description: A Helm chart for deploying the Zimagi data management platform.
 home: https://github.com/zimagi/zimagi
-icon: https://github.com/zimagi/zimagi/blob/master/docs/_static/logo.png
+icon: https://raw.githubusercontent.com/zimagi/zimagi/main/docs/_static/logo.png
 
 dependencies:
 - condition: postgresql.enabled

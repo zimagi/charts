@@ -1,12 +1,11 @@
 apiVersion: v2
-version: 1.0.0
+version: 1.0.1
 appVersion: 0.0.0
 
 name: application
 type: application
 description: A Helm chart for deploying flexible applications.
 home: https://github.com/zimagi/charts
-icon: https://github.com/zimagi/zimagi/blob/master/docs/_static/logo.png
 
 dependencies:
 - name: zimagi-lib
