@@ -2750,6 +2750,29 @@ entries:
     version: 1.0.11
   zimagi-lib:
   - apiVersion: v2
+    created: "2023-02-24T13:20:04.412009482Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: 2.2.2
+    description: A shared library for Helm chart resources.
+    digest: 533c6f8a4862d85473df80a58cb857310472e633d05562b68b6ac0a8d2e6a28c
+    home: https://github.com/zimagi/charts
+    maintainers:
+    - email: erik.jagyugya@dccs.tech
+      name: jagyugyaerik
+      url: https://github.com/jagyugyaerik
+    - email: adrian.webb@dccs.tech
+      name: adrianwebb
+      url: https://github.com/adrianwebb
+    name: zimagi-lib
+    type: library
+    urls:
+    - https://github.com/zimagi/charts/releases/download/zimagi-lib-0.0.17/zimagi-lib-0.0.17.tgz
+    version: 0.0.17
+  - apiVersion: v2
     created: "2023-02-19T06:48:08.604636586Z"
     dependencies:
     - name: common
@@ -3071,4 +3094,4 @@ entries:
     urls:
     - https://github.com/zimagi/charts/releases/download/zimagi-lib-0.0.1/zimagi-lib-0.0.1.tgz
     version: 0.0.1
-generated: "2023-02-24T11:46:20.918314085Z"
+generated: "2023-02-24T13:20:04.413412368Z"
