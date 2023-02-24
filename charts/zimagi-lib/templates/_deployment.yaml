@@ -87,6 +87,10 @@ spec:
           {{- if $imageEntrypoint }}
           command: {{- include "zimagi-lib.util.ensureList" $imageEntrypoint | nindent 12 }}
           {{- end -}}
+          {{- $imageArgs := coalesce $image.args $root.Values.image.args -}}
+          {{- if $imageArgs }}
+          args: {{- include "zimagi-lib.util.ensureList" $imageArgs | nindent 12 }}
+          {{- end -}}
           {{- $env_vars := merge ($app_deployment.env | default (dict )) $root.Values.deployment.env -}}
           {{- if $env_vars }}
           env:

@@ -9,6 +9,7 @@ image:
   image: ""
   tag: ""
   entrypoint: ""
+  args: []
 
 pvc:
   claims: {}
