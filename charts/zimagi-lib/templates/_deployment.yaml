@@ -168,26 +168,53 @@ spec:
               scheme: {{ $port_protocol | upper }}
               port: {{ $container_port }}
               path: {{ .endpoint }}
-          {{- end }}
-          {{- end }}
+          {{- end -}}
+          {{- end -}}
       {{- $pvc := ($service.pvc | default (dict )) -}}
-      {{- $volumes := merge ($pvc.claims | default (dict )) $root.Values.pvc.claims -}}
-      {{- $volume_mounts := merge ($pvc.mounts | default (dict )) $root.Values.pvc.mounts -}}
-      {{ if and $volumes $volume_mounts }}
+      {{- $pvc_claims := merge ($pvc.claims | default (dict )) $root.Values.pvc.claims -}}
+      {{- $pvc_mounts := merge ($pvc.mounts | default (dict )) $root.Values.pvc.mounts -}}
+      {{- $volumes := ($service.volumes | default (dict )) -}}
+      {{- $config_mounts := merge ($volumes.config | default (dict )) $root.Values.volumes.config -}}
+      {{- $secret_mounts := merge ($volumes.secret | default (dict )) $root.Values.volumes.secret }}
           volumeMounts:
-          {{- range $path, $claim := $volume_mounts }}
-          - mountPath: {{ $path }}
-            name: {{ $claim }}
-          {{ end }}
+            {{- if and $pvc_claims $pvc_mounts -}}
+            {{- range $path, $name := $pvc_mounts }}
+            - mountPath: {{ $path }}
+              name: {{ $name }}
+            {{- end }}
+            {{- end -}}
+            {{ if $config_mounts }}
+            {{- range $path, $name := $config_mounts }}
+            - mountPath: {{ $path }}
+              name: {{ $name }}
+              readOnly: true
+            {{- end }}
+            {{- end -}}
+            {{ if $secret_mounts }}
+            {{- range $path, $name := $secret_mounts }}
+            - mountPath: {{ $path }}
+              name: {{ $name }}
+              readOnly: true
+            {{- end }}
+            {{ end }}
       volumes:
-        {{- range $name, $claim := $volumes }}
+        {{- range $name, $claim := $pvc_claims }}
         {{- if $claim }}
         - name: {{ $name }}
           persistentVolumeClaim:
             claimName: {{ $name }}
-        {{ end -}}
+        {{- end }}
         {{- end -}}
-      {{- end -}}
+        {{- range $path, $name := $config_mounts }}
+        - name: {{ $name }}
+          configMap:
+            name: {{ $name }}
+        {{- end -}}
+        {{- range $path, $name := $secret_mounts }}
+        - name: {{ $name }}
+          secret:
+            secretName: {{ $name }}
+        {{- end -}}
 {{- end -}}
 
 {{- define "zimagi-lib.deployment.ext" -}}
