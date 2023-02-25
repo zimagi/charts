@@ -39,6 +39,10 @@ pvc:
       size: 10Gi
   mounts: {}
 
+volumes:
+  config: {}
+  secret: {}
+
 deployment:
   replicaCount: 1
   updateStrategy:
