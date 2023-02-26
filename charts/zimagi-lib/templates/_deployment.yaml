@@ -229,12 +229,15 @@ spec:
             {{- end }}
             {{ end }}
       volumes:
-        {{- range $name, $claim := $pvc_claims }}
-        {{- if $claim }}
+        {{- range $path, $data := $pvc_mounts }}
+        {{- if kindIs "string" $data }}
+        {{- $name := $data -}}
+        {{- else -}}
+        {{- $name := $data.name -}}
+        {{- end }}
         - name: {{ $name }}
           persistentVolumeClaim:
             claimName: {{ $name }}
-        {{- end }}
         {{- end -}}
         {{- range $path, $data := $config_mounts }}
         {{- if kindIs "string" $data }}
