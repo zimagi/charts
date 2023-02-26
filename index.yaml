@@ -643,6 +643,37 @@ entries:
   zimagi:
   - apiVersion: v2
     appVersion: 0.11.21
+    created: "2023-02-26T17:17:52.571749099Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.x.x
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 17.x.x
+    - name: zimagi-lib
+      repository: https://charts.zimagi.com
+      version: 0.x.x
+    description: A Helm chart for deploying the Zimagi data management platform.
+    digest: 7f0de7ddf1a37819527d002704fea2caf6131c7b6435de6753337203ff8027a1
+    home: https://github.com/zimagi/zimagi
+    icon: https://raw.githubusercontent.com/zimagi/zimagi/main/docs/_static/logo.png
+    maintainers:
+    - email: erik.jagyugya@dccs.tech
+      name: jagyugyaerik
+      url: https://github.com/jagyugyaerik
+    - email: adrian.webb@dccs.tech
+      name: adrianwebb
+      url: https://github.com/adrianwebb
+    name: zimagi
+    type: application
+    urls:
+    - https://github.com/zimagi/charts/releases/download/zimagi-2.1.14/zimagi-2.1.14.tgz
+    version: 2.1.14
+  - apiVersion: v2
+    appVersion: 0.11.21
     created: "2023-02-25T15:25:27.372318691Z"
     dependencies:
     - condition: postgresql.enabled
@@ -3268,4 +3299,4 @@ entries:
     urls:
     - https://github.com/zimagi/charts/releases/download/zimagi-lib-0.0.1/zimagi-lib-0.0.1.tgz
     version: 0.0.1
-generated: "2023-02-26T17:13:57.953012673Z"
+generated: "2023-02-26T17:17:52.572434823Z"
