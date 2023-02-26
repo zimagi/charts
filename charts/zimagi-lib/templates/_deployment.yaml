@@ -177,7 +177,6 @@ spec:
       {{- $config_mounts := merge ($volumes.config | default (dict )) $root.Values.volumes.config -}}
       {{- $secret_mounts := merge ($volumes.secret | default (dict )) $root.Values.volumes.secret }}
           volumeMounts:
-            {{- if and $pvc_claims $pvc_mounts -}}
             {{- range $path, $data := $pvc_mounts }}
             - mountPath: {{ $path }}
               {{- if kindIs "string" $data }}
@@ -193,8 +192,6 @@ spec:
               {{- end }}
               {{- end -}}
             {{- end }}
-            {{- end -}}
-            {{ if $config_mounts }}
             {{- range $path, $data := $config_mounts }}
             - mountPath: {{ $path }}
               readOnly: true
@@ -210,8 +207,6 @@ spec:
               {{- end }}
               {{- end -}}
             {{- end }}
-            {{- end -}}
-            {{ if $secret_mounts }}
             {{- range $path, $data := $secret_mounts }}
             - mountPath: {{ $path }}
               readOnly: true
@@ -227,37 +222,24 @@ spec:
               {{- end }}
               {{- end -}}
             {{- end }}
-            {{ end }}
       volumes:
         {{- range $path, $data := $pvc_mounts }}
-        {{- if kindIs "string" $data }}
-        {{- $name := $data -}}
-        {{- else -}}
-        {{- $name := $data.name -}}
-        {{- end }}
-        - name: {{ $name }}
+        {{- $pvc_name := include "zimagi-lib.volumeName" $data }}
+        - name: {{ $pvc_name }}
           persistentVolumeClaim:
-            claimName: {{ $name }}
+            claimName: {{ $pvc_name }}
         {{- end -}}
         {{- range $path, $data := $config_mounts }}
-        {{- if kindIs "string" $data }}
-        {{- $name := $data -}}
-        {{- else -}}
-        {{- $name := $data.name -}}
-        {{- end }}
-        - name: {{ $name }}
+        {{- $config_name := include "zimagi-lib.volumeName" $data }}
+        - name: {{ $config_name }}
           configMap:
-            name: {{ $name }}
+            name: {{ $config_name }}
         {{- end -}}
         {{- range $path, $data := $secret_mounts }}
-        {{- if kindIs "string" $data }}
-        {{- $name := $data -}}
-        {{- else -}}
-        {{- $name := $data.name -}}
-        {{- end }}
-        - name: {{ $name }}
+        {{- $secret_name := include "zimagi-lib.volumeName" $data }}
+        - name: {{ $secret_name }}
           secret:
-            secretName: {{ $name }}
+            secretName: {{ $secret_name }}
         {{- end -}}
 {{- end -}}
 
