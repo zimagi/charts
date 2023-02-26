@@ -178,23 +178,54 @@ spec:
       {{- $secret_mounts := merge ($volumes.secret | default (dict )) $root.Values.volumes.secret }}
           volumeMounts:
             {{- if and $pvc_claims $pvc_mounts -}}
-            {{- range $path, $name := $pvc_mounts }}
+            {{- range $path, $data := $pvc_mounts }}
             - mountPath: {{ $path }}
-              name: {{ $name }}
+              {{- if kindIs "string" $data }}
+              name: {{ $data }}
+              {{- else }}
+              name: {{ $data.name }}
+              readOnly: {{ $data.readOnly | default false }}
+              {{- if $data.subPath }}
+              subPath: {{ $data.subPath }}
+              {{- end }}
+              {{- if $data.subPathExpr }}
+              subPathExpr: {{ $data.subPathExpr }}
+              {{- end }}
+              {{- end -}}
             {{- end }}
             {{- end -}}
             {{ if $config_mounts }}
-            {{- range $path, $name := $config_mounts }}
+            {{- range $path, $data := $config_mounts }}
             - mountPath: {{ $path }}
-              name: {{ $name }}
               readOnly: true
+              {{- if kindIs "string" $data }}
+              name: {{ $data }}
+              {{- else }}
+              name: {{ $data.name }}
+              {{- if $data.subPath }}
+              subPath: {{ $data.subPath }}
+              {{- end }}
+              {{- if $data.subPathExpr }}
+              subPathExpr: {{ $data.subPathExpr }}
+              {{- end }}
+              {{- end -}}
             {{- end }}
             {{- end -}}
             {{ if $secret_mounts }}
-            {{- range $path, $name := $secret_mounts }}
+            {{- range $path, $data := $secret_mounts }}
             - mountPath: {{ $path }}
-              name: {{ $name }}
               readOnly: true
+              {{- if kindIs "string" $data }}
+              name: {{ $data }}
+              {{- else }}
+              name: {{ $data.name }}
+              {{- if $data.subPath }}
+              subPath: {{ $data.subPath }}
+              {{- end }}
+              {{- if $data.subPathExpr }}
+              subPathExpr: {{ $data.subPathExpr }}
+              {{- end }}
+              {{- end -}}
             {{- end }}
             {{ end }}
       volumes:
@@ -205,12 +236,22 @@ spec:
             claimName: {{ $name }}
         {{- end }}
         {{- end -}}
-        {{- range $path, $name := $config_mounts }}
+        {{- range $path, $data := $config_mounts }}
+        {{- if kindIs "string" $data }}
+        {{- $name := $data -}}
+        {{- else -}}
+        {{- $name := $data.name -}}
+        {{- end }}
         - name: {{ $name }}
           configMap:
             name: {{ $name }}
         {{- end -}}
-        {{- range $path, $name := $secret_mounts }}
+        {{- range $path, $data := $secret_mounts }}
+        {{- if kindIs "string" $data }}
+        {{- $name := $data -}}
+        {{- else -}}
+        {{- $name := $data.name -}}
+        {{- end }}
         - name: {{ $name }}
           secret:
             secretName: {{ $name }}
