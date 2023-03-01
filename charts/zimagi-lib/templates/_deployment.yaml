@@ -242,7 +242,3 @@ spec:
             secretName: {{ $secret_name }}
         {{- end -}}
 {{- end -}}
-
-{{- define "zimagi-lib.deployment.ext" -}}
-{{- include "zimagi-lib.util.merge" (append . "zimagi-lib.deployment") -}}
-{{- end -}}

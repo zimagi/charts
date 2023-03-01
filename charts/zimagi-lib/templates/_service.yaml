@@ -29,7 +29,3 @@ spec:
   selector: {{- include "zimagi-lib.selectorLabels" (list $root $service) | nindent 4 }}
 {{- end -}}
 {{- end -}}
-
-{{- define "zimagi-lib.service.ext" -}}
-{{- include "zimagi-lib.util.merge" (append . "zimagi-lib.service") -}}
-{{- end -}}

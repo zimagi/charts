@@ -52,7 +52,3 @@ spec:
     {{- end }}
 {{- end -}}
 {{- end -}}
-
-{{- define "zimagi-lib.ingress.ext" -}}
-{{- include "zimagi-lib.util.merge" (append . "zimagi-lib.ingress") -}}
-{{- end -}}

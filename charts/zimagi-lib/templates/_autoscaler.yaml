@@ -29,7 +29,3 @@ spec:
     name: {{ $name | quote }}
 {{- end -}}
 {{- end -}}
-
-{{- define "zimagi-lib.autoscaler.ext" -}}
-{{- include "zimagi-lib.util.merge" (append . "zimagi-lib.autoscaler") -}}
-{{- end -}}

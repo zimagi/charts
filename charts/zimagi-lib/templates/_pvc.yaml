@@ -20,10 +20,6 @@ spec:
 {{- end -}}
 {{- end -}}
 
-{{- define "zimagi-lib.pvc.ext" -}}
-{{- include "zimagi-lib.util.merge" (append . "zimagi-lib.pvc") -}}
-{{- end -}}
-
 {{/*
 Generate individual service persistent volume claims
 */}}
@@ -34,8 +30,4 @@ Generate individual service persistent volume claims
 {{- range $name, $claim := ($pvc.claims | default (dict )) -}}
 {{ template "zimagi-lib.pvc" (list $root $claim $name) }}
 {{- end -}}
-{{- end -}}
-
-{{- define "zimagi-lib.servicePvc.ext" -}}
-{{- include "zimagi-lib.util.merge" (append . "zimagi-lib.servicePvc") -}}
 {{- end -}}

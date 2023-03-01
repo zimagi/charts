@@ -21,6 +21,6 @@ This takes a single value:
 {{- if and . (kindIs "slice" .) -}}
 {{- toYaml . -}}
 {{- else -}}
-{{- toYaml (list .) -}}
+{{- toYaml (ternary (list ) (list .) (empty .)) -}}
 {{- end -}}
 {{- end -}}

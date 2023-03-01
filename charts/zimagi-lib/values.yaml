@@ -11,6 +11,9 @@ image:
   entrypoint: ""
   args: []
 
+roles: {}
+access: []
+
 pvc:
   claims: {}
   mounts: {}

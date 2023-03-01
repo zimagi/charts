@@ -1,0 +1,23 @@
+{{/*
+Generate service role bindings
+*/}}
+{{- define "zimagi-lib.roleBinding" -}}
+{{- $root := (index . 0) -}}
+{{- $service := (index . 1) -}}
+{{- range $role_name := ((coalesce $service.access $root.Values.access) | default (list )) -}}
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+{{- $name := include "zimagi-lib.serviceName" (list $root $service) }}
+{{ include "zimagi-lib.metadata" (list $root $service $name) }}
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: ServiceAccount
+    namespace: {{ $root.Release.Namespace | quote }}
+    name: {{ $name | quote }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: {{ if (index (index $root.Values.roles $role_name) "global") -}}ClusterRole{{- else -}}Role{{- end }}
+  name: {{ $role_name | quote }}
+{{- end -}}
+{{- end -}}
