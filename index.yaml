@@ -709,6 +709,37 @@ entries:
   zimagi:
   - apiVersion: v2
     appVersion: 0.11.22
+    created: "2023-03-01T01:14:03.604229266Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.x.x
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 17.x.x
+    - name: zimagi-lib
+      repository: https://charts.zimagi.com
+      version: 0.x.x
+    description: A Helm chart for deploying the Zimagi data management platform.
+    digest: 48cc5d2b0720f103764c068f5ba0773088b46f81b8028a39bda8c932e3a11116
+    home: https://github.com/zimagi/zimagi
+    icon: https://raw.githubusercontent.com/zimagi/zimagi/main/docs/_static/logo.png
+    maintainers:
+    - email: erik.jagyugya@dccs.tech
+      name: jagyugyaerik
+      url: https://github.com/jagyugyaerik
+    - email: adrian.webb@dccs.tech
+      name: adrianwebb
+      url: https://github.com/adrianwebb
+    name: zimagi
+    type: application
+    urls:
+    - https://github.com/zimagi/charts/releases/download/zimagi-2.1.18/zimagi-2.1.18.tgz
+    version: 2.1.18
+  - apiVersion: v2
+    appVersion: 0.11.22
     created: "2023-02-27T16:23:14.373792035Z"
     dependencies:
     - condition: postgresql.enabled
@@ -3068,6 +3099,29 @@ entries:
     version: 1.0.11
   zimagi-lib:
   - apiVersion: v2
+    created: "2023-03-01T01:14:03.670364002Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: 2.2.2
+    description: A shared library for Helm chart resources.
+    digest: c00b6f9cc28882c4c132ffb0d2cd8755a66f00d2aafdcd0401f2d23e607a6681
+    home: https://github.com/zimagi/charts
+    maintainers:
+    - email: erik.jagyugya@dccs.tech
+      name: jagyugyaerik
+      url: https://github.com/jagyugyaerik
+    - email: adrian.webb@dccs.tech
+      name: adrianwebb
+      url: https://github.com/adrianwebb
+    name: zimagi-lib
+    type: library
+    urls:
+    - https://github.com/zimagi/charts/releases/download/zimagi-lib-0.0.22/zimagi-lib-0.0.22.tgz
+    version: 0.0.22
+  - apiVersion: v2
     created: "2023-02-26T19:55:38.903835039Z"
     dependencies:
     - name: common
@@ -3504,4 +3558,4 @@ entries:
     urls:
     - https://github.com/zimagi/charts/releases/download/zimagi-lib-0.0.1/zimagi-lib-0.0.1.tgz
     version: 0.0.1
-generated: "2023-02-27T16:23:14.374722019Z"
+generated: "2023-03-01T01:14:03.671138544Z"
