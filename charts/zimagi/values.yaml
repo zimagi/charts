@@ -31,6 +31,15 @@ image:
   image: zimagi/zimagi
   tag: 0.11.21
 
+roles:
+  update_manager:
+    rules:
+      - resources: configmaps
+        resourceNames: global
+        verbs:
+          - get
+          - update
+
 pvc:
   claims:
     lib:
@@ -115,6 +124,8 @@ services:
   command-api:
     image:
       entrypoint: "zimagi-command"
+    access:
+      - update_manager
     pvc:
       mounts:
         "/usr/local/lib/zimagi": lib
@@ -168,6 +179,8 @@ services:
   worker:
     image:
       entrypoint: "zimagi-worker"
+    access:
+      - update_manager
     pvc:
       mounts:
         "/usr/local/lib/zimagi": lib
