@@ -38,7 +38,7 @@ roles:
         resourceNames: global
         verbs:
           - get
-          - update
+          - patch
 
 pvc:
   claims:
