@@ -168,6 +168,8 @@ services:
   scheduler:
     image:
       entrypoint: "zimagi-scheduler"
+    access:
+      - update_manager
     pvc:
       mounts:
         "/usr/local/lib/zimagi": lib
