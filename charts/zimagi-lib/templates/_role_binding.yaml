@@ -11,8 +11,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 {{- $name := include "zimagi-lib.serviceName" (list $root $service) }}
 {{ include "zimagi-lib.metadata" (list $root $service $name) }}
 subjects:
-  - apiGroup: rbac.authorization.k8s.io
-    kind: ServiceAccount
+  - kind: ServiceAccount
     namespace: {{ $root.Release.Namespace | quote }}
     name: {{ $name | quote }}
 roleRef:
