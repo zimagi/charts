@@ -1,5 +1,5 @@
 apiVersion: v2
-version: 2.1.25
+version: 2.1.26
 appVersion: 0.11.24
 
 name: zimagi
