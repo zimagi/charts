@@ -29,13 +29,24 @@ image:
   pullPolicy: IfNotPresent
   repository: registry.hub.docker.com
   image: zimagi/zimagi
-  tag: 0.11.22
+  tag: 0.11.24
 
 roles:
-  update_manager:
+  scheduler_config_updater:
     rules:
       - resources: configmaps
-        resourceNames: global
+        resourceNames: scheduler
+        verbs:
+          - get
+          - patch
+
+  service_config_updater:
+    rules:
+      - resources: configmaps
+        resourceNames:
+          - command-api
+          - data-api
+          - worker
         verbs:
           - get
           - patch
@@ -125,7 +136,7 @@ services:
     image:
       entrypoint: "zimagi-command"
     access:
-      - update_manager
+      - scheduler_config_updater
     pvc:
       mounts:
         "/usr/local/lib/zimagi": lib
@@ -169,7 +180,7 @@ services:
     image:
       entrypoint: "zimagi-scheduler"
     access:
-      - update_manager
+      - service_config_updater
     pvc:
       mounts:
         "/usr/local/lib/zimagi": lib
@@ -182,7 +193,7 @@ services:
     image:
       entrypoint: "zimagi-worker"
     access:
-      - update_manager
+      - scheduler_config_updater
     pvc:
       mounts:
         "/usr/local/lib/zimagi": lib
