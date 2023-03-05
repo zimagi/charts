@@ -12,6 +12,7 @@ kind: Deployment
 {{ include "zimagi-lib.metadata" (list $root $service $name) }}
 spec:
   replicas: {{ coalesce $app_deployment.replicaCount $root.Values.deployment.replicaCount }}
+  revisionHistoryLimit: {{ coalesce $app_deployment.revisionHistoryLimit $root.Values.deployment.revisionHistoryLimit }}
   {{ $updateStrategy := coalesce $app_deployment.updateStrategy $root.Values.deployment.updateStrategy -}}
   {{- if $updateStrategy -}}
   strategy:
