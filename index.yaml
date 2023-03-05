@@ -3,6 +3,28 @@ entries:
   application:
   - apiVersion: v2
     appVersion: 0.0.0
+    created: "2023-03-05T03:22:54.819498327Z"
+    dependencies:
+    - name: zimagi-lib
+      repository: https://charts.zimagi.com
+      version: 0.x.x
+    description: A Helm chart for deploying flexible applications.
+    digest: 6eac400b82502bced15e56e8473f1c3e1fab0580335c2c9006b68b86411378ff
+    home: https://github.com/zimagi/charts
+    maintainers:
+    - email: erik.jagyugya@dccs.tech
+      name: jagyugyaerik
+      url: https://github.com/jagyugyaerik
+    - email: adrian.webb@dccs.tech
+      name: adrianwebb
+      url: https://github.com/adrianwebb
+    name: application
+    type: application
+    urls:
+    - https://github.com/zimagi/charts/releases/download/application-1.0.12/application-1.0.12.tgz
+    version: 1.0.12
+  - apiVersion: v2
+    appVersion: 0.0.0
     created: "2023-03-02T16:28:58.658887554Z"
     dependencies:
     - name: zimagi-lib
@@ -3981,4 +4003,4 @@ entries:
     urls:
     - https://github.com/zimagi/charts/releases/download/zimagi-lib-0.0.1/zimagi-lib-0.0.1.tgz
     version: 0.0.1
-generated: "2023-03-05T03:19:59.207291578Z"
+generated: "2023-03-05T03:22:54.820355746Z"
