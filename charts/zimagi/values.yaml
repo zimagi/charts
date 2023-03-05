@@ -104,9 +104,9 @@ deployment:
 
   livenessProbe:
     endpoint: "/status"
-    failureThreshold: 6
-    initialDelaySeconds: 10
-    periodSeconds: 5
+    failureThreshold: 20
+    initialDelaySeconds: 5
+    periodSeconds: 6
     successThreshold: 1
     timeoutSeconds: 5
 
