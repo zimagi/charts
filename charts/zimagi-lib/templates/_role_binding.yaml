@@ -10,7 +10,7 @@ Generate service role bindings
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 {{- $name := ternary (include "zimagi-lib.serviceName" (list $root $service)) $name (eq $name "") }}
-{{ include "zimagi-lib.metadata" (list $root $service $name) }}
+{{ include "zimagi-lib.metadata" (list $root $service (printf "%s-%s" $name $role_name)) }}
 subjects:
   - kind: ServiceAccount
     namespace: {{ $root.Release.Namespace | quote }}
