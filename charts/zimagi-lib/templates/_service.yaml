@@ -10,7 +10,7 @@ Generate a service
 ---
 apiVersion: v1
 kind: Service
-{{- $name := include "zimagi-lib.serviceName" (list $root $service) }}
+{{- $name := include "zimagi-lib.serviceName" (list $root $service "") }}
 {{ include "zimagi-lib.metadata" (list $root $service $name) }}
 spec:
   {{- $container_port := coalesce $app_deployment.port $root.Values.deployment.port -}}
@@ -26,6 +26,6 @@ spec:
       {{- if and (eq "NodePort" $service_type) $node_port -}}
       nodePort: {{ $node_port }}
       {{- end }}
-  selector: {{- include "zimagi-lib.selectorLabels" (list $root $service) | nindent 4 }}
+  selector: {{- include "zimagi-lib.selectorLabels" (list $root $service $name) | nindent 4 }}
 {{- end -}}
 {{- end -}}

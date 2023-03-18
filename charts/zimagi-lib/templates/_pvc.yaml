@@ -9,6 +9,7 @@ Generate shared persistent volume claims
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
+{{- $name := include "zimagi-lib.serviceName" (list $root nil $name) }}
 {{ include "zimagi-lib.metadata" (list $root nil $name) }}
 spec:
   storageClassName: {{ $claim.storageClass | quote }}

@@ -10,7 +10,7 @@ Generate ingress entrypoints
 ---
 apiVersion: {{ include "common.capabilities.ingress.apiVersion" $root }}
 kind: Ingress
-{{- $name := include "zimagi-lib.serviceName" (list $root $service) }}
+{{- $name := include "zimagi-lib.serviceName" (list $root $service "") }}
 {{ include "zimagi-lib.metadata" (list $root $service $name) }}
 spec:
   {{- $spec := merge $app_ingress $root.Values.ingress -}}

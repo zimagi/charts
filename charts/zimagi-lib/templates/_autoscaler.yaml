@@ -11,7 +11,7 @@ Generate a horizontal pod autoscaler
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
-{{- $name := include "zimagi-lib.serviceName" (list $root $service) }}
+{{- $name := include "zimagi-lib.serviceName" (list $root $service "") }}
 {{ include "zimagi-lib.metadata" (list $root $service $name) }}
 spec:
   minReplicas: {{ $min_replicas }}

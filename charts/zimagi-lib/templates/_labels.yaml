@@ -11,11 +11,10 @@ Selector labels
 {{- define "zimagi-lib.selectorLabels" -}}
 {{- $root := (index . 0) -}}
 {{- $service := (index . 1) -}}
+{{- $name := (index . 2) -}}
 app.kubernetes.io/name: {{ include "zimagi-lib.name" $root | quote }}
 app.kubernetes.io/instance: {{ $root.Release.Name | quote }}
-{{- if and $service $service.name }}
-app.kubernetes.io/component: {{ include "zimagi-lib.serviceName" (list $root $service) | quote }}
-{{- end -}}
+app.kubernetes.io/component: {{ include "zimagi-lib.serviceName" (list $root $service $name) | quote }}
 {{- end -}}
 
 {{/*
@@ -24,12 +23,13 @@ Service labels
 {{- define "zimagi-lib.labels" -}}
 {{- $root := (index . 0) -}}
 {{- $service := (index . 1) -}}
+{{- $name := (index . 2) -}}
 helm.sh/chart: {{ include "zimagi-lib.chart" $root | quote }}
 {{- if $root.Chart.AppVersion }}
 app.kubernetes.io/version: {{ $root.Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ $root.Release.Service }}
-{{ include "zimagi-lib.selectorLabels" (list $root $service) }}
+{{ include "zimagi-lib.selectorLabels" (list $root $service $name) }}
 {{ $labels := ternary (merge ($service.labels | default (dict )) $root.Values.labels) $root.Values.labels (not (empty $service)) -}}
 {{- range $key, $value := $labels -}}
 {{ $key }}: {{ $value | quote }}

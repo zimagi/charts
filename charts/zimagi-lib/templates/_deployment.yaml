@@ -8,7 +8,7 @@ Generate a deployment
 ---
 apiVersion: {{ include "common.capabilities.deployment.apiVersion" $root }}
 kind: Deployment
-{{- $name := include "zimagi-lib.serviceName" (list $root $service) }}
+{{- $name := include "zimagi-lib.serviceName" (list $root $service "") }}
 {{ include "zimagi-lib.metadata" (list $root $service $name) }}
 spec:
   replicas: {{ coalesce $app_deployment.replicaCount $root.Values.deployment.replicaCount }}
@@ -20,11 +20,11 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "zimagi-lib.selectorLabels" (list $root $service) | nindent 6 }}
+      {{- include "zimagi-lib.selectorLabels" (list $root $service $name) | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "zimagi-lib.labels" (list $root $service) | nindent 8 }}
+        {{- include "zimagi-lib.labels" (list $root $service $name) | nindent 8 }}
     spec:
       serviceAccountName: {{ $name | quote }}
       {{- $image := ($service.image | default (dict )) -}}
@@ -228,7 +228,7 @@ spec:
         {{- $pvc_name := include "zimagi-lib.volumeName" $data }}
         - name: {{ $pvc_name }}
           persistentVolumeClaim:
-            claimName: {{ $pvc_name }}
+            claimName: {{ include "zimagi-lib.serviceName" (list $root nil $pvc_name) }}
         {{- end -}}
         {{- range $path, $data := $config_mounts }}
         {{- $config_name := include "zimagi-lib.volumeName" $data }}
