@@ -11,6 +11,8 @@ image:
   entrypoint: ""
   args: []
 
+serviceAccounts: {}
+
 roles: {}
 access: []
 
