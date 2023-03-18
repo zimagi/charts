@@ -13,7 +13,7 @@ Selector labels
 {{- $service := (index . 1) -}}
 app.kubernetes.io/name: {{ include "zimagi-lib.name" $root | quote }}
 app.kubernetes.io/instance: {{ $root.Release.Name | quote }}
-{{- if $service }}
+{{- if and $service $service.name }}
 app.kubernetes.io/component: {{ include "zimagi-lib.serviceName" (list $root $service) | quote }}
 {{- end -}}
 {{- end -}}

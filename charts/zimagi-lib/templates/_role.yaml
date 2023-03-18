@@ -7,7 +7,7 @@ Generate cluster or namespace role binding
 {{- $name := (index . 2) -}}
 {{- if $role }}
 ---
-kind: {{ if (index $role "global") -}}ClusterRole{{- else -}}Role{{- end }}
+kind: {{ if $role.global -}}ClusterRole{{- else -}}Role{{- end }}
 apiVersion: rbac.authorization.k8s.io/v1
 {{ include "zimagi-lib.metadata" (list $root nil $name) }}
 rules:
@@ -17,6 +17,6 @@ rules:
     resourceNames: {{ include "zimagi-lib.util.ensureList" $policy.resourceNames | nindent 6 }}
     resources: {{ include "zimagi-lib.util.ensureList" $policy.resources | nindent 6 }}
     verbs: {{ include "zimagi-lib.util.ensureList" $policy.verbs | nindent 6 }}
-{{- end -}}
+{{ end -}}
 {{- end -}}
 {{- end -}}
