@@ -1,4 +1,4 @@
-nameOverride: zimagi
+nameOverride: ""
 
 labels: {}
 annotations: {}
@@ -31,6 +31,12 @@ image:
   image: zimagi/zimagi
   tag: 0.12.2
 
+serviceAccounts:
+  worker:
+    access:
+      - scheduler_config_updater
+      - job_executor
+
 roles:
   scheduler_config_updater:
     rules:
@@ -46,10 +52,18 @@ roles:
         resourceNames:
           - command-api
           - data-api
-          - worker
         verbs:
           - get
           - patch
+
+  job_executor:
+    rules:
+      - resources: jobs
+        verbs:
+          - get
+          - list
+          - create
+          - delete
 
 pvc:
   claims:
@@ -87,6 +101,8 @@ deployment:
       memory: "100Mi"
 
   env:
+    KUBERNETES_WORKER_SERVICE_ACCOUNT: worker
+    ZIMAGI_WORKER_PROVIDER: kubernetes
     ZIMAGI_POSTGRES_HOST: '{{ include "zimagi.postgresql.fullname" . }}'
     ZIMAGI_POSTGRES_PORT: 5432
     ZIMAGI_POSTGRES_DB: "{{ .Values.postgresql.auth.database }}"
@@ -132,6 +148,7 @@ ingress:
   className: ''
   hosts: []
   tls: []
+  #   - secretName: origin-cert
 
 services:
   command-api:
@@ -139,6 +156,7 @@ services:
       entrypoint: "zimagi-command"
     access:
       - scheduler_config_updater
+      - job_executor
     pvc:
       mounts:
         "/usr/local/lib/zimagi": lib
@@ -154,8 +172,6 @@ services:
       enabled: false
       # hosts:
       #   - host: "command-api.${domain}"
-      # tls:
-      #   - secretName: origin-cert
 
   data-api:
     image:
@@ -175,14 +191,13 @@ services:
       enabled: false
       # hosts:
       #   - host: "data-api.${domain}"
-      # tls:
-      #   - secretName: origin-cert
 
   scheduler:
     image:
       entrypoint: "zimagi-scheduler"
     access:
       - service_config_updater
+      - job_executor
     pvc:
       mounts:
         "/usr/local/lib/zimagi": lib
@@ -190,21 +205,6 @@ services:
       config:
         - global
         - scheduler
-
-  worker:
-    image:
-      entrypoint: "zimagi-worker"
-    access:
-      - scheduler_config_updater
-    pvc:
-      mounts:
-        "/usr/local/lib/zimagi": lib
-    deployment:
-      config:
-        - global
-        - worker
-    autoscaling:
-      enabled: false
 
   tasks:
     image:
@@ -225,5 +225,3 @@ services:
       enabled: false
       # hosts:
       #   - host: "tasks.${domain}"
-      # tls:
-      #   - secretName: origin-cert
