@@ -1,5 +1,3 @@
-nameOverride: ""
-
 labels: {}
 annotations: {}
 
