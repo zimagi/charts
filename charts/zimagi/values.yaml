@@ -29,14 +29,8 @@ image:
   image: zimagi/zimagi
   tag: 0.12.2
 
-serviceAccounts:
-  worker:
-    access:
-      - scheduler_config_updater
-      - job_executor
-
 roles:
-  scheduler_config_updater:
+  scheduler-config-updater:
     rules:
       - resources: configmaps
         resourceNames: scheduler
@@ -44,7 +38,7 @@ roles:
           - get
           - patch
 
-  service_config_updater:
+  service-config-updater:
     rules:
       - resources: configmaps
         resourceNames:
@@ -54,7 +48,7 @@ roles:
           - get
           - patch
 
-  job_executor:
+  job-executor:
     rules:
       - resources: jobs
         verbs:
@@ -62,6 +56,12 @@ roles:
           - list
           - create
           - delete
+
+serviceAccounts:
+  worker:
+    access:
+      - scheduler-config-updater
+      - job-executor
 
 pvc:
   claims:
@@ -153,8 +153,8 @@ services:
     image:
       entrypoint: "zimagi-command"
     access:
-      - scheduler_config_updater
-      - job_executor
+      - scheduler-config-updater
+      - job-executor
     pvc:
       mounts:
         "/usr/local/lib/zimagi": lib
@@ -194,8 +194,8 @@ services:
     image:
       entrypoint: "zimagi-scheduler"
     access:
-      - service_config_updater
-      - job_executor
+      - service-config-updater
+      - job-executor
     pvc:
       mounts:
         "/usr/local/lib/zimagi": lib
