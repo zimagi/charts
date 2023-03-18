@@ -7,6 +7,6 @@ dependencies:
   version: 17.8.5
 - name: zimagi-lib
   repository: https://charts.zimagi.com
-  version: 0.0.27
-digest: sha256:e6b9e0c2b707ef0dbdb5d6441375bd88879eb09227d8c488545efe2e8691eefb
-generated: "2023-03-18T16:06:21.228320922-04:00"
+  version: 0.1.0
+digest: sha256:bc123827088be8ad77d6eaf3a75c95f00e6d3bc1856efcc05ce97328c1781a7c
+generated: "2023-03-18T17:33:39.947192078-04:00"
