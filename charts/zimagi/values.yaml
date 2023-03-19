@@ -50,7 +50,8 @@ roles:
 
   job-executor:
     rules:
-      - resources: jobs
+      - apiGroups: batch
+        resources: jobs
         verbs:
           - get
           - list
