@@ -212,6 +212,10 @@ services:
       config:
         - global
         - flower
+      livenessProbe:
+        endpoint: "/"
+      readinessProbe:
+        endpoint: "/"
       resources:
         requests:
           cpu: "20m"
