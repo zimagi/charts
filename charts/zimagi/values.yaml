@@ -11,6 +11,8 @@ postgresql:
     persistence:
       enabled: true
       size: 10Gi
+  volumePermissions:
+    enabled: true
 
 redis:
   enabled: true
@@ -21,6 +23,8 @@ redis:
     persistence:
       enabled: true
       size: 5Gi
+  volumePermissions:
+    enabled: true
 
 image:
   pullSecrets: []
@@ -75,6 +79,7 @@ pvc:
 volumes:
   config: {}
   secret: {}
+  host: {}
 
 deployment:
   replicaCount: 1
