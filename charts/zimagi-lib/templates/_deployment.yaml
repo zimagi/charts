@@ -77,7 +77,11 @@ spec:
           {{- $imageRepository := coalesce $image.repository $root.Values.image.repository -}}
           {{- $imageImage := coalesce $image.image $root.Values.image.image -}}
           {{- $imageTag := coalesce $image.tag $root.Values.image.tag }}
+          {{- if $imageRepository }}
           image: "{{ $imageRepository }}/{{ $imageImage }}:{{ $imageTag | default $root.Chart.AppVersion }}"
+          {{- else }}
+          image: "{{ $imageImage }}:{{ $imageTag | default $root.Chart.AppVersion }}"
+          {{- end }}
           imagePullPolicy: {{ coalesce $image.pullPolicy $root.Values.image.pullPolicy }}
           {{- $resources := merge ($app_deployment.resources | default (dict )) $root.Values.deployment.resources -}}
           {{- if $resources }}
@@ -172,11 +176,12 @@ spec:
           {{- end -}}
           {{- end -}}
       {{- $pvc := ($service.pvc | default (dict )) -}}
-      {{- $pvc_claims := merge ($pvc.claims | default (dict )) $root.Values.pvc.claims -}}
-      {{- $pvc_mounts := merge ($pvc.mounts | default (dict )) $root.Values.pvc.mounts -}}
+      {{- $pvc_claims := merge ($pvc.claims | default (dict )) ($root.Values.pvc.claims | default (dict )) -}}
+      {{- $pvc_mounts := merge ($pvc.mounts | default (dict )) ($root.Values.pvc.mounts | default (dict )) -}}
       {{- $volumes := ($service.volumes | default (dict )) -}}
       {{- $config_mounts := merge ($volumes.config | default (dict )) $root.Values.volumes.config -}}
       {{- $secret_mounts := merge ($volumes.secret | default (dict )) $root.Values.volumes.secret }}
+      {{- $host_dir_mounts := merge ($volumes.host | default (dict )) $root.Values.volumes.host }}
           volumeMounts:
             {{- range $path, $data := $pvc_mounts }}
             - mountPath: {{ $path }}
@@ -223,6 +228,17 @@ spec:
               {{- end }}
               {{- end -}}
             {{- end }}
+            {{- range $path, $data := $host_dir_mounts }}
+            - mountPath: {{ $path }}
+              readOnly: {{ $data.readOnly | default false }}
+              name: {{ $data.name }}
+              {{- if $data.subPath }}
+              subPath: {{ $data.subPath }}
+              {{- end }}
+              {{- if $data.subPathExpr }}
+              subPathExpr: {{ $data.subPathExpr }}
+              {{- end }}
+            {{- end }}
       volumes:
         {{- range $path, $data := $pvc_mounts }}
         {{- $pvc_name := include "zimagi-lib.volumeName" $data }}
@@ -241,5 +257,11 @@ spec:
         - name: {{ $secret_name }}
           secret:
             secretName: {{ $secret_name }}
+        {{- end -}}
+        {{- range $path, $data := $host_dir_mounts }}
+        - name: {{ $data.name }}
+          hostPath:
+            path: {{ $data.path }}
+            type: {{ $data.type | default "Directory" }}
         {{- end -}}
 {{- end -}}

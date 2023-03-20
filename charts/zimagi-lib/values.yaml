@@ -21,6 +21,7 @@ pvc:
 volumes:
   config: {}
   secret: {}
+  host: {}
 
 deployment:
   replicaCount: 1
