@@ -3,6 +3,7 @@ annotations: {}
 
 postgresql:
   enabled: true
+  fullnameOverride: postgresql
   auth:
     existingSecret: zimagi-db # keys: postgres-password, replication-password, password
     database: zimagi
@@ -11,18 +12,24 @@ postgresql:
     persistence:
       enabled: true
       size: 10Gi
+  readReplicas:
+    replicaCount: 0
   volumePermissions:
     enabled: true
 
 redis:
   enabled: true
+  fullnameOverride: redis
   auth:
     existingSecret: zimagi-db
     existingSecretPasswordKey: redis-password
   master:
+    count: 1
     persistence:
       enabled: true
       size: 5Gi
+  replica:
+    replicaCount: 0
   volumePermissions:
     enabled: true
 
@@ -107,11 +114,11 @@ deployment:
   env:
     KUBERNETES_WORKER_SERVICE_ACCOUNT: worker
     ZIMAGI_WORKER_PROVIDER: kubernetes
-    ZIMAGI_POSTGRES_HOST: '{{ include "zimagi.postgresql.fullname" . }}'
+    ZIMAGI_POSTGRES_HOST: "{{ .Values.postgresql.fullnameOverride }}"
     ZIMAGI_POSTGRES_PORT: 5432
     ZIMAGI_POSTGRES_DB: "{{ .Values.postgresql.auth.database }}"
     ZIMAGI_POSTGRES_USER: "{{ .Values.postgresql.auth.username }}"
-    ZIMAGI_REDIS_HOST: '{{ include "zimagi.redisMaster.fullname" . }}'
+    ZIMAGI_REDIS_HOST: "{{ .Values.redis.fullnameOverride }}"
     ZIMAGI_REDIS_PORT: 6379
 
   config:
