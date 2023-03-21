@@ -27,6 +27,9 @@ deployment:
   updateStrategy:
     type: RollingUpdate
 
+  podSecurityContext: {}
+  containerSecurityContext: {}
+
   priorityClassName: ""
   affinity: {}
   podAffinityPreset: ""
