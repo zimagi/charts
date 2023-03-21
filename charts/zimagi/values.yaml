@@ -13,8 +13,6 @@ postgresql:
     persistence:
       enabled: true
       size: 10Gi
-  # readReplicas:
-  #   replicaCount: 0
   volumePermissions:
     enabled: true
 
@@ -26,12 +24,9 @@ redis:
     existingSecret: zimagi-db
     existingSecretPasswordKey: redis-password
   master:
-    count: 1
     persistence:
       enabled: true
       size: 5Gi
-  # replica:
-  #   replicaCount: 0
   volumePermissions:
     enabled: true
 
@@ -120,7 +115,7 @@ deployment:
     ZIMAGI_POSTGRES_PORT: 5432
     ZIMAGI_POSTGRES_DB: "{{ .Values.postgresql.auth.database }}"
     ZIMAGI_POSTGRES_USER: "{{ .Values.postgresql.auth.username }}"
-    ZIMAGI_REDIS_HOST: "{{ .Values.redis.fullnameOverride }}"
+    ZIMAGI_REDIS_HOST: "{{ .Values.redis.fullnameOverride }}-master"
     ZIMAGI_REDIS_PORT: 6379
 
   config:
