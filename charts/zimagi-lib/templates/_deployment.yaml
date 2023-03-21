@@ -35,6 +35,11 @@ spec:
         - name: {{ $secret | quote }}
         {{ end -}}
       {{ end }}
+      {{ $podSecurityContext := merge ($app_deployment.podSecurityContext | default (dict )) $root.Values.deployment.podSecurityContext -}}
+      {{ if $podSecurityContext -}}
+      securityContext:
+        {{- include "common.tplvalues.render" ( dict "value" $podSecurityContext "context" $root) | nindent 8 }}
+      {{ end -}}
       {{ $affinity := merge ($app_deployment.affinity | default (dict )) $root.Values.deployment.affinity -}}
       {{ if $affinity -}}
       affinity:
@@ -83,6 +88,11 @@ spec:
           image: "{{ $imageImage }}:{{ $imageTag | default $root.Chart.AppVersion }}"
           {{- end }}
           imagePullPolicy: {{ coalesce $image.pullPolicy $root.Values.image.pullPolicy }}
+          {{- $containerSecurityContext := merge ($app_deployment.containerSecurityContext | default (dict )) $root.Values.deployment.containerSecurityContext -}}
+          {{- if $containerSecurityContext }}
+          securityContext:
+            {{- include "common.tplvalues.render" ( dict "value" $containerSecurityContext "context" $root) | nindent 12 }}
+          {{- end -}}
           {{- $resources := merge ($app_deployment.resources | default (dict )) $root.Values.deployment.resources -}}
           {{- if $resources }}
           resources:
