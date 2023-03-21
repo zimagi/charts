@@ -4,6 +4,7 @@ annotations: {}
 postgresql:
   enabled: true
   fullnameOverride: postgresql
+  architecture: standalone
   auth:
     existingSecret: zimagi-db # keys: postgres-password, replication-password, password
     database: zimagi
@@ -12,14 +13,15 @@ postgresql:
     persistence:
       enabled: true
       size: 10Gi
-  readReplicas:
-    replicaCount: 0
+  # readReplicas:
+  #   replicaCount: 0
   volumePermissions:
     enabled: true
 
 redis:
   enabled: true
   fullnameOverride: redis
+  architecture: standalone
   auth:
     existingSecret: zimagi-db
     existingSecretPasswordKey: redis-password
@@ -28,8 +30,8 @@ redis:
     persistence:
       enabled: true
       size: 5Gi
-  replica:
-    replicaCount: 0
+  # replica:
+  #   replicaCount: 0
   volumePermissions:
     enabled: true
 
