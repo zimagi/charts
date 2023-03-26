@@ -35,7 +35,7 @@ image:
   pullPolicy: IfNotPresent
   repository: registry.hub.docker.com
   image: zimagi/zimagi
-  tag: 0.12.4
+  tag: 0.12.5
 
 roles:
   scheduler-config-updater:
