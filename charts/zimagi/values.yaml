@@ -1,5 +1,6 @@
 labels: {}
-annotations: {}
+annotations:
+  nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
 
 postgresql:
   enabled: true
@@ -38,6 +39,12 @@ image:
   tag: 0.12.3
 
 roles:
+  pod-accessor:
+    rules:
+      - resources: pods
+        verbs:
+          - get
+
   scheduler-config-updater:
     rules:
       - resources: configmaps
@@ -69,6 +76,7 @@ roles:
 serviceAccounts:
   worker:
     access:
+      - pod-accessor
       - scheduler-config-updater
       - job-executor
 
@@ -166,6 +174,7 @@ services:
     image:
       entrypoint: "zimagi-command"
     access:
+      - pod-accessor
       - scheduler-config-updater
       - job-executor
     pvc:
@@ -183,6 +192,8 @@ services:
       enabled: false
       # hosts:
       #   - host: "command-api.${domain}"
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "86400" # 1 day
 
   data-api:
     image:
@@ -202,11 +213,14 @@ services:
       enabled: false
       # hosts:
       #   - host: "data-api.${domain}"
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "600" # 10 minutes
 
   scheduler:
     image:
       entrypoint: "zimagi-scheduler"
     access:
+      - pod-accessor
       - service-config-updater
       - job-executor
     pvc:
