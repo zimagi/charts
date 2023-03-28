@@ -1,5 +1,5 @@
 apiVersion: v2
-version: 2.3.10
+version: 2.3.11
 appVersion: 0.12.3
 
 name: zimagi
@@ -18,7 +18,7 @@ dependencies:
   repository: https://charts.bitnami.com/bitnami
   version: 17.x.x
 - name: zimagi-lib
-  repository: https://charts.zimagi.com
+  repository: file://../zimagi-lib
   version: 0.x.x
 
 maintainers:
