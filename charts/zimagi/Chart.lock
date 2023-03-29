@@ -6,7 +6,7 @@ dependencies:
   repository: https://charts.bitnami.com/bitnami
   version: 17.9.2
 - name: zimagi-lib
-  repository: file://../zimagi-lib
+  repository: https://charts.zimagi.com
   version: 0.1.2
-digest: sha256:e537e8489886c4ea1f192f4c8eaf7241e7e250aa750c7e9cafa462e808fbcae1
-generated: "2023-03-28T12:19:10.673884225-04:00"
+digest: sha256:ee19c1481109b39867acf97f7c769aab1915622f6716aedb14a9b9f05b98c968
+generated: "2023-03-28T22:10:46.234750285-04:00"
