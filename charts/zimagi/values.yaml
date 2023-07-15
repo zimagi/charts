@@ -63,6 +63,16 @@ roles:
           - get
           - patch
 
+  agent-executor:
+    rules:
+      - apiGroups: apps
+        resources: deployments
+        verbs:
+          - get
+          - list
+          - create
+          - delete
+
   job-executor:
     rules:
       - apiGroups: batch
@@ -76,13 +86,11 @@ roles:
 serviceAccounts:
   worker:
     access:
-      - pod-accessor
       - scheduler-config-updater
-      - job-executor
 
 pvc:
   claims:
-    lib:
+    files:
       storageClass: nfs
       accessMode: ReadWriteMany
       size: 10Gi
@@ -174,12 +182,10 @@ services:
     image:
       entrypoint: "zimagi-command"
     access:
-      - pod-accessor
       - scheduler-config-updater
-      - job-executor
     pvc:
       mounts:
-        "/usr/local/lib/zimagi": lib
+        "/usr/local/lib/zimagi/files": files
     deployment:
       config:
         - global
@@ -200,7 +206,7 @@ services:
       entrypoint: "zimagi-data"
     pvc:
       mounts:
-        "/usr/local/lib/zimagi": lib
+        "/usr/local/lib/zimagi/files": files
     deployment:
       config:
         - global
@@ -220,16 +226,28 @@ services:
     image:
       entrypoint: "zimagi-scheduler"
     access:
-      - pod-accessor
       - service-config-updater
-      - job-executor
     pvc:
       mounts:
-        "/usr/local/lib/zimagi": lib
+        "/usr/local/lib/zimagi/files": files
     deployment:
       config:
         - global
         - scheduler
+
+  controller:
+    image:
+      entrypoint: "zimagi-controller"
+    access:
+      - pod-accessor
+      - agent-executor
+    pvc:
+      mounts:
+        "/usr/local/lib/zimagi/files": files
+    deployment:
+      config:
+        - global
+        - controller
 
   tasks:
     image:
