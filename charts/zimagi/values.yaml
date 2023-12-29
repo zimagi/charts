@@ -36,7 +36,7 @@ image:
   pullPolicy: IfNotPresent
   repository: registry.hub.docker.com
   image: zimagi/zimagi
-  tag: 0.13.16
+  tag: 0.13.17
 
 roles:
   pod-accessor:
