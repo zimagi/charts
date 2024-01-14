@@ -34,4 +34,10 @@ app.kubernetes.io/managed-by: {{ $root.Release.Service }}
 {{- range $key, $value := $labels -}}
 {{ $key }}: {{ $value | quote }}
 {{- end -}}
+{{- if $service.backup -}}
+recurring-job.longhorn.io/source: enabled
+recurring-job-group.longhorn.io/nexical: enabled
+recurring-job.longhorn.io/backup: enabled
 {{- end -}}
+{{- end -}}
+
