@@ -1,0 +1,16 @@
+{{- define "zimagi-lib.prometheusRule" -}}
+{{- $root := (index . 0) -}}
+{{- $service := (index . 1) -}}
+{{- $prometheusRules := ($service.prometheusRules | default (dict )) -}}
+{{- if $prometheusRules }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+{{- $name := include "zimagi-lib.serviceName" (list $root $service "") }}
+{{ include "zimagi-lib.metadata" (list $root $service $name) }}
+spec:
+  groups:
+    - name: {{ $name | quote}}
+      rules: {{- include "zimagi-lib.util.tplvalues.render" ( dict "value" $prometheusRules "context" $root ) | nindent 6 }}
+{{- end }}
+{{- end }}

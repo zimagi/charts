@@ -26,5 +26,6 @@ Generate a multi-service application
 {{ template "zimagi-lib.autoscaler" (list $root $schema) }}
 {{ template "zimagi-lib.service" (list $root $schema) }}
 {{ template "zimagi-lib.ingress" (list $root $schema) }}
+{{ template "zimagi-lib.prometheusRule" (list $root $schema) }}
 {{- end -}}
 {{- end -}}

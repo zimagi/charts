@@ -85,3 +85,27 @@ ingress:
   className: ''
   hosts: []
   tls: []
+
+services:
+  rule-service:
+    serviceMonitor:
+      enabled: false
+      namespace: ""
+      jobLabel: ""
+      interval: ""
+      scrapeTimeout: ""
+      selector: {}
+      labels: {}
+      relabelings: []
+      metricRelabelings: []
+      honorLabels: false
+    prometheusRule:
+      rules: []
+      # - alert: LowInstance
+      #   expr: up{service="{{ template "common.names.fullname" . }}"} < 1
+      #   for: 1m
+      #   labels:
+      #     severity: critical
+      #   annotations:
+      #     description: Service {{ template "common.names.fullname" . }} Tomcat is down since 1m.
+      #     summary: Tomcat instance is down.
