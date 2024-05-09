@@ -1,0 +1,40 @@
+{{- define "zimagi-lib.prometheusRule" -}}
+{{- $root := (index . 0) -}}
+{{- $service := (index . 1) -}}
+{{- $serviceMonitor := ($service.serviceMonitor | default (dict )) -}}
+{{- if $serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+{{- $name := include "zimagi-lib.serviceName" (list $root $service "") }}
+{{ include "zimagi-lib.metadata" (list $root $service $name) }}
+spec:
+  jobLabel: {{ $serviceMonitor.jobLabel | quote }}
+  selector:
+    matchLabels: {{- include "common.labels.matchLabels" ( dict "customLabels" .Values.commonLabels "context" $root ) | nindent 6 }}
+      {{- if $serviceMonitor.selector }}
+      {{- include "zimagi-lib.util.tplvalues.render" (dict "value" $serviceMonitor.selector "context" $root) | nindent 6 }}
+      {{- end }}
+  endpoints:
+    - port: metrics
+      path: /metrics
+      {{- if $serviceMonitor.interval }}
+      interval: {{ $serviceMonitor.interval }}
+      {{- end }}
+      {{- if $serviceMonitor.scrapeTimeout }}
+      scrapeTimeout: {{ $serviceMonitor.scrapeTimeout }}
+      {{- end }}
+      {{- if $serviceMonitor.honorLabels }}
+      honorLabels: {{ $serviceMonitor.honorLabels }}
+      {{- end }}
+      {{- if $serviceMonitor.relabelings }}
+      relabelings: {{- include "zimagi-lib.util.tplvalues.render" ( dict "value" $serviceMonitor.relabelings "context" $root ) | nindent 8 }}
+      {{- end }}
+      {{- if $serviceMonitor.metricRelabelings }}
+      metricRelabelings: {{- include "zimagi-lib.util.tplvalues.render" ( dict "value" $serviceMonitor.metricRelabelings "context" $root ) | nindent 8 }}
+      {{- end }}
+  namespaceSelector:
+    matchNames:
+      - {{ $root.Release.Namespace }}
+{{- end }}
+{{- end }}
