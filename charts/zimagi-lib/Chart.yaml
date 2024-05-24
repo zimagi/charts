@@ -1,5 +1,5 @@
 apiVersion: v2
-version: 0.1.5
+version: 0.1.6
 
 name: zimagi-lib
 type: library
@@ -9,14 +9,14 @@ home: https://github.com/zimagi/charts
 dependencies:
 - name: common
   repository: https://charts.bitnami.com/bitnami
-  version: 2.2.2
+  version: 2.19.3
   tags:
   - bitnami-common
 
 maintainers:
-- email: erik.jagyugya@dccs.tech
+- email: erik@fractalsynapse.com
   name: jagyugyaerik
   url: https://github.com/jagyugyaerik
-- email: adrian.webb@dccs.tech
+- email: adrian@fractalsynapse.com
   name: adrianwebb
   url: https://github.com/adrianwebb
