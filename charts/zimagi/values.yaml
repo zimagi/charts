@@ -87,6 +87,8 @@ serviceAccounts:
   worker:
     access:
       - scheduler-config-updater
+      - pod-accessor
+      - job-executor
 
 pvc:
   claims:
@@ -183,6 +185,8 @@ services:
       entrypoint: "zimagi-command"
     access:
       - scheduler-config-updater
+      - pod-accessor
+      - job-executor
     pvc:
       mounts:
         "/usr/local/lib/zimagi/files": files
@@ -227,6 +231,8 @@ services:
       entrypoint: "zimagi-scheduler"
     access:
       - service-config-updater
+      - pod-accessor
+      - job-executor
     pvc:
       mounts:
         "/usr/local/lib/zimagi/files": files
