@@ -23,6 +23,73 @@ volumes:
   secret: {}
   host: {}
 
+## @section Postgresql-Operator managed Databases
+## @param postgresOperatorManagedDB.enabled If enabled, deploy a custom resource for the Postgres-Operator
+## @param postgresOperatorManagedDB.teamId Name of the team the cluster belongs to. Required field.
+## @param postgresOperatorManagedDB.numberOfInstances Total number of instances for a given cluster. The operator parameters max_instances and min_instances may also adjust this number. Required field.
+## @param postgresOperatorManagedDB.dockerImage Custom Docker image that overrides the docker_image operator parameter. It should be a Spilo image.
+## @param postgresOperatorManagedDB.schedulerName Specifies the scheduling profile for database pods. If no value is provided K8s' default-scheduler will be used.
+## @param postgresOperatorManagedDB.users A map of usernames to user flags for cluster creation by the operator. Flags include SUPERUSER, REPLICATION, INHERIT, LOGIN, NOLOGIN, CREATEROLE, CREATEDB, and BYPASSRLS. By default, a login user is created unless NOLOGIN is specified, creating a role instead. Use '[]' for empty flags. If enable_cross_namespace_secret is enabled, specify the namespace in the format {namespace}.{username} to create a K8s secret in that namespace.
+## @param postgresOperatorManagedDB.databases A map of database names to database owners for the databases that should be created by the operator. The owner users should already exist on the cluster.
+##
+postgresOperatorManagedDB:
+  enabled: false
+  teamId: "zimagi"
+  numberOfInstances: 2
+  dockerImage: ""
+  schedulerName: ""
+  users: []
+  databases: {}
+  ## @param postgresOperatorManagedDB.preparedDatabases.defaultUsers The operator will always create default NOLOGIN roles for defined prepared databases, but if defaultUsers is set to true three additional LOGIN roles with _user suffix will get created.
+  ## @param postgresOperatorManagedDB.preparedDatabases.extensions map of extensions with target database schema that the operator will install in the database.
+  ## @param postgresOperatorManagedDB.preparedDatabases.schemas map of schemas that the operator will create. Optional - if no schema is listed, the operator will create a schema called data. Under each schema key, it can be defined if defaultRoles (NOLOGIN) and defaultUsers (LOGIN) roles shall be created that have schema-exclusive privileges. By default, defaultRoles is true and defaultUsers is false.
+  ## @param postgresOperatorManagedDB.preparedDatabases.secretNamespace for each default LOGIN role the operator will create a secret. You can specify the namespace in which these secrets will get created, if enable_cross_namespace_secret is set to true in the config. Otherwise, the cluster namespace is used.
+  ##
+  preparedDatabases:
+    defaultUsers: false
+    extensions: ""
+    schemas: {}
+    secretNamespace: ""
+  ## @param postgresOperatorManagedDB.postgresql.version the Postgres major version of the cluster. Looks at the Spilo project for the list of supported versions. Changing the cluster version once the cluster has been bootstrapped is not supported.
+  ## @param postgresOperatorManagedDB.postgresqlparameters a dictionary of Postgres parameter names and values to apply to the resulting cluster. Optional (Spilo automatically sets reasonable defaults for parameters like work_mem or max_connections).
+  ##
+  postgresql:
+    version: "16"
+    postgresqlparameters: ""
+  resources:
+    ## @param postgresOperatorManagedDB.resources.requests.cpu CPU requests for the Postgres container. Optional, overrides the default_cpu_requests operator configuration parameter.
+    ## @param postgresOperatorManagedDB.resources.requests.memory memory requests for the Postgres container. Optional, overrides the default_memory_request operator configuration parameter.
+    ## @param postgresOperatorManagedDB.resources.requests.hugepages-2Mi hugepages-2Mi requests for the sidecar container. Optional, defaults to not set.
+    ## @param postgresOperatorManagedDB.resources.requests.hugepages-1Gi 1Gi hugepages requests for the sidecar container. Optional, defaults to not set.
+    ##
+    requests:
+      cpu: 1
+      memory: 2Gi
+      hugepages-2Mi: false
+      hugepages-1Gi: false
+    ## @param postgresOperatorManagedDB.resources.limits.cpu CPU requests for the Postgres container. Optional, overrides the default_cpu_requests operator configuration parameter.
+    ## @param postgresOperatorManagedDB.resources.limits.memory memory requests for the Postgres container. Optional, overrides the default_memory_request operator configuration parameter.
+    ## @param postgresOperatorManagedDB.resources.limits.hugepages-2Mi hugepages-2Mi requests for the sidecar container. Optional, defaults to not set.
+    ## @param postgresOperatorManagedDB.resources.limits.hugepages-1Gi 1Gi hugepages requests for the sidecar container. Optional, defaults to not set.
+    ##
+    limits:
+      cpu: 1
+      memory: 2Gi
+      hugepages-2Mi: false
+      hugepages-1Gi: false
+  ## @param postgresOperatorManagedDB.volume.size the size of the target volume. Usual Kubernetes size modifiers, i.e. Gi or Mi, apply. Required.
+  ## @param postgresOperatorManagedDB.volume.storageClass the name of the Kubernetes storage class to draw the persistent volume from.
+  ## @param postgresOperatorManagedDB.volume.subPath Subpath to use when mounting volume into Spilo container.
+  ## @param postgresOperatorManagedDB.volume.isSubPathExpr Set it to true if the specified subPath is an expression
+  ##
+  volume:
+    size: 8Gi
+    storageClass: ""
+    subPath: ""
+    isSubPathExpr: false
+
+
+
 deployment:
   replicaCount: 1
   revisionHistoryLimit: 1

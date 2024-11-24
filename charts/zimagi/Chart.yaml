@@ -18,7 +18,7 @@ dependencies:
   repository: https://charts.bitnami.com/bitnami
   version: 19.5.x
 - name: zimagi-lib
-  repository: https://charts.zimagi.com
+  repository: "file://../zimagi-lib"
   version: 0.x.x
 
 maintainers:

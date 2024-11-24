@@ -27,5 +27,6 @@ Generate a multi-service application
 {{ template "zimagi-lib.service" (list $root $schema) }}
 {{ template "zimagi-lib.ingress" (list $root $schema) }}
 {{ template "zimagi-lib.prometheusRule" (list $root $schema) }}
+{{ template "zimagi-lib.postgresql" (list $root $schema) }}
 {{- end -}}
 {{- end -}}

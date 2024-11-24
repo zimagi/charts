@@ -3,7 +3,7 @@ annotations:
   nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
 
 postgresql:
-  enabled: true
+  enabled: false
   fullnameOverride: postgresql
   architecture: standalone
   auth:
@@ -16,6 +16,9 @@ postgresql:
       size: 10Gi
   volumePermissions:
     enabled: true
+
+postgresOperatorManagedDB:
+  enabled: true
 
 redis:
   enabled: true

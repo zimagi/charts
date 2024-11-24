@@ -1,0 +1,28 @@
+{{/*
+Generate a postgresql
+*/}}
+{{- define "zimagi-lib.postgresql" -}}
+{{- $root := (index . 0) -}}
+{{- $service := (index . 1) }}
+{{- $postgres := ($service.postgresOperatorManagedDB | default (dict )) -}}
+{{- if $postgres }}
+---
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+{{- $name := include "zimagi-lib.serviceName" (list $root $service "") }}
+{{ include "zimagi-lib.metadata" (list $root $service $name) }}
+spec:
+  teamId: {{ .Values.postgresOperatorManagedDB.teamId  }}
+  volume:
+    size: {{ .Values.postgresOperatorManagedDB.size  }}
+  numberOfInstances: {{ .Values.postgresOperatorManagedDB.numberOfInstances  }}
+  users:
+    zalando: {{ .Values.postgresOperatorManagedDB.databaseOwners  }}
+    foo_user: []  # role for application foo
+  databases: {{ .Values.postgresOperatorManagedDB.databaseOwners  }}
+    foo: zalando  # dbname: owner
+  preparedDatabases:
+    bar: {}
+  postgresql:
+    version: {{ .Values.postgresOperatorManagedDB.postgresqlVersion  }}
+{{- end }}
