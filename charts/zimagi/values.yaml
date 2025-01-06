@@ -71,6 +71,7 @@ roles:
           - get
           - list
           - create
+          - patch
           - delete
 
   job-executor:
