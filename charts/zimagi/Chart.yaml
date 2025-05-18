@@ -1,5 +1,5 @@
 apiVersion: v2
-version: 2.5.48
+version: 2.5.49
 appVersion: 0.14.3
 
 name: zimagi
@@ -9,22 +9,19 @@ home: https://github.com/zimagi/zimagi
 icon: https://raw.githubusercontent.com/zimagi/zimagi/main/docs/_static/logo.png
 
 dependencies:
-- condition: postgresql.enabled
-  name: postgresql
-  repository: https://charts.bitnami.com/bitnami
-  version: 15.4.x
-- condition: redis.enabled
-  name: redis
-  repository: https://charts.bitnami.com/bitnami
-  version: 19.5.x
-- name: zimagi-lib
-  repository: https://charts.zimagi.com
-  version: 0.x.x
+  - condition: postgresql.enabled
+    name: postgresql
+    repository: https://charts.bitnami.com/bitnami
+    version: 15.4.x
+  - condition: redis.enabled
+    name: redis
+    repository: https://charts.bitnami.com/bitnami
+    version: 19.5.x
+  - name: zimagi-lib
+    repository: https://charts.zimagi.com
+    version: 0.x.x
 
 maintainers:
-- email: erik@fractalsynapse.com
-  name: jagyugyaerik
-  url: https://github.com/jagyugyaerik
-- email: adrian@fractalsynapse.com
-  name: adrianwebb
-  url: https://github.com/adrianwebb
+  - email: adrian@fractalsynapse.com
+    name: adrianwebb
+    url: https://github.com/adrianwebb

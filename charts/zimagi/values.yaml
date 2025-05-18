@@ -35,7 +35,7 @@ image:
   pullSecrets: []
   pullPolicy: IfNotPresent
   repository: registry.hub.docker.com
-  image: zimagi/zimagi
+  image: zimagi/server
   tag: 0.14.3
 
 roles:
@@ -175,7 +175,7 @@ service:
   port: 80
 
 ingress:
-  className: ''
+  className: ""
   hosts: []
   tls: []
   #   - secretName: origin-cert
