@@ -1,5 +1,7 @@
 .deploy
 
+*.code-workspace
+
 *__pycache__/
 *.pytest_cache/
 
