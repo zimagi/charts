@@ -1,4 +1,0 @@
-{{/*
-Generate an application
-*/}}
-{{ include "zimagi-lib.app" (list . .Values) }}

@@ -38,8 +38,6 @@ main() {
     readarray -t changed_charts <<< "$(get_changed_charts "$latest_tag")"
 
     if [[ -n "${changed_charts[*]}" ]]; then
-        # install_chart_releaser
-
         rm -rf .cr-release-packages
         mkdir -p .cr-release-packages
 
@@ -66,7 +64,7 @@ main() {
 
 install_chart_dependencies() {
     helm repo add bitnami https://charts.bitnami.com/bitnami
-    helm repo add zimagi https://charts.zimagi.com
+    helm repo add reactor https://charts.kube-reactor.com
 }
 
 get_changed_charts() {
@@ -116,7 +114,7 @@ release_charts() {
 }
 
 update_index() {
-    chart-releaser index -o "$GIT_USERNAME" -r "$GIT_REPOSITORY_NAME" -c "https://charts.zimagi.com"
+    chart-releaser index -o "$GIT_USERNAME" -r "$GIT_REPOSITORY_NAME" -c "https://charts.kube-reactor.com"
     cat .cr-index/index.yaml
 
     git config user.email "$GIT_EMAIL"
@@ -129,11 +127,10 @@ update_index() {
     ls -la
     cat index.yaml
 
-    if ! git diff --quiet; then
+    if ! git diff --quiet || git ls-files -o --exclude-standard --error-unmatch index.yaml 2>/dev/null 1>&2; then
         git add .
         git commit --message="Update index.yaml [ci skip]" --signoff
         git push -q https://"${GH_TOKEN}"@github.com/"${GIT_USERNAME}"/"${GIT_REPOSITORY_NAME}".git  gh-pages
-
     fi
 }
 

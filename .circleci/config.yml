@@ -1,48 +1,5 @@
 version: 2.1
-orbs:
-  shellcheck: circleci/shellcheck@2.0.0
 jobs:
-  pre-commit:
-    docker:
-    - image: python:3.9-alpine
-    steps:
-      - checkout
-      - run:
-          name: pre-commit
-          command: |
-            apk add \
-              git \
-              bash \
-              curl
-            rm -rf /var/cache/apk/*
-            curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-            chmod 700 get_helm.sh
-            VERIFY_CHECKSUM=false ./get_helm.sh
-            python -m venv pre-commit
-            source pre-commit/bin/activate
-            pip install pre-commit
-            pre-commit install
-            pre-commit run --all-files
-  lint-charts:
-    docker:
-      - image: quay.io/helmpack/chart-testing:v3.4.0
-    steps:
-      - checkout
-      - run:
-          name: lint
-          command: |
-            git remote add upstream https://github.com/paulczar/percona-helm-charts
-            git fetch upstream master
-            helm repo add bitnami https://charts.bitnami.com/bitnami
-            helm repo update
-            ct lint --config .circleci/ct.yaml
-  install-charts:
-    machine: true
-    steps:
-      - checkout
-      - run:
-          no_output_timeout: 12m
-          command: .circleci/install_charts.sh
   release-charts:
     machine: true
     steps:
@@ -56,34 +13,11 @@ jobs:
             .circleci/setup_tools.sh
             .circleci/release.sh
 workflows:
-  # lint-and-install:
-  #   jobs:
-  #     - pre-commit
-  #     - lint-charts:
-  #         filters:
-  #           branches:
-  #             ignore: main
-  #           tags:
-  #             ignore: /.*/
-  #     - install-charts:
-  #         requires:
-  #           - pre-commit
-  #           - lint-charts
   release:
     jobs:
-      # - pre-commit
-      - shellcheck/check:
-          dir: .circleci
-          filters:
-            tags:
-              ignore: /.*/
-            branches:
-              only: main
       - release-charts:
           filters:
             tags:
               ignore: /.*/
             branches:
               only: main
-          # requires:
-          # - pre-commit

@@ -1,4 +1,4 @@
 {{/*
 Generate a Zimagi platform
 */}}
-{{ include "zimagi-lib.app" (list . .Values) }}
+{{ include "reactor.app" (list . .Values) }}

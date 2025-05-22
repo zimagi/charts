@@ -1,6 +1,6 @@
 # Charts for Kubernetes
 
-Organisation Zimagi made Charts, ready to launch on [Kubernetes](https://kubernetes.io/) using [Helm](https://helm.sh/).
+Zimagi Helm Charts, ready to launch on [Kubernetes](https://kubernetes.io/) using [Helm](https://helm.sh/).
 
 # TL;DR
 
@@ -10,6 +10,7 @@ $ helm search repo zimagi
 ```
 
 # Prerequisites
+
 - Kubernetes 1.12+
 - Helm 3.1.0
 
@@ -22,4 +23,3 @@ pip install pre-commit
 pre-commit install
 pre-commit run --all-files
 ```
-
