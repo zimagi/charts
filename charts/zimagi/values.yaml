@@ -206,6 +206,31 @@ services:
     annotations:
       nginx.ingress.kubernetes.io/proxy-read-timeout: "86400" # 1 day
 
+  mcp-api:
+    image:
+      entrypoint: "zimagi-mcp"
+    access:
+      - scheduler-config-updater
+      - pod-accessor
+      - job-executor
+    pvc:
+      mounts:
+        "/usr/local/lib/zimagi/files": files
+    deployment:
+      config:
+        - global
+        - mcp-api
+    autoscaling:
+      enabled: false
+    service:
+      enabled: true
+    ingress:
+      enabled: false
+      # hosts:
+      #   - host: "mcp.${domain}"
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "86400" # 1 day
+
   data-api:
     image:
       entrypoint: "zimagi-data"
