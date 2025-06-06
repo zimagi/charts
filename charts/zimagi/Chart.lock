@@ -1,12 +1,12 @@
 dependencies:
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
-  version: 16.7.8
+  version: 16.7.10
 - name: redis
   repository: https://charts.bitnami.com/bitnami
   version: 21.1.11
 - name: reactor
   repository: https://charts.kube-reactor.com
   version: 0.2.3
-digest: sha256:c7c6807d1aee4e72da1facda372455e305055af48b9c4b9e556ed177d8b898f5
-generated: "2025-05-30T17:48:47.345984836-04:00"
+digest: sha256:e1010aaad1fceec1e40f62afabb677e24fb9c752d6e7251f34567edb7675f55f
+generated: "2025-06-06T11:21:50.09335583-04:00"

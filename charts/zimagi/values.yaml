@@ -94,7 +94,7 @@ serviceAccounts:
 pvc:
   claims:
     files:
-      storageClass: nfs
+      storageClass: longhorn
       accessMode: ReadWriteMany
       size: 10Gi
   mounts: {}
@@ -125,10 +125,13 @@ deployment:
 
   nodeSelector: {}
   tolerations: []
-  resources:
-    requests:
-      cpu: "100m"
-      memory: "100Mi"
+  resources: {}
+  #  requests:
+  #    cpu: "100m"
+  #    memory: "100Mi"
+  #  limits:
+  #    cpu: "200m"
+  #    memory: "250Mi"
 
   env:
     KUBERNETES_WORKER_SERVICE_ACCOUNT: worker
@@ -195,6 +198,13 @@ services:
       config:
         - global
         - command-api
+      resources: {}
+      #  requests:
+      #    cpu: "100m"
+      #    memory: "100Mi"
+      #  limits:
+      #    cpu: "200m"
+      #    memory: "512Mi"
     autoscaling:
       enabled: false
     service:
@@ -220,6 +230,13 @@ services:
       config:
         - global
         - mcp-api
+      resources: {}
+      #  requests:
+      #    cpu: "100m"
+      #    memory: "100Mi"
+      #  limits:
+      #    cpu: "200m"
+      #    memory: "512Mi"
     autoscaling:
       enabled: false
     service:
@@ -241,6 +258,13 @@ services:
       config:
         - global
         - data-api
+      resources: {}
+      #  requests:
+      #    cpu: "100m"
+      #    memory: "100Mi"
+      #  limits:
+      #    cpu: "200m"
+      #    memory: "512Mi"
     autoscaling:
       enabled: false
     service:
@@ -266,6 +290,13 @@ services:
       config:
         - global
         - scheduler
+      resources: {}
+      #  requests:
+      #    cpu: "10m"
+      #    memory: "50Mi"
+      #  limits:
+      #    cpu: "50m"
+      #    memory: "150Mi"
 
   controller:
     image:
@@ -280,6 +311,13 @@ services:
       config:
         - global
         - controller
+      resources: {}
+      #  requests:
+      #    cpu: "10m"
+      #    memory: "50Mi"
+      #  limits:
+      #    cpu: "50m"
+      #    memory: "150Mi"
 
   tasks:
     image:
@@ -292,10 +330,13 @@ services:
         endpoint: "/"
       readinessProbe:
         endpoint: "/"
-      resources:
-        requests:
-          cpu: "20m"
-          memory: "50Mi"
+      resources: {}
+      #  requests:
+      #    cpu: "20m"
+      #    memory: "50Mi"
+      #  limits:
+      #    cpu: "100m"
+      #    memory: "150Mi"
     autoscaling:
       enabled: false
     service:
