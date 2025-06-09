@@ -1,5 +1,5 @@
 apiVersion: v2
-version: 2.6.1
+version: 2.6.4
 appVersion: 0.14.3
 
 name: zimagi
@@ -12,11 +12,11 @@ dependencies:
   - condition: postgresql.enabled
     name: postgresql
     repository: https://charts.bitnami.com/bitnami
-    version: 15.4.x
+    version: 16.7.x
   - condition: redis.enabled
     name: redis
     repository: https://charts.bitnami.com/bitnami
-    version: 19.5.x
+    version: 21.2.x
   - name: reactor
     repository: https://charts.kube-reactor.com
     version: 0.2.x
