@@ -11,6 +11,13 @@ postgresql:
     database: zimagi
     username: zimagi
   primary:
+    resources: {}
+    # requests:
+    #   cpu: 250m
+    #   memory: 512Mi
+    # limits:
+    #   cpu: 1
+    #   memory: 1Gi
     persistence:
       enabled: true
       size: 10Gi
@@ -25,11 +32,48 @@ redis:
     existingSecret: zimagi-db
     existingSecretPasswordKey: redis-password
   master:
+    resources: {}
+    # requests:
+    #   cpu: 250m
+    #   memory: 512Mi
+    # limits:
+    #   cpu: 1
+    #   memory: 1Gi
     persistence:
       enabled: true
       size: 5Gi
   volumePermissions:
     enabled: true
+
+qdrant:
+  enabled: true
+  fullnameOverride: qdrant
+  env:
+    - name: QDRANT__SERVICE__API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: zimagi-db
+          key: qdrant-access-key
+    - name: QDRANT__LOG_LEVEL
+      value: INFO
+    - name: QDRANT__SERVICE__MAX_REQUEST_SIZE_MB
+      value: 1000
+  ingress:
+    enabled: false
+  livenessProbe:
+    enabled: true
+  resources: {}
+  #  limits:
+  #    cpu: 100m
+  #    memory: 128Mi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 128Mi
+  persistence:
+    size: 5Gi
+  snapshotPersistence:
+    enabled: false
+    size: 20Gi
 
 image:
   pullSecrets: []
@@ -142,6 +186,9 @@ deployment:
     ZIMAGI_POSTGRES_USER: "{{ .Values.postgresql.auth.username }}"
     ZIMAGI_REDIS_HOST: "{{ .Values.redis.fullnameOverride }}-master"
     ZIMAGI_REDIS_PORT: 6379
+    ZIMAGI_QDRANT_HOST: "{{ .Values.qdrant.fullnameOverride }}"
+    ZIMAGI_QDRANT_PORT: 6333
+    ZIMAGI_QDRANT_HTTPS: false
 
   config:
     - global
