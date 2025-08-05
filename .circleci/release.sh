@@ -65,7 +65,7 @@ main() {
 install_chart_dependencies() {
     helm repo add bitnami https://charts.bitnami.com/bitnami
     helm repo add reactor https://charts.kube-reactor.com
-}
+    helm repo add qdrant https://qdrant.github.io/qdrant-helm
 
 get_changed_charts() {
     local commit="$1"
