@@ -11,6 +11,13 @@ postgresql:
     database: zimagi
     username: zimagi
   primary:
+    resources: {}
+    # requests:
+    #   cpu: 250m
+    #   memory: 512Mi
+    # limits:
+    #   cpu: 1
+    #   memory: 1Gi
     persistence:
       enabled: true
       size: 10Gi
@@ -25,11 +32,48 @@ redis:
     existingSecret: zimagi-db
     existingSecretPasswordKey: redis-password
   master:
+    resources: {}
+    # requests:
+    #   cpu: 250m
+    #   memory: 512Mi
+    # limits:
+    #   cpu: 1
+    #   memory: 1Gi
     persistence:
       enabled: true
       size: 5Gi
   volumePermissions:
     enabled: true
+
+qdrant:
+  enabled: true
+  fullnameOverride: qdrant
+  env:
+    - name: QDRANT__SERVICE__API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: zimagi-db
+          key: qdrant-access-key
+    - name: QDRANT__LOG_LEVEL
+      value: INFO
+    - name: QDRANT__SERVICE__MAX_REQUEST_SIZE_MB
+      value: 1000
+  ingress:
+    enabled: false
+  livenessProbe:
+    enabled: true
+  resources: {}
+  #  limits:
+  #    cpu: 100m
+  #    memory: 128Mi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 128Mi
+  persistence:
+    size: 5Gi
+  snapshotPersistence:
+    enabled: false
+    size: 20Gi
 
 image:
   pullSecrets: []
@@ -94,7 +138,7 @@ serviceAccounts:
 pvc:
   claims:
     files:
-      storageClass: nfs
+      storageClass: longhorn
       accessMode: ReadWriteMany
       size: 10Gi
   mounts: {}
@@ -125,10 +169,13 @@ deployment:
 
   nodeSelector: {}
   tolerations: []
-  resources:
-    requests:
-      cpu: "100m"
-      memory: "100Mi"
+  resources: {}
+  #  requests:
+  #    cpu: "100m"
+  #    memory: "100Mi"
+  #  limits:
+  #    cpu: "200m"
+  #    memory: "250Mi"
 
   env:
     KUBERNETES_WORKER_SERVICE_ACCOUNT: worker
@@ -139,6 +186,9 @@ deployment:
     ZIMAGI_POSTGRES_USER: "{{ .Values.postgresql.auth.username }}"
     ZIMAGI_REDIS_HOST: "{{ .Values.redis.fullnameOverride }}-master"
     ZIMAGI_REDIS_PORT: 6379
+    ZIMAGI_QDRANT_HOST: "{{ .Values.qdrant.fullnameOverride }}"
+    ZIMAGI_QDRANT_PORT: 6333
+    ZIMAGI_QDRANT_HTTPS: false
 
   config:
     - global
@@ -195,6 +245,13 @@ services:
       config:
         - global
         - command-api
+      resources: {}
+      #  requests:
+      #    cpu: "100m"
+      #    memory: "100Mi"
+      #  limits:
+      #    cpu: "200m"
+      #    memory: "512Mi"
     autoscaling:
       enabled: false
     service:
@@ -203,6 +260,38 @@ services:
       enabled: false
       # hosts:
       #   - host: "command-api.${domain}"
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "86400" # 1 day
+
+  mcp-api:
+    image:
+      entrypoint: "zimagi-mcp"
+    access:
+      - scheduler-config-updater
+      - pod-accessor
+      - job-executor
+    pvc:
+      mounts:
+        "/usr/local/lib/zimagi/files": files
+    deployment:
+      config:
+        - global
+        - mcp-api
+      resources: {}
+      #  requests:
+      #    cpu: "100m"
+      #    memory: "100Mi"
+      #  limits:
+      #    cpu: "200m"
+      #    memory: "512Mi"
+    autoscaling:
+      enabled: false
+    service:
+      enabled: true
+    ingress:
+      enabled: false
+      # hosts:
+      #   - host: "mcp.${domain}"
     annotations:
       nginx.ingress.kubernetes.io/proxy-read-timeout: "86400" # 1 day
 
@@ -216,6 +305,13 @@ services:
       config:
         - global
         - data-api
+      resources: {}
+      #  requests:
+      #    cpu: "100m"
+      #    memory: "100Mi"
+      #  limits:
+      #    cpu: "200m"
+      #    memory: "512Mi"
     autoscaling:
       enabled: false
     service:
@@ -241,6 +337,13 @@ services:
       config:
         - global
         - scheduler
+      resources: {}
+      #  requests:
+      #    cpu: "10m"
+      #    memory: "50Mi"
+      #  limits:
+      #    cpu: "50m"
+      #    memory: "150Mi"
 
   controller:
     image:
@@ -255,6 +358,13 @@ services:
       config:
         - global
         - controller
+      resources: {}
+      #  requests:
+      #    cpu: "10m"
+      #    memory: "50Mi"
+      #  limits:
+      #    cpu: "50m"
+      #    memory: "150Mi"
 
   tasks:
     image:
@@ -267,10 +377,13 @@ services:
         endpoint: "/"
       readinessProbe:
         endpoint: "/"
-      resources:
-        requests:
-          cpu: "20m"
-          memory: "50Mi"
+      resources: {}
+      #  requests:
+      #    cpu: "20m"
+      #    memory: "50Mi"
+      #  limits:
+      #    cpu: "100m"
+      #    memory: "150Mi"
     autoscaling:
       enabled: false
     service:

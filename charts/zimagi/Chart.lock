@@ -1,12 +1,15 @@
 dependencies:
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
-  version: 16.7.10
+  version: 16.7.21
 - name: redis
   repository: https://charts.bitnami.com/bitnami
-  version: 21.2.1
+  version: 21.2.14
+- name: qdrant
+  repository: https://qdrant.github.io/qdrant-helm
+  version: 1.15.1
 - name: reactor
   repository: https://charts.kube-reactor.com
   version: 0.2.3
-digest: sha256:8c8fa03585a307064b22116c2c04ed665b21f808f74cf1ae85c8c1e40e78fbd5
-generated: "2025-06-08T23:03:50.266188209-04:00"
+digest: sha256:dcb7fbe758806187d78a63061c9dda79a244847a90241ce3ba0249e179160ac8
+generated: "2025-08-04T13:38:30.838623757-04:00"
