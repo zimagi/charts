@@ -80,7 +80,7 @@ image:
   pullPolicy: IfNotPresent
   repository: registry.hub.docker.com
   image: zimagi/server
-  tag: 0.14.3
+  tag: 0.14.6
 
 roles:
   pod-accessor:
