@@ -1,6 +1,6 @@
 apiVersion: v2
-version: 2.7.8
-appVersion: 0.14.11
+version: 2.7.9
+appVersion: 0.14.12
 
 name: zimagi
 type: application
